@@ -64,48 +64,35 @@
                         <a href="{{url('/home')}}"><i class="fa fa-th-large"></i> <span
                                 class="nav-label">Search </span></a>
                     </li>
-                    <li class="{{ Request::is('prospects') ? 'active' : '' }}">
-                        <a href="{{url('/prospects')}}"><i class="fa fa-users"></i></i> <span
-                                class="nav-label">Prospects</span></a>
+                    <li class="{{ Route::current()->getName() == 'requests' ? 'active' : '' }}">
+                        <a href="{{url('/request')}}"><i class="fa fa-paper-plane"></i> <span
+                                class="nav-label">Requests </span></a>
                     </li>
-                    <li class="{{ Request::is('tenants') ? 'active' : '' }}">
-                        <a href="{{url('/tenants')}}"><i class="fa fa-user-plus"></i> <span
-                                class="nav-label">Tenants</span></a>
+                    <li class="{{ Route::current()->getName() == 'documents' ? 'active' : '' }}">
+                        <a href="{{url('/documents')}}"><i class="fa fa-files-o"></i> <span
+                                class="nav-label">Documents </span></a>
                     </li>
-                    <li class="{{ Request::is('properties') ? 'active' : '' }}">
-                        <a href="{{url('/properties')}}"><i class="fa fa-building"></i> <span
-                                class="nav-label">Inventory</span></a>
+                    <li class="{{ Route::current()->getName() == 'permits' ? 'active' : '' }}">
+                        <a href="{{url('/permits')}}"><i class="fa fa-file-archive-o"></i> <span
+                                class="nav-label">Permits & Licenses </span></a>
                     </li>
-                    <li class="{{ Request::is('commercial') || Request::is('residential') ? 'active' : '' }}">
-                        <a href="#"><i class="fa fa-gavel"></i> <span class="nav-label">Contracts</span><span
+                    <li class="{{ Route::current()->getName() == 'settings' ? 'active' : '' }}">
+                        <a href="#"><i class="fa fa-gavel"></i> <span class="nav-label">Settings</span><span
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">
-                            <li><a href="{{url('/commercial')}}"><i class="fa fa-building"></i>Commercial</a></li>
-                            <li><a href="{{url('/residential')}}"><i class="fa fa-home"></i>Residential</a></li>
+                            <li ><a href="{{url('/companies')}}"></i>Companies</a></li>
+                            <li><a href="{{url('/departments')}}"></i>Departments</a></li>
+                            <li><a href="{{url('/users')}}"></i>Users</a></li>
                         </ul>
                     </li>
-                    <li>
-                        <a href="utilities.html"><i class="fa fa-wrench"></i> <span
-                                class="nav-label">Utilities</span></a>
-                    </li>
-                    <li>
-                        <a href="invoices.html"><i class="fa fa-file-text-o"></i> <span
-                                class="nav-label">SOA/Billing</span></a>
-                    </li>
-                    <li>
-                        <a href="payments.html"><i class="fa fa-credit-card"></i> <span
-                                class="nav-label">Collection</span></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-exclamation"></i> <span class="nav-label">Reports</span><span
+                    <li class="{{ Route::current()->getName() == 'reports' ? 'active' : '' }}">
+                        <a href="#"><i class="fa fa-list-ul"></i> <span class="nav-label">Reports</span><span
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">
-                            <li><a href="#">Report 01</a></li>
-                            <li><a href="#">Report 02</a></li>
-                            <li><a href="#">Report 03</a></li>
-                            <li><a href="#">Report 04</a></li>
+                            <li><a href="{{url('/logs')}}"></i>Logs</a></li>
                         </ul>
                     </li>
+                    
                 </ul>
             </div>
         </nav>

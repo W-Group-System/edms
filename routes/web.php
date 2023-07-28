@@ -15,8 +15,22 @@
 
 Auth::routes();
 Route::group(['middleware' => 'auth'], function () {
-   
-    Route::get('/', 'HomeController@index')->name('home');  
-    Route::get('/home', 'HomeController@index')->name('home');  
-});
 
+    Route::get('/', 'HomeController@index')->name('home');
+    Route::get('/home', 'HomeController@index')->name('home');
+
+    Route::get('/request', 'RequestController@index')->name('requests');
+
+
+    Route::get('/documents', 'DocumentController@index')->name('documents');
+
+
+    Route::get('/permits', 'PermitController@index')->name('permits');
+
+
+    Route::get('/companies', 'CompanyController@index')->name('settings');
+
+    Route::get('/departments', 'DepartmentController@index')->name('settings');
+
+    Route::get('/users', 'UserController@index')->name('settings');
+});
