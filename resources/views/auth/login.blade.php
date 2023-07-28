@@ -1,37 +1,61 @@
 @extends('layouts.app')
 
 @section('content')
-
-<div class="middle-box text-center loginscreen animated fadeInDown">
-    <div>
-        <div>
-            <img alt="image" class="img-main-logo" src="{{url('login_css/img/logo.png')}}" />
-        </div>
-        
-        <div>
-            <h1 class="logo-name">{{ config('app.name', 'Laravel') }}</h1>
-
-        </div>
-        <p></p>
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
-            @if($errors->any())
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <form method="POST" action="{{ route('login') }}"  class="login100-form validate-form">
+                @csrf
+             
+                <span class="login100-form-title p-b-43">
+                    {{ config('app.name', 'Laravel') }}
+                </span>
+                <span class="login100-form-title p-b-43">
+                    <h6>Login to continue</h6>
+                </span>
+                
+                @if($errors->any())
                 <div class="form-group alert alert-danger alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
                     <strong>{{$errors->first()}}</strong>
                 </div>
             @endif
-            <div class="form-group">
-                <input type="email" placeholder="Email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required >
-            </div>
-            <div class="form-group">
-                <input type="password" id="password" placeholder="Password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+                <div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
+                    <input  type="email" class="input100" name="email" value="" required >
+                    <span class="focus-input100"></span>
+                    <span class="label-input100">Email</span>
+                </div>
+                
+                
+                <div class="wrap-input100 validate-input" data-validate="Password is required">
+                    <input  id="password" type="password" class="input100" name="password" required>
+                    <span class="focus-input100"></span>
+                    <span class="label-input100">Password</span>
+                </div>
 
-            <a href="{{ route('password.request') }}"><small>Forgot password?</small></a>
-          
-        </form>
+                <div class="container-login100-form-btn">
+                    <button class="login100-form-btn" type='submit'>
+                        Login
+                    </button>
+                </div>
+                <div class="flex-sb-m w-full p-t-3 p-b-32">
+
+                    <div>
+                        <a href="{{ route('password.request') }}" class="txt1">
+                            Forgot Password?
+                        </a>
+                    </div>
+                </div>
+        
+
+                
+                
+            </form>
+
+            <div class="login100-more" style="background-image: url('login_design/images/bg-01.jpg');">
+            </div>
+        </div>
     </div>
 </div>
+
 @endsection

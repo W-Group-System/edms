@@ -50,19 +50,17 @@
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover tables" >
                         <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Company</th>
-                            <th>Department</th>
-                            <th>Accountable Person</th>
-                            <th>Date Uploaded</th>
-                            <th>File</th>
-                            <th>Expiration Date</th>
-                            <th>Action</th>
-                        </tr>
+                            <tr>
+                                <th>Logo</th>
+                                <th>Icon</th>
+                                <th>Name</th>
+                                <th>Code</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
                         </thead>
                         <tbody>
+                        </tbody>
                         </table>
                     </div>
 

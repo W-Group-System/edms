@@ -33,4 +33,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/departments', 'DepartmentController@index')->name('settings');
 
     Route::get('/users', 'UserController@index')->name('settings');
+
+    Route::get('/logs', 'AuditController@index')->name('reports');
 });
