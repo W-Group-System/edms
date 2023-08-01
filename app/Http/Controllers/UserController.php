@@ -68,8 +68,7 @@ class UserController extends Controller
     public function activate_user(Request $request)
     {
         $user = User::where('id', $request->id)->first();
-        $user->status = "";
-        $user->password = "";
+        $user->status = null;
         $user->save();
 
         return "success";

@@ -31,6 +31,11 @@
             background-size: 120px 120px;
         }
 
+        .dataTables_filter {
+        float: right;
+        text-align: right;
+        }
+
     </style>
     <!-- Fonts -->
     <!-- Styles -->

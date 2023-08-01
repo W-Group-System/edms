@@ -15,4 +15,8 @@ class Department extends Model  implements Auditable
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
+    public function permit_account()
+    {
+        return $this->hasOne(User::class, 'id', 'permit_accountable');
+    }
 }

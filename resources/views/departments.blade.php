@@ -24,7 +24,7 @@
                     <h5>Active</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($departments->where('status',""))}}</h1>
+                    <h1 class="no-margins">{{count($departments->where('status',null))}}</h1>
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
                     <h5>Deactivated</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($departments->where('status',"deactivated"))}}</h1>
+                    <h1 class="no-margins">{{count($departments->where('status','!=',null))}}</h1>
                 </div>
             </div>
         </div>

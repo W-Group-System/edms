@@ -17,7 +17,7 @@ class DepartmentController extends Controller
     public function index()
     {
         $departments = Department::with('dep_head')->get();
-        $employees = User::where('role', 'Department Head')->where('status', null)->get();
+        $employees = User::where('status', null)->get();
         return view('departments', array(
             'departments' => $departments,
             'employees' => $employees,
@@ -56,6 +56,7 @@ class DepartmentController extends Controller
         $department->code = $request->code;
         $department->name = $request->name;
         $department->user_id = $request->user_id;
+        $department->permit_accountable = $request->permit_id;
         $department->save();
         Alert::success('Successfully Store')->persistent('Dismiss');
         return back();

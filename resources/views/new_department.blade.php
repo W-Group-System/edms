@@ -28,8 +28,17 @@
                             Department Head :
                             <select name='user_id' class='form-control-sm form-control cat' required>
                                 <option value=""></option>
-                                @foreach($employees as $employee)
+                                @foreach($employees->where('role','Department Head') as $employee)
                                     <option value='{{$employee->id}}' @if(old('user_id') == $employee->id) selected @endif>{{$employee->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class='col-md-12'>
+                            Permits Accountable :
+                            <select name='permit_id' class='form-control-sm form-control cat' >
+                                <option value=""></option>
+                                @foreach($employees as $employee)
+                                    <option value='{{$employee->id}}' @if(old('permit_id') == $employee->id) selected @endif>{{$employee->name}}</option>
                                 @endforeach
                             </select>
                         </div>

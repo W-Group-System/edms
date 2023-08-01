@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Department;
+use App\Company;
+use App\Archive;
+use App\Permit;
+
+use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
 
 class PermitController extends Controller
@@ -14,7 +20,16 @@ class PermitController extends Controller
     public function index()
     {
         //
-        return view('permits');
+        $companies = Company::where('status', '=', null)->get();
+        $departments = Department::whereHas('permit_account')->where('status', '=', null)->get();
+        $permits = Permit::with('company', 'department')->get();
+        $archives = Archive::get();
+        return view('permits', array(
+            'companies' => $companies,
+            'departments' => $departments,
+            'permits' => $permits,
+            'archives' => $archives,
+        ));
     }
 
     /**
@@ -36,6 +51,34 @@ class PermitController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request, [
+            'title' => 'required',
+            'description' => 'required',
+            'company' => 'required',
+            'department' => 'required',
+            'type' => 'required',
+            'file' => 'required',
+            'expiration_date' => 'required',
+        ]);
+
+        $attachment = $request->file('file');
+        $name = time() . '_' . $attachment->getClientOriginalName();
+        $attachment->move(public_path() . '/permits_attachments/', $name);
+        $file_name = '/permits_attachments/' . $name;
+
+        $permit = new Permit;
+        $permit->title = $request->title;
+        $permit->description = $request->description;
+        $permit->company_id = $request->company;
+        $permit->department_id = $request->department;
+        $permit->type = $request->type;
+        $permit->file = $file_name;
+        $permit->expiration_date = $request->expiration_date;
+        $permit->user_id = auth()->user()->id;
+        $permit->save();
+
+        Alert::success('Successfully Save')->persistent('Dismiss');
+        return back();
     }
 
     /**
@@ -70,6 +113,12 @@ class PermitController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $permit = Permit::findOrfail($id);
+        $permit->department_id = $request->department;
+        $permit->save();
+
+        Alert::success('Successfully Updated')->persistent('Dismiss');
+        return back();
     }
 
     /**
@@ -81,5 +130,40 @@ class PermitController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function upload(Request $request, $id)
+    {
+        $this->validate($request, [
+            'file' => 'required',
+            'expiration_date' => 'required',
+        ]);
+
+
+        $attachment = $request->file('file');
+        $name = time() . '_' . $attachment->getClientOriginalName();
+        $attachment->move(public_path() . '/permits_attachments/', $name);
+        $file_name = '/permits_attachments/' . $name;
+
+        $permit = Permit::findOrfail($id);
+        $archive = new Archive;
+        $archive->permit_id = $id;
+        $archive->title = $permit->title;
+        $archive->description = $permit->description;
+        $archive->company_id = $permit->company_id;
+        $archive->department_id = $permit->department_id;
+        $archive->file = $permit->file;
+        $archive->expiration_date = $permit->expiration_date;
+        $archive->user_id = $permit->user_id;
+        $archive->type = $permit->type;
+        $archive->save();
+
+        $permit->file = $file_name;
+        $permit->expiration_date = $request->expiration_date;
+        $permit->user_id = auth()->user()->id;
+        $permit->save();
+
+        Alert::success('Successfully Uploaded')->persistent('Dismiss');
+        return back();
     }
 }
