@@ -1,21 +1,23 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\User;
 use App\Company;
 use App\Department;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class UserController extends Controller
 {
     //
     public function index()
     {
-        $users = User::with('department','company')->get();
+        $users = User::with('department', 'company')->get();
         $companies = Company::get();
         $departments = Department::get();
         $roles = $this->roles();
-        return view('users',array(
+        return view('users', array(
             'users' => $users,
             'companies' => $companies,
             'departments' => $departments,
@@ -29,8 +31,8 @@ class UserController extends Controller
             'email' => 'email|unique:users',
             'password' => 'required|confirmed|min:6',
         ]);
-        
-        
+
+
         $new_account = new User;
         $new_account->name = $request->name;
         $new_account->email = $request->email;
@@ -42,21 +44,21 @@ class UserController extends Controller
         Alert::success('Successfully Store')->persistent('Dismiss');
         return back();
     }
-    public function changepassword(Request $request,$id)
+    public function changepassword(Request $request, $id)
     {
         $this->validate($request, [
             'password' => 'required|confirmed',
         ]);
 
-        $user = User::where('id',$id)->first();
+        $user = User::where('id', $id)->first();
         $user->password = bcrypt($request->password);
-        $user->save(); 
+        $user->save();
         Alert::success('Successfully Change Password')->persistent('Dismiss');
         return back();
     }
     public function deactivate_user(Request $request)
     {
-        $user = User::where('id',$request->id)->first();
+        $user = User::where('id', $request->id)->first();
         $user->status = 1;
         $user->password = "";
         $user->save();
@@ -65,31 +67,29 @@ class UserController extends Controller
     }
     public function activate_user(Request $request)
     {
-        $user = User::where('id',$request->id)->first();
+        $user = User::where('id', $request->id)->first();
         $user->status = "";
         $user->password = "";
         $user->save();
 
         return "success";
     }
-    public function edit_user(Request $request,$id)
+    public function edit_user(Request $request, $id)
     {
 
         $this->validate($request, [
             'email' => 'unique:users,email,' . $id,
         ]);
-        $userLocations = UserLocation::where('user_id',$id)->delete();
 
-        
-        $account = User::where('id',$id)->first();
+        $account = User::where('id', $id)->first();
         $account->name = $request->name;
         $account->email = $request->email;
         $account->company_id = $request->company;
         $account->department_id = $request->department;
-        $account->role_id = $request->role;
+        $account->role = $request->role;
         $account->save();
 
-        $request->session()->flash('status','Successfully updated');
+        Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
     }
     public function roles()

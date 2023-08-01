@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Department;
+use App\User;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class DepartmentController extends Controller
 {
@@ -13,7 +16,12 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        return view('departments');
+        $departments = Department::with('dep_head')->get();
+        $employees = User::where('role', 'Department Head')->where('status', null)->get();
+        return view('departments', array(
+            'departments' => $departments,
+            'employees' => $employees,
+        ));
         //
     }
 
@@ -36,6 +44,21 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         //
+        // dd($request->all());
+        $this->validate($request, [
+            'code' => 'required|min:2|max:50|unique:departments',
+            'name' => 'required',
+            'user_id' => 'required',
+        ]);
+
+
+        $department = new Department;
+        $department->code = $request->code;
+        $department->name = $request->name;
+        $department->user_id = $request->user_id;
+        $department->save();
+        Alert::success('Successfully Store')->persistent('Dismiss');
+        return back();
     }
 
     /**
@@ -81,5 +104,23 @@ class DepartmentController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function deactivate(Request $request)
+    {
+        // dd($request->all());
+        $department = Department::where('id', $request->id)->first();
+        $department->status = "deactivated";
+        $department->save();
+
+        return "success";
+    }
+    public function activate(Request $request)
+    {
+        // dd($request->all());
+        $department = Department::where('id', $request->id)->first();
+        $department->status = null;
+        $department->save();
+
+        return "success";
     }
 }

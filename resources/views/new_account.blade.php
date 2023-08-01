@@ -28,7 +28,7 @@
                         Company :
                         <select name='company' class='form-control-sm form-control cat' required>
                             <option value=""></option>
-                            @foreach($companies as $company)
+                            @foreach($companies->where('status',null) as $company)
                                 <option value='{{$company->id}}' @if(old('company') == $company->id) selected @endif>{{$company->code}} - {{$company->name}}</option>
                             @endforeach
                         </select>
@@ -37,7 +37,7 @@
                         Department :
                         <select name='department' class='form-control-sm form-control cat' required>
                             <option value=""></option>
-                            @foreach($departments as $dep)
+                            @foreach($departments->where('status',null) as $dep)
                                 <option value='{{$dep->id}}' @if(old('department') == $dep->id) selected @endif>{{$dep->code}} - {{$dep->name}}</option>
                             @endforeach
                         </select>

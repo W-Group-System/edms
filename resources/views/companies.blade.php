@@ -5,6 +5,7 @@
 @section('content')
 
 <div class="wrapper wrapper-content">
+    @include('error')
     <div class="row">
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
@@ -42,7 +43,7 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Company <button class="btn btn-success "  data-target="#addProperty" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New </button></h5>
+                    <h5>Company <button class="btn btn-success "  data-target="#new_company" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New </button></h5>
                   
                 </div>
                 <div class="ibox-content">
@@ -51,8 +52,6 @@
                         <table class="table table-striped table-bordered table-hover tables" >
                         <thead>
                             <tr>
-                                <th>Logo</th>
-                                <th>Icon</th>
                                 <th>Name</th>
                                 <th>Code</th>
                                 <th>Status</th>
@@ -62,8 +61,6 @@
                         <tbody>
                             @foreach($companies as $company)
                             <tr>
-                                <td>Logo</td>
-                                <td>Icon</td>
                                 <td>{{$company->name}}</td>
                                 <td>{{$company->code}}</td>
                                 <td id='statuscompanytd{{$company->id}}'>@if($company->status) <small class="label label-danger">Inactive</small>  @else <small class="label label-primary">Active</small> @endif</td>
@@ -87,7 +84,7 @@
 
     </div>
 </div>
-{{-- @include('properties.create') --}}
+@include('new_company')
 @endsection
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>

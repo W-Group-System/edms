@@ -29,12 +29,22 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     Route::get('/companies', 'CompanyController@index')->name('settings');
+    Route::post('/new-company', 'CompanyController@store')->name('settings');
 
     Route::get('/departments', 'DepartmentController@index')->name('settings');
+    Route::post('/new-department', 'DepartmentController@store')->name('settings');
+    Route::post('deactivate-department', 'DepartmentController@deactivate')->name('settings');
+    Route::post('activate-department', 'DepartmentController@activate')->name('settings');
 
     //Users
     Route::get('/users', 'UserController@index')->name('settings');
-    Route::post('new-account','UserController@create')->name('settings');
+    Route::post('new-account', 'UserController@create')->name('settings');
+    Route::post('/change-password/{id}', 'UserController@changepassword')->name('settings');
+    Route::post('/edit-user/{id}', 'UserController@edit_user')->name('settings');
+    Route::post('deactivate-user', 'UserController@deactivate_user')->name('settings');
+    Route::post('activate-user', 'UserController@activate_user')->name('settings');
+
+
 
     Route::get('/logs', 'AuditController@index')->name('reports');
 });

@@ -18,6 +18,8 @@
                         <table class="table table-striped table-bordered table-hover tables" >
                         <thead>
                                 <tr>
+                                    
+                                    <th>Created Date</th>
                                     <th>Model</th>
                                     <th>User</th>
                                     <th>Event</th>
@@ -26,12 +28,13 @@
                                     <th>New Values</th>
                                     <th>Ip Address</th>
                                     <th>Agent</th>
-                                    <th>Created Date</th>
                                 </tr>
                         </thead>
                         <tbody>
                             @foreach($audits as $audit)
                                 <tr>
+                                    
+                                    <td>{{date('Y-m-d h:i:s',strtotime($audit->created_at))}}</td>
                                     <td>{{$audit->auditable_type}}</td>
                                     <td>{{$audit->user->name}}</td>
                                     <td>{{$audit->event}}</td>
@@ -40,7 +43,6 @@
                                     <td title='{{$audit->new_values}}'>{{substr($audit->new_values,0,10)}}</td>
                                     <td>{{$audit->ip_address}}</td>
                                     <td>{{$audit->user_agent}}</td>
-                                    <td>{{date('M d, Y h:i:s',strtotime($audit->created_at))}}</td>
                                 </tr>
                             @endforeach
                         </tbody>

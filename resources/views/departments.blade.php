@@ -1,10 +1,12 @@
 @extends('layouts.header')
 @section('css')
 <link href="{{ asset('login_css/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+<link href="{{ asset('login_css/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
 @endsection
 @section('content')
 
 <div class="wrapper wrapper-content">
+    @include('error')
     <div class="row">
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
@@ -12,7 +14,7 @@
                     <h5>Departments</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{count($departments)}}</h1>
                 </div>
             </div>
         </div>
@@ -22,7 +24,7 @@
                     <h5>Active</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{count($departments->where('status',""))}}</h1>
                 </div>
             </div>
         </div>
@@ -32,7 +34,7 @@
                     <h5>Deactivated</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{count($departments->where('status',"deactivated"))}}</h1>
                 </div>
             </div>
         </div>
@@ -42,7 +44,7 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Departments <button class="btn btn-success "  data-target="#addProperty" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New </button></h5>
+                    <h5>Departments <button class="btn btn-success "  data-target="#new_department" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New </button></h5>
                   
                 </div>
                 <div class="ibox-content">
@@ -51,13 +53,32 @@
                         <table class="table table-striped table-bordered table-hover tables" >
                         <thead>
                             <tr>
-                                <th>Name</th>
+                                
                                 <th>Code</th>
+                                <th>Name</th>
+                                <th>Department Head</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach($departments as $department)
+                            <tr>
+                                
+                                <td>{{$department->code}}</td>
+                                <td>{{$department->name}}</td>
+                                <td>{{($department->dep_head != null) ? $department->dep_head->name : "No Head"}}</td>
+                                <td>@if($department->status) <small class="label label-danger">Inactive</small>  @else <small class="label label-primary">Active</small> @endif</td>
+                                <td data-id='{{$department->id}}' id='actioncompanytd{{$department->id}}'>
+                                    @if($department->status)
+                                    <button class="btn btn-sm btn-primary activate-department" id='{{$department->id}}' title="Activate"><i class="fa fa-check"></i></button>
+                                    @else
+                                    {{-- <button class="btn btn-sm btn-info"  title='Edit' data-target="#editDepartment{{$department->id}}" data-toggle="modal"><i class="fa fa-edit"></i></button> --}}
+                                    <button class="btn btn-sm btn-danger deactivate-department" id='{{$department->id}}' title='Deactivate' ><i class="fa fa-trash"></i></button>
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
                         </tbody>
                         </table>
                     </div>
@@ -68,15 +89,76 @@
 
     </div>
 </div>
-{{-- @include('properties.create') --}}
+@include('new_department')
 @endsection
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
+<script src="{{ asset('login_css/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
 <script>
     $(document).ready(function(){
+        $('.deactivate-department').click(function () {
         
-
+        var id = this.id;
+            swal({
+                title: "Are you sure?",
+                text: "This department will be deactivated!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, deactivated it!",
+                closeOnConfirm: false
+            }, function (){
+                $.ajax({
+                    dataType: 'json',
+                    type:'POST',
+                    url:  '{{url("deactivate-department")}}',
+                    data:{id:id},
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                }).done(function(data){
+                    console.log(data);
+                    swal("Deactivated!", "Department is now deactivated.", "success");
+                    location.reload();
+                }).fail(function(data)
+                {
+                    
+                    swal("Deactivated!", "Department is now deactivated.", "success");
+                location.reload();
+                });
+            });
+        });
+        $('.activate-department').click(function () {
+        
+        var id = this.id;
+            swal({
+                title: "Are you sure?",
+                text: "This department will be activated!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, Activated it!",
+                closeOnConfirm: false
+            }, function (){
+                $.ajax({
+                    dataType: 'json',
+                    type:'POST',
+                    url:  '{{url("activate-department")}}',
+                    data:{id:id},
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                }).done(function(data){
+                    console.log(data);
+                    swal("Activated!", "Department is now activated.", "success");
+                    location.reload();
+                }).fail(function(data)
+                {
+                    
+                    swal("Activated!", "Department is now activated.", "success");
+                location.reload();
+                });
+            });
+        });
+        
+        $('.cat').chosen({width: "100%"});
         $('.locations').chosen({width: "100%"});
         $('.tables').DataTable({
             pageLength: 25,

@@ -1,8 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Company;
 use Illuminate\Http\Request;
+
+use RealRashid\SweetAlert\Facades\Alert;
 
 class CompanyController extends Controller
 {
@@ -15,10 +18,12 @@ class CompanyController extends Controller
     {
         $companies = Company::get();
         //
-        return view('companies',
-        array(
-            'companies' => $companies,
-        ));
+        return view(
+            'companies',
+            array(
+                'companies' => $companies,
+            )
+        );
     }
 
     /**
@@ -40,6 +45,18 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request, [
+            'code' => 'required|min:2|max:50|unique:companies',
+            'name' => 'required',
+        ]);
+
+
+        $company = new Company;
+        $company->code = $request->code;
+        $company->name = $request->name;
+        $company->save();
+        Alert::success('Successfully Store')->persistent('Dismiss');
+        return back();
     }
 
     /**

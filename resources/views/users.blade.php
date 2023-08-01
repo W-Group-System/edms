@@ -1,6 +1,8 @@
 @extends('layouts.header')
 @section('css')
 <link href="{{ asset('login_css/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+
+<link href="{{ asset('login_css/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
 @endsection
 @section('content')
 
@@ -73,12 +75,12 @@
                                 <td data-id='{{$user->id}}' id='actionuser{{$user->id}}'>
 
                                         @if($user->status)
-                                            <button class="btn btn-sm btn-primary activate-user" title="Activate"><i class="fa fa-check"></i></button>
+                                            <button class="btn btn-sm btn-primary activate-user" id='{{$user->id}}' title="Activate"><i class="fa fa-check"></i></button>
                                         @else
                                             <button class="btn btn-sm btn-warning" data-target="#change_pass{{$user->id}}" data-toggle="modal" title='change password' ><i class="fa fa-key"></i></button>
                                             <button class="btn btn-sm btn-info"  title='Edit' data-target="#editUser{{$user->id}}" data-toggle="modal"><i class="fa fa-edit"></i></button>
                                         @if(Auth::user()->id != $user->id)
-                                            <button class="btn btn-sm btn-danger deactivate-user" title='Deactivate' ><i class="fa fa-trash"></i></button>@endif
+                                            <button class="btn btn-sm btn-danger deactivate-user" id='{{$user->id}}' title='Deactivate' ><i class="fa fa-trash"></i></button>@endif
                                         @endif
                                 </td>
                             </tr>
@@ -100,9 +102,70 @@
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
+<script src="{{ asset('login_css/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
 
 <script>
     $(document).ready(function(){
+        $('.deactivate-user').click(function () {
+        
+        var id = this.id;
+            swal({
+                title: "Are you sure?",
+                text: "This user will be deactivated!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, deactivated it!",
+                closeOnConfirm: false
+            }, function (){
+                $.ajax({
+                    dataType: 'json',
+                    type:'POST',
+                    url:  '{{url("deactivate-user")}}',
+                    data:{id:id},
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                }).done(function(data){
+                    console.log(data);
+                    swal("Deactivated!", "User is now deactivated.", "success");
+                    location.reload();
+                }).fail(function(data)
+                {
+                    
+                    swal("Deactivated!", "User is now deactivated.", "success");
+                location.reload();
+                });
+            });
+        });
+        $('.activate-user').click(function () {
+        
+        var id = this.id;
+            swal({
+                title: "Are you sure?",
+                text: "This user will be activated!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, Activated it!",
+                closeOnConfirm: false
+            }, function (){
+                $.ajax({
+                    dataType: 'json',
+                    type:'POST',
+                    url:  '{{url("activate-user")}}',
+                    data:{id:id},
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                }).done(function(data){
+                    console.log(data);
+                    swal("Activated!", "User is now activated.", "success");
+                    location.reload();
+                }).fail(function(data)
+                {
+                    
+                    swal("Activated!", "User is now activated.", "success");
+                location.reload();
+                });
+            });
+        });
         
         $('.cat').chosen({width: "100%"});
         $('.tables').DataTable({
