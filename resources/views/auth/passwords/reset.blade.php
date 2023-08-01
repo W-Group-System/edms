@@ -38,7 +38,7 @@
                     <span class="label-input100">Password</span>
                 </div>
                 <div class="wrap-input100 validate-input" data-validate="Password is required">
-                    <input  id="confirm_password" type="password" class="input100" name="confirm_password" required>
+                    <input  id="password_confirmation" type="password" class="input100" name="password_confirmation" required>
                     <span class="focus-input100"></span>
                     <span class="label-input100">Confirm Password</span>
                 </div>
