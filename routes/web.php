@@ -30,6 +30,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/companies', 'CompanyController@index')->name('settings');
     Route::post('/new-company', 'CompanyController@store')->name('settings');
+    Route::post('deactivate-company', 'CompanyController@deactivate')->name('settings');
+    Route::post('activate-company', 'CompanyController@activate')->name('settings');
 
     Route::get('/departments', 'DepartmentController@index')->name('settings');
     Route::post('/new-department', 'DepartmentController@store')->name('settings');

@@ -1,6 +1,7 @@
 @extends('layouts.header')
 @section('css')
 <link href="{{ asset('login_css/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+<link href="{{ asset('login_css/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
 @endsection
 @section('content')
 
@@ -66,10 +67,10 @@
                                 <td id='statuscompanytd{{$company->id}}'>@if($company->status) <small class="label label-danger">Inactive</small>  @else <small class="label label-primary">Active</small> @endif</td>
                                 <td data-id='{{$company->id}}' id='actioncompanytd{{$company->id}}'>
                                     @if($company->status)
-                                    <button class="btn btn-sm btn-primary activate-company" title="Activate"><i class="fa fa-check"></i></button>
+                                    <button class="btn btn-sm btn-primary activate-company" id='{{$company->id}}' title="Activate"><i class="fa fa-check"></i></button>
                                     @else
-                                    <button class="btn btn-sm btn-info"  title='Edit' data-target="#editCompany{{$company->id}}" data-toggle="modal"><i class="fa fa-edit"></i></button>
-                                    <button class="btn btn-sm btn-danger deactivate-company" title='Deactivate' ><i class="fa fa-trash"></i></button>
+                                    {{-- <button class="btn btn-sm btn-info"  title='Edit'  data-target="#editCompany{{$company->id}}" data-toggle="modal"><i class="fa fa-edit"></i></button> --}}
+                                    <button class="btn btn-sm btn-danger deactivate-company" id='{{$company->id}}' title='Deactivate' ><i class="fa fa-trash"></i></button>
                                     @endif
                                 </td>
                             </tr>
@@ -89,9 +90,69 @@
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
+<script src="{{ asset('login_css/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
 <script>
     $(document).ready(function(){
+        $('.deactivate-company').click(function () {
         
+        var id = this.id;
+            swal({
+                title: "Are you sure?",
+                text: "This company will be deactivated!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, deactivated it!",
+                closeOnConfirm: false
+            }, function (){
+                $.ajax({
+                    dataType: 'json',
+                    type:'POST',
+                    url:  '{{url("deactivate-company")}}',
+                    data:{id:id},
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                }).done(function(data){
+                    console.log(data);
+                    swal("Deactivated!", "Company is now deactivated.", "success");
+                    location.reload();
+                }).fail(function(data)
+                {
+                    
+                    swal("Deactivated!", "Company is now deactivated.", "success");
+                location.reload();
+                });
+            });
+        });
+        $('.activate-company').click(function () {
+        
+        var id = this.id;
+            swal({
+                title: "Are you sure?",
+                text: "This company will be activated!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, Activated it!",
+                closeOnConfirm: false
+            }, function (){
+                $.ajax({
+                    dataType: 'json',
+                    type:'POST',
+                    url:  '{{url("activate-company")}}',
+                    data:{id:id},
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                }).done(function(data){
+                    console.log(data);
+                    swal("Activated!", "Company is now activated.", "success");
+                    location.reload();
+                }).fail(function(data)
+                {
+                    
+                    swal("Activated!", "Company is now activated.", "success");
+                location.reload();
+                });
+            });
+        });
 
         $('.locations').chosen({width: "100%"});
         $('.tables').DataTable({

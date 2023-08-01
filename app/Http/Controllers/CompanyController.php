@@ -103,4 +103,22 @@ class CompanyController extends Controller
     {
         //
     }
+    public function deactivate(Request $request)
+    {
+        // dd($request->all());
+        $company = Company::where('id', $request->id)->first();
+        $company->status = "deactivated";
+        $company->save();
+
+        return "success";
+    }
+    public function activate(Request $request)
+    {
+        // dd($request->all());
+        $company = Company::where('id', $request->id)->first();
+        $company->status = null;
+        $company->save();
+
+        return "success";
+    }
 }
