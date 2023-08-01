@@ -62,6 +62,10 @@
                     <!-- //sidebar -->
                     <li class="{{ Route::current()->getName() == 'home' ? 'active' : '' }}">
                         <a href="{{url('/home')}}"><i class="fa fa-th-large"></i> <span
+                                class="nav-label">Dashboard </span></a>
+                    </li>
+                    <li class="{{ Route::current()->getName() == 'search' ? 'active' : '' }}">
+                        <a href="{{url('/search')}}"><i class="fa fa-search"></i> <span
                                 class="nav-label">Search </span></a>
                     </li>
                     <li class="{{ Route::current()->getName() == 'requests' ? 'active' : '' }}">

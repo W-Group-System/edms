@@ -12,7 +12,7 @@
                     <h5>Companies</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{count($companies)}}</h1>
                 </div>
             </div>
         </div>
@@ -22,7 +22,7 @@
                     <h5>Active</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{count($companies->where('status',""))}}</h1>
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
                     <h5>Deactivated</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{count($companies->where('status',"Deactivated"))}}</h1>
                 </div>
             </div>
         </div>
@@ -60,6 +60,23 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach($companies as $company)
+                            <tr>
+                                <td>Logo</td>
+                                <td>Icon</td>
+                                <td>{{$company->name}}</td>
+                                <td>{{$company->code}}</td>
+                                <td id='statuscompanytd{{$company->id}}'>@if($company->status) <small class="label label-danger">Inactive</small>  @else <small class="label label-primary">Active</small> @endif</td>
+                                <td data-id='{{$company->id}}' id='actioncompanytd{{$company->id}}'>
+                                    @if($company->status)
+                                    <button class="btn btn-sm btn-primary activate-company" title="Activate"><i class="fa fa-check"></i></button>
+                                    @else
+                                    <button class="btn btn-sm btn-info"  title='Edit' data-target="#editCompany{{$company->id}}" data-toggle="modal"><i class="fa fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-danger deactivate-company" title='Deactivate' ><i class="fa fa-trash"></i></button>
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
                         </tbody>
                         </table>
                     </div>

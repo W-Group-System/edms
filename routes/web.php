@@ -32,7 +32,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/departments', 'DepartmentController@index')->name('settings');
 
+    //Users
     Route::get('/users', 'UserController@index')->name('settings');
+    Route::post('new-account','UserController@create')->name('settings');
 
     Route::get('/logs', 'AuditController@index')->name('reports');
 });
