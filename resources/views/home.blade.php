@@ -102,15 +102,19 @@
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
 <script src="{{ asset('login_css/js/plugins/chartJs/Chart.min.js') }}"></script>
 <script>
+    var departments = {!! json_encode(($departments->pluck('code'))->toArray()) !!};
+    var documents = {!! json_encode(($departments->pluck('documents_count'))->toArray()) !!};
+    var obsoletes = {!! json_encode(($departments->pluck('obsoletes_count'))->toArray()) !!};
+
     $(function () {
         var barData = {
-        labels: ["January", "February", "March", "April", "May", "June", "July"],
+        labels: departments,
         datasets: [
             {
                 label: "Documents",
                 backgroundColor: 'rgba(220, 220, 220, 0.5)',
                 pointBorderColor: "#fff",
-                data: [65, 59, 80, 81, 56, 55, 40]
+                data: documents
             },
             {
                 label: "Obsolete",
@@ -118,7 +122,7 @@
                 borderColor: "rgba(26,179,148,0.7)",
                 pointBackgroundColor: "rgba(26,179,148,1)",
                 pointBorderColor: "#fff",
-                data: [28, 48, 40, 19, 86, 27, 90]
+                data: obsoletes
             }
         ]
     };
