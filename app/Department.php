@@ -19,4 +19,16 @@ class Department extends Model  implements Auditable
     {
         return $this->hasOne(User::class, 'id', 'permit_accountable');
     }
+    public function dco()
+    {
+        return $this->hasMany(DepartmentDco::class);
+    }
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
+    public function obsoletes()
+    {
+        return $this->hasMany(Obsolete::class);
+    }
 }

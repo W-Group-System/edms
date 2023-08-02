@@ -18,6 +18,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/', 'HomeController@index')->name('home');
     Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/search', 'HomeController@search')->name('home');
 
     Route::get('/request', 'RequestController@index')->name('requests');
 
@@ -49,6 +50,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('deactivate-user', 'UserController@deactivate_user')->name('settings');
     Route::post('activate-user', 'UserController@activate_user')->name('settings');
 
+    //DCO
+    Route::get('dco','DcoController@index')->name('settings');
+    Route::post('edit-dco/{id}','DcoController@update')->name('settings');
 
 
     Route::get('/logs', 'AuditController@index')->name('reports');

@@ -35,6 +35,10 @@
         float: right;
         text-align: right;
         }
+        .dataTables_info {
+        float: left;
+        text-align: left;
+        }
 
     </style>
     <!-- Fonts -->
@@ -92,6 +96,7 @@
                             <li ><a href="{{url('/companies')}}"></i>Companies</a></li>
                             <li><a href="{{url('/departments')}}"></i>Departments</a></li>
                             <li><a href="{{url('/users')}}"></i>Users</a></li>
+                            <li><a href="{{url('/dco')}}"></i>DCO</a></li>
                         </ul>
                     </li>
                     <li class="{{ Route::current()->getName() == 'reports' ? 'active' : '' }}">
