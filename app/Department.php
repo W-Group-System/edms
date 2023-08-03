@@ -31,4 +31,8 @@ class Department extends Model  implements Auditable
     {
         return $this->hasMany(Obsolete::class);
     }
+    public function drc()
+    {
+        return $this->hasMany(User::class)->where('role','Documents and Records Controller');
+    }
 }

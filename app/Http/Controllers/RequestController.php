@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Document;
 use Illuminate\Http\Request;
 
 class RequestController extends Controller
@@ -14,7 +14,11 @@ class RequestController extends Controller
     public function index()
     {
         //
-        return view('requests');
+        $documents = Document::get();
+        return view('requests',
+        array(
+            'documents' =>  $documents,
+        ));
     }
 
     /**

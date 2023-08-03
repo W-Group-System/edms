@@ -1,8 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Document;
+use App\Obsolete;
+use App\Department;
+use App\DocumentType;
+use App\DocumentAttachment;
+use App\Company;
 use Illuminate\Http\Request;
+
+use RealRashid\SweetAlert\Facades\Alert;
 
 class DocumentController extends Controller
 {
@@ -14,7 +21,20 @@ class DocumentController extends Controller
     public function index()
     {
         //
-        return view('documents');
+        $documents = Document::get();
+        $obsoletes = Obsolete::get();
+        $departments = Department::whereHas('drc')->with('drc')->get();
+        $companies = Company::get();
+        $document_types = DocumentType::orderBy('name','desc')->get();
+        return view('documents',
+        array(
+            'documents' => $documents,
+            'obsoletes' => $obsoletes,
+            'departments' => $departments,
+            'companies' => $companies,
+            'document_types' => $document_types,
+            )
+        );
     }
 
     /**
@@ -36,6 +56,36 @@ class DocumentController extends Controller
     public function store(Request $request)
     {
         //
+        // dd($request->all());
+        $document = new Document;
+        $document->control_code = $request->control_code;
+        $document->title = $request->title;
+        $document->company_id = $request->company;
+        $document->department_id = $request->department;
+        $document->category = $request->document_type;
+        $document->other_category = $request->other;
+        $document->effective_date = $request->effective_date;
+        $document->user_id = auth()->user()->id;
+        $document->version = $request->version;
+        $document->save();
+
+        foreach($request->file('attachment') as $key => $file)
+        {
+            
+            $name = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path() . '/document_attachments/', $name);
+            $file_name = '/document_attachments/' . $name;
+
+            $doc_attachment = new DocumentAttachment;
+            $doc_attachment->document_id = $document->id;
+            $doc_attachment->attachment = $file_name;
+            $doc_attachment->type = $key;
+            $doc_attachment->save();
+            
+        }
+        Alert::success('Successfully Uploaded')->persistent('Dismiss');
+        return back();
+        
     }
 
     /**
@@ -71,6 +121,7 @@ class DocumentController extends Controller
     {
         //
     }
+    
 
     /**
      * Remove the specified resource from storage.

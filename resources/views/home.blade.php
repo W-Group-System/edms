@@ -3,7 +3,60 @@
 @section('content')
 
 <div class="wrapper wrapper-content ">
-   
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-success pull-right">as of Today</span>
+                    <h5>Total Documents</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">{{(count($documents))}}</h1>
+                    {{-- <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div> --}}
+                    <small>&nbsp;</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-success pull-right">as of Today</span>
+                    <h5>New Requests</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">{{(count($change_requests->where('created_at','>=',date('Y-m-d 00:00:01'))))}}</h1>
+                    {{-- <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div> --}}
+                    <small>&nbsp;</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-success pull-right">as of Today</span>
+                    <h5>For Approval</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">{{(count($change_requests->where('status','Pending')))}}</h1>
+                    {{-- <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div> --}}
+                    <small>&nbsp;</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-success pull-right">as of Today</span>
+                    <h5>For Review</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">{{(count($change_requests->where('status','For Review')))}}</h1>
+                    {{-- <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div> --}}
+                    <small>&nbsp;</small>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row ">
         {{-- <div class="col-lg-8 stretch-card">
             <div class="ibox float-e-margins">

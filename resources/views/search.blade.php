@@ -49,31 +49,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Public Documents (1)</h5>
-                </div>
-                <div class="ibox-content">
-                    <table class="table table-striped table-bordered table-hover tables">
-                        <thead>
-                        <tr>
-                            <th>Document</th>
-                            <th>File</th>
-                            <th>Uploaded By</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>Overtime Form</td>
-                            <td><a href="#"><i class="fa fa-file"></i> File</a></td>
-                            <td>Amelia</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+      
     </div>
 </div>
 

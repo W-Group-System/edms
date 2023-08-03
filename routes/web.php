@@ -24,6 +24,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     Route::get('/documents', 'DocumentController@index')->name('documents');
+    Route::post('upload-document','DocumentController@store')->name('documents');
 
 
     Route::get('/permits', 'PermitController@index')->name('permits');

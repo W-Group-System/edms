@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Permit;
 use App\Department;
 use App\Document;
+use App\ChangeRequest;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -26,7 +27,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $documents = Document::where('public',1)->get();
+        $change_requests = ChangeRequest::get();
+        $documents = Document::get();
         $departments = Department::with('documents','obsoletes')->withCount('documents','obsoletes')->get();
         // $departments = Department::with('documents')->whereHas('documents')->get();
         $permits = Permit::with('company', 'department')->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->get();
@@ -34,6 +36,8 @@ class HomeController extends Controller
         array(
             'permits' =>  $permits,
             'departments' =>  $departments,
+            'change_requests' =>  $change_requests,
+            'documents' =>  $documents,
 
         ));
     }

@@ -57,6 +57,7 @@
                                 <th>Code</th>
                                 <th>Name</th>
                                 <th>Department Head</th>
+                                <th>Permit Accountable Person</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -68,6 +69,7 @@
                                 <td>{{$department->code}}</td>
                                 <td>{{$department->name}}</td>
                                 <td>{{($department->dep_head != null) ? $department->dep_head->name : "No Head"}}</td>
+                                <td>{{($department->permit_account != null) ? $department->permit_account->name : "No Head"}}</td>
                                 <td>@if($department->status) <small class="label label-danger">Inactive</small>  @else <small class="label label-primary">Active</small> @endif</td>
                                 <td data-id='{{$department->id}}' id='actioncompanytd{{$department->id}}'>
                                     @if($department->status)

@@ -71,20 +71,3 @@
         </div>
     </div>
 </div>
-<script>
-    var users = {!! json_encode($users->toArray()) !!};
-    function changeapprover(value)
-    {
-        $('#approver').val(null); 
-        $("#approver_chosen a span").html("Select an Option");
-        if((value == 2) || (value == 3))
-        {
-            document.getElementById("approver_id_data").style.display="block";
-            
-        }
-        else
-        {
-            document.getElementById("approver_id_data").style.display="none";
-        }
-    }    
-</script>
