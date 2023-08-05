@@ -20,6 +20,22 @@ class RequestController extends Controller
             'documents' =>  $documents,
         ));
     }
+    public function forReview()
+    {
+        //
+        return view('for_reviews',
+        array(
+           
+        ));
+    }
+    public function forApproval()
+    {
+        //
+        return view('for_approval',
+        array(
+           
+        ));
+    }
 
     /**
      * Show the form for creating a new resource.

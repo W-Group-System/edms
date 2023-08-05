@@ -6,6 +6,7 @@ use App\Permit;
 use App\Department;
 use App\Document;
 use App\ChangeRequest;
+use App\DocumentType;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -30,6 +31,7 @@ class HomeController extends Controller
         $change_requests = ChangeRequest::get();
         $documents = Document::get();
         $departments = Department::with('documents','obsoletes')->withCount('documents','obsoletes')->get();
+        $categories = DocumentType::get();
         // $departments = Department::with('documents')->whereHas('documents')->get();
         $permits = Permit::with('company', 'department')->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->get();
         return view('home',
@@ -38,6 +40,7 @@ class HomeController extends Controller
             'departments' =>  $departments,
             'change_requests' =>  $change_requests,
             'documents' =>  $documents,
+            'categories' =>  $categories,
 
         ));
     }
@@ -47,7 +50,7 @@ class HomeController extends Controller
         $departments = Department::with('documents','obsoletes')->whereHas('documents')->orWhereHas('obsoletes')->get();
         return view('search',
         array(
-
+            'documents' => $documents,
         ));
     }
 }

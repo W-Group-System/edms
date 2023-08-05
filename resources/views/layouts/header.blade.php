@@ -81,6 +81,14 @@
                         <a href="{{url('/request')}}"><i class="fa fa-paper-plane"></i> <span
                                 class="nav-label">Requests </span></a>
                     </li>
+                    <li class="{{ Route::current()->getName() == 'for-review' ? 'active' : '' }}">
+                        <a href="{{url('/for-review')}}"><i class="fa fa-eye"></i> <span
+                                class="nav-label">For Review </span></a>
+                    </li>
+                    <li class="{{ Route::current()->getName() == 'for-approval' ? 'active' : '' }}">
+                        <a href="{{url('/for-approval')}}"><i class="fa fa-check-square-o"></i> <span
+                                class="nav-label">For Approval </span></a>
+                    </li>
                     <li class="{{ Route::current()->getName() == 'documents' ? 'active' : '' }}">
                         <a href="{{url('/documents')}}"><i class="fa fa-files-o"></i> <span
                                 class="nav-label">Documents </span></a>
@@ -104,6 +112,8 @@
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">
                             <li><a href="{{url('/logs')}}"></i>Logs</a></li>
+                            <li><a href="{{url('/dicr-reports')}}"></i>DICR</a></li>
+                            <li><a href="{{url('/change-reports')}}"></i>Change Requests</a></li>
                         </ul>
                     </li>
                     

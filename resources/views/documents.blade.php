@@ -73,17 +73,17 @@
                         </thead>
                         <tbody>
                             @foreach($documents as $document)
-                            <tr>
-                                <td><a href="#" target="_blank" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a></td>
-                                <td>{{$document->control_code}} v{{$document->version}}</td>
-                                <td>{{$document->company->name}}</td>
-                                <td>{{$document->department->name}}</td>
-                                <td>{{$document->title}}</td>
-                                <td>{{$document->category}}</td>
-                                <td>{{date('M d, Y',strtotime($document->effective_date))}}</td>
-                                <td>@if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> <br>@endforeach @else <small class="label label-danger">No Process Owner</small>  @endif</td>
-                                <td>{{$document->user->name}}</td>
-                            </tr>
+                                <tr>
+                                    <td><a href="{{url('view-document/'.$document->id)}}" target="_blank" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a></td>
+                                    <td>{{$document->control_code}} v{{$document->version}}</td>
+                                    <td>{{$document->company->name}}</td>
+                                    <td>{{$document->department->name}}</td>
+                                    <td>{{$document->title}}</td>
+                                    <td>{{$document->category}}</td>
+                                    <td>{{date('M d, Y',strtotime($document->effective_date))}}</td>
+                                    <td>@if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> <br>@endforeach @else <small class="label label-danger">No Process Owner</small>  @endif</td>
+                                    <td>{{$document->user->name}}</td>
+                                </tr>
                             @endforeach
                         </tbody>
                         </table>

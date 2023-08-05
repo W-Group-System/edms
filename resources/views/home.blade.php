@@ -1,5 +1,7 @@
 @extends('layouts.header')
-
+@section('css')
+<link href="{{ asset('login_css/css/plugins/c3/c3.min.css') }}" rel="stylesheet">
+@endsection
 @section('content')
 
 <div class="wrapper wrapper-content ">
@@ -105,6 +107,17 @@
         <div class="col-lg-8">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
+                    <h5>Documents Library </h5>
+
+                </div>
+                <div class="ibox-content">
+                    <div>
+                        <div id="stocked"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
                     <h5>Documents Library</h5>
                 </div>
                 <div class="ibox-content">
@@ -154,12 +167,18 @@
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
 <script src="{{ asset('login_css/js/plugins/chartJs/Chart.min.js') }}"></script>
+
+<script src="{{ asset('login_css/js/plugins/d3/d3.min.js') }}"></script>
+<script src="{{ asset('login_css/js/plugins/c3/c3.min.js') }}"></script>
 <script>
     var departments = {!! json_encode(($departments->pluck('code'))->toArray()) !!};
+    var types = {!! json_encode(($categories->pluck('name'))->toArray()) !!};
     var documents = {!! json_encode(($departments->pluck('documents_count'))->toArray()) !!};
     var obsoletes = {!! json_encode(($departments->pluck('obsoletes_count'))->toArray()) !!};
 
     $(function () {
+        
+
         var barData = {
         labels: departments,
         datasets: [
@@ -184,11 +203,48 @@
         responsive: true
     };
 
-
+    
     var ctx2 = document.getElementById("barChart").getContext("2d");
     new Chart(ctx2, {type: 'bar', data: barData, options:barOptions});
     });
     $(document).ready(function(){
+        var types_names = {!! json_encode(($categories)->toArray()) !!};
+        var colors ={};
+    var  columns= [['x', "HRD", "ITD", "BPD"]];
+    var types = [];
+  
+    for(i =0;i< types_names.length;i++)
+    {
+        columns.push([types_names[i].code,1,1,1]);
+        colors[types_names[i].code] = types_names[i].color;
+        types.push(types_names[i].code);
+    }
+    final_types = [types];
+        c3.generate({
+                bindto: '#stocked',
+                data:{
+                    x : 'x',
+                    columns: columns,
+                    colors:colors,
+                    type: 'bar',
+                    groups: final_types,
+                   
+                },
+                axis: {
+                    x: {
+                        show: true,
+                        type: 'categorized', // this is needed to load string x value
+                    },
+                    y2: {
+                        show: true,
+                        label: 'Counts'
+                    },
+                    y: {
+                        show: true,
+                        label: 'Counts'
+                    },
+                }
+            });
         
 
         $('.locations').chosen({width: "100%"});
@@ -203,6 +259,7 @@
         });
 
     });
+  
 
 </script>
 @endsection

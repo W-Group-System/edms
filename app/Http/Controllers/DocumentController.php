@@ -67,6 +67,7 @@ class DocumentController extends Controller
         $document->effective_date = $request->effective_date;
         $document->user_id = auth()->user()->id;
         $document->version = $request->version;
+        $document->public = $request->public;
         $document->save();
 
         foreach($request->file('attachment') as $key => $file)
@@ -97,6 +98,13 @@ class DocumentController extends Controller
     public function show($id)
     {
         //
+        $document = Document::findOrfail($id);
+        // dd($document);
+
+        return view('view_document',
+        array(
+            'document' => $document,
+            ));
     }
 
     /**
@@ -108,6 +116,8 @@ class DocumentController extends Controller
     public function edit($id)
     {
         //
+      
+        
     }
 
     /**

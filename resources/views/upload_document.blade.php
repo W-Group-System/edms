@@ -47,7 +47,7 @@
                     </div>
                     <div class='col-md-2'>
                         <br>
-                         <input type="checkbox" name='public' class="form-control-sm i-checks"> Public 
+                         <input type="checkbox" name='public' value='1' id='public' class="form-control-sm i-checks"><label for='public'> Public </label>
                     
                     </div>
                     <div class='col-md-4'>

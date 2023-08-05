@@ -21,10 +21,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/search', 'HomeController@search')->name('search');
 
     Route::get('/request', 'RequestController@index')->name('requests');
+    Route::get('/for-review','RequestController@forReview')->name('for-review');
+    Route::get('/for-approval','RequestController@forApproval')->name('for-approval');
 
 
     Route::get('/documents', 'DocumentController@index')->name('documents');
     Route::post('upload-document','DocumentController@store')->name('documents');
+    Route::get('/view-document/{id}','DocumentController@show')->name('documents');
 
 
     Route::get('/permits', 'PermitController@index')->name('permits');

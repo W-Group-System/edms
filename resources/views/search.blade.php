@@ -11,18 +11,16 @@
                     <h5>Search Documents</h5>
                 </div>
                 <div class="ibox-content stretch-card">
-
                     <div class="search-form">
-                        <form action="{{url('/home')}}" method="get">
+                        <form action="" method="get">
                             <div class="input-group">
-                                <input type="text" placeholder="Document Name/Code" name="search"  class="form-control input-lg" required>
+                                <input type="text" placeholder="Document TItle / Control Code" name="search"  class="form-control input-lg" required>
                                 <div class="input-group-btn">
                                     <button class="btn btn-lg btn-primary" type="submit">
                                         Search
                                     </button>
                                 </div>
                             </div>
-
                         </form>
                     </div>
                     <div class="hr-line-dashed"></div>
@@ -49,7 +47,33 @@
                 </div>
             </div>
         </div>
-      
+        <div class="col-lg-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Temporary Access Documents </h5>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-striped table-bordered table-hover tables">
+                        <thead>
+                        <tr>
+                            <th>Document</th>
+                            <th>File</th>
+                            <th>Expiration</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($documents as $document)
+                            <tr>
+                                <td>{{$document->title}}</td>
+                                <td><a href="#"><i class="fa fa-file"></i> File</a></td>
+                                <td>Amelia</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

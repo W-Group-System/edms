@@ -9,7 +9,17 @@
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Pending</h5>
+                    <h5>For Review</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">0</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>For Endorsement</h5>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">0</h1>
@@ -26,32 +36,12 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Disapproved/For Revision</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Approved</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
-                </div>
-            </div>
-        </div>
     </div>
     <div class='row'>
-        <div class="col-lg-8">
+        <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Requests <button class="btn btn-success "  data-target="#newDocument" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New Document</button></h5>
+                    <h5>For Review </h5>
                   
                 </div>
                 <div class="ibox-content">
@@ -73,33 +63,6 @@
                         </table>
                     </div>
 
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Public Documents ({{count($documents->where('public',1))}})</h5>
-                </div>
-                <div class="ibox-content">
-                    <table class="table table-striped table-bordered table-hover tables">
-                        <thead>
-                        <tr>
-                            <th>Document</th>
-                            <th>File</th>
-                            <th>Uploaded By</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($documents->where('public',1) as $document)
-                            <tr>
-                                <td>{{$document->title}}</td>
-                                <td><a href="#"><i class="fa fa-file"></i> File</a></td>
-                                <td>Amelia</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>

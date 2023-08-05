@@ -20,4 +20,8 @@ class Document extends Model implements Auditable
     {
         return $this->belongsTo(User::class);
     }
+    public function attachments()
+    {
+        return $this->hasMany(DocumentAttachment::class);
+    }
 }
