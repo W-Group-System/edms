@@ -29,6 +29,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('upload-document','DocumentController@store')->name('documents');
     Route::get('/view-document/{id}','DocumentController@show')->name('documents');
 
+    //copyrequest
+    Route::post('copy-request','CopyController@store');
+
 
     Route::get('/permits', 'PermitController@index')->name('permits');
     Route::post('new-permit', 'PermitController@store')->name('permits');
@@ -45,6 +48,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/new-department', 'DepartmentController@store')->name('settings');
     Route::post('deactivate-department', 'DepartmentController@deactivate')->name('settings');
     Route::post('activate-department', 'DepartmentController@activate')->name('settings');
+    Route::post('edit-department/{id}','DepartmentController@update')->name('settings');
 
     //Users
     Route::get('/users', 'UserController@index')->name('settings');

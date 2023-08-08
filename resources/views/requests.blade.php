@@ -12,27 +12,27 @@
                     <h5>Pending</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{count($requests->where('status','Pending'))}}</h1>
                 </div>
             </div>
         </div>
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>For Further Review</h5>
+                    <h5>Cancelled</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{count($requests->where('status','Cancelled'))}}</h1>
                 </div>
             </div>
         </div>
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Disapproved/For Revision</h5>
+                    <h5>Declined</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{count($requests->where('status','Declined'))}}</h1>
                 </div>
             </div>
         </div>
@@ -42,7 +42,7 @@
                     <h5>Approved</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{count($requests->where('status','Approved'))}}</h1>
                 </div>
             </div>
         </div>
@@ -51,25 +51,52 @@
         <div class="col-lg-8">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Requests <button class="btn btn-success "  data-target="#newDocument" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New Document</button></h5>
+                    <h5>Copy Requests </h5>
                   
                 </div>
                 <div class="ibox-content">
 
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover tables" >
-                        <thead>
-                        <tr>
-                            <th>Date Requested</th>
-                            <th>Document</th>
-                            <th>Request By</th>
-                            <th>Approver</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
+                            <thead>
+                                <tr>
+                                    
+                                    <th>Actions</th>
+                                    <th>Reference No.</th>
+                                    <th>Date Requested</th>
+                                    <th>Document</th>
+                                    <th>Request By</th>
+                                    <th>Approvers</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($requests as $request)
+                                    <tr>
+                                        
+                                        <td><a href="#"  data-target="#view_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a></td>
+                                        <td>CR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</td>
+                                        <td>{{date('M d Y',strtotime($request->created_at))}}</td>
+                                        <td>
+                                            <small>
+                                                {{$request->control_code}} Rev. {{$request->revision}}<br>
+                                                {{$request->title}} <br>
+                                                {{$request->type_of_document}}
+                                            </small>
+                                        </td>
+                                        <td>{{$request->user->name}}</td>
+                                        <td>
+                                            <small>
+                                                @foreach($request->approvers as $approver)
+                                                    {{$approver->user->name}} - @if($approver->status == "Pending")<span class='label label-danger'>@else<span class='label label-success'>@endif{{$approver->status}}</span> -  @if($request->level == $approver->level){{date('M d, Y',strtotime($approver->start_date))}}@endif  <br><br>
+                                                @endforeach
+                                            </small>
+                                        </td>
+                                        <td>{{$request->status}}</td>
+                                    </tr>
+                                    @include('view_copy_request')
+                                @endforeach
+                            </tbody>
                         </table>
                     </div>
 

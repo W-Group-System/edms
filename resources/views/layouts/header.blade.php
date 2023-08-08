@@ -79,11 +79,11 @@
                     </li>
                     <li class="{{ Route::current()->getName() == 'requests' ? 'active' : '' }}">
                         <a href="{{url('/request')}}"><i class="fa fa-paper-plane"></i> <span
-                                class="nav-label">Requests </span></a>
+                                class="nav-label">Copy Requests </span></a>
                     </li>
                     <li class="{{ Route::current()->getName() == 'for-review' ? 'active' : '' }}">
                         <a href="{{url('/for-review')}}"><i class="fa fa-eye"></i> <span
-                                class="nav-label">For Review </span></a>
+                                class="nav-label">Change Requests </span></a>
                     </li>
                     <li class="{{ Route::current()->getName() == 'for-approval' ? 'active' : '' }}">
                         <a href="{{url('/for-approval')}}"><i class="fa fa-check-square-o"></i> <span

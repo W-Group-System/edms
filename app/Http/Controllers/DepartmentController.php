@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Department;
+use App\DepartmentApprover;
 use App\User;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -16,7 +17,7 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = Department::with('dep_head')->get();
+        $departments = Department::with('dep_head','approvers')->get();
         $employees = User::where('status', null)->get();
         return view('departments', array(
             'departments' => $departments,
@@ -43,21 +44,31 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        // dd($request->all());
+
         $this->validate($request, [
             'code' => 'required|min:2|max:50|unique:departments',
             'name' => 'required',
             'user_id' => 'required',
         ]);
 
-
+        
         $department = new Department;
         $department->code = $request->code;
         $department->name = $request->name;
         $department->user_id = $request->user_id;
         $department->permit_accountable = $request->permit_id;
         $department->save();
+
+        foreach($request->approvers as $key => $approver)
+        {
+            $departmentapprover = new DepartmentApprover;
+            $departmentapprover->department_id = $department->id;
+            $departmentapprover->user_id = $approver;
+            $departmentapprover->level = $key+1;
+            $departmentapprover->save();
+        }
+      
+
         Alert::success('Successfully Store')->persistent('Dismiss');
         return back();
     }
@@ -94,6 +105,31 @@ class DepartmentController extends Controller
     public function update(Request $request, $id)
     {
         //
+
+        $this->validate($request, [
+            'name' => 'required',
+            'user_id' => 'required',
+        ]);
+        
+        $department = Department::findOrfail($id);
+        $department->name = $request->name;
+        $department->user_id = $request->user_id;
+        $department->permit_accountable = $request->permit_id;
+        $department->save();
+        $approvers = DepartmentApprover::where('department_id',$id)->delete();
+        foreach($request->edit_approvers as $key => $approver)
+        {
+            $departmentapprover = new DepartmentApprover;
+            $departmentapprover->department_id = $department->id;
+            $departmentapprover->user_id = $approver;
+            $departmentapprover->level = $key+1;
+            $departmentapprover->save();
+        }
+      
+
+        Alert::success('Successfully Updated')->persistent('Dismiss');
+        return back();
+
     }
 
     /**

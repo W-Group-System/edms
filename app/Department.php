@@ -35,4 +35,8 @@ class Department extends Model  implements Auditable
     {
         return $this->hasMany(User::class)->where('role','Documents and Records Controller');
     }
+    public function approvers()
+    {
+        return $this->hasMany(DepartmentApprover::class);
+    }
 }

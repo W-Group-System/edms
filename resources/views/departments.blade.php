@@ -58,6 +58,7 @@
                                 <th>Name</th>
                                 <th>Department Head</th>
                                 <th>Permit Accountable Person</th>
+                                <th>Approver</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -69,17 +70,24 @@
                                 <td>{{$department->code}}</td>
                                 <td>{{$department->name}}</td>
                                 <td>{{($department->dep_head != null) ? $department->dep_head->name : "No Head"}}</td>
-                                <td>{{($department->permit_account != null) ? $department->permit_account->name : "No Head"}}</td>
+                                <td>{{($department->permit_account != null) ? $department->permit_account->name : "N/A"}}</td>
+                                <td>
+                                    @foreach($department->approvers as $approver)
+                                        {{$approver->level.". ".$approver->user->name}}<br>
+                                    @endforeach
+                                </td>
                                 <td>@if($department->status) <small class="label label-danger">Inactive</small>  @else <small class="label label-primary">Active</small> @endif</td>
+                               
                                 <td data-id='{{$department->id}}' id='actioncompanytd{{$department->id}}'>
                                     @if($department->status)
                                     <button class="btn btn-sm btn-primary activate-department" id='{{$department->id}}' title="Activate"><i class="fa fa-check"></i></button>
                                     @else
-                                    {{-- <button class="btn btn-sm btn-info"  title='Edit' data-target="#editDepartment{{$department->id}}" data-toggle="modal"><i class="fa fa-edit"></i></button> --}}
+                                    <button class="btn btn-sm btn-info"  title='Edit' data-target="#editDepartment{{$department->id}}" data-toggle="modal"><i class="fa fa-edit"></i></button>
                                     <button class="btn btn-sm btn-danger deactivate-department" id='{{$department->id}}' title='Deactivate' ><i class="fa fa-trash"></i></button>
                                     @endif
                                 </td>
                             </tr>
+                          
                             @endforeach
                         </tbody>
                         </table>
@@ -92,6 +100,9 @@
     </div>
 </div>
 @include('new_department')
+@foreach($departments as $department)
+@include('edit_department')
+@endforeach
 @endsection
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>

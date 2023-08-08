@@ -14,7 +14,7 @@
                     <div class="search-form">
                         <form action="" method="get">
                             <div class="input-group">
-                                <input type="text" placeholder="Document TItle / Control Code" name="search"  class="form-control input-lg" required>
+                                <input type="text" placeholder="Document TItle / Control Code" name="search" value="{{$search}}"  class="form-control input-lg" required>
                                 <div class="input-group-btn">
                                     <button class="btn btn-lg btn-primary" type="submit">
                                         Search
@@ -24,50 +24,43 @@
                         </form>
                     </div>
                     <div class="hr-line-dashed"></div>
+                    @foreach($documents as $document)
                     <div class="search-result">
-                        <h3><a href="#">Document 1 v2</a> <span class="label label-primary">Public</span></h3>
-                        Last Updated by <a href="#" class="search-link">Employee 1</a>
+                        <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank">{{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
+                        Title : {{$document->title}}<br>
+                        Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif
                         <p>
-                            Date Effective : January 1, 2023 <br>
-                            Company : W Group Inc.
+                            Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
+                            Company : {{$document->department->name}}
                             
                         </p>
                     </div>
                     <div class="hr-line-dashed"></div>
-                    <div class="search-result">
-                        <h3><a href="#">Document 2 v1</a> <span class="label label-danger">Private</span></h3>
-                        Last Updated by <a href="#" class="search-link">Employee 3</a>
-                        <p>
-                            Date Effective : January 1, 2023 <br>
-                            Company : W Group Inc.
-                            
-                        </p>
-                    </div>
-                    <div class="hr-line-dashed"></div>
+                    @endforeach
                 </div>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Temporary Access Documents </h5>
+                    <h5>Request Documents </h5>
                 </div>
                 <div class="ibox-content">
                     <table class="table table-striped table-bordered table-hover tables">
                         <thead>
-                        <tr>
-                            <th>Document</th>
-                            <th>File</th>
-                            <th>Expiration</th>
-                        </tr>
+                            <tr>
+                                <th>Document</th>
+                                <th>Status</th>
+                                <th>Expiration</th>
+                            </tr>
                         </thead>
                         <tbody>
-                            @foreach($documents as $document)
-                            <tr>
-                                <td>{{$document->title}}</td>
-                                <td><a href="#"><i class="fa fa-file"></i> File</a></td>
-                                <td>Amelia</td>
-                            </tr>
+                            @foreach($request_documents as $req_doc)
+                                <tr>
+                                    <td><a href="#"><i class="fa fa-file"></i> {{$req_doc->title}}</a></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -86,7 +79,6 @@
     $(document).ready(function(){
         
 
-        $('.locations').chosen({width: "100%"});
         $('.tables').DataTable({
             pageLength: 10,
             responsive: true,

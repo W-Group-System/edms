@@ -44,13 +44,21 @@ class HomeController extends Controller
 
         ));
     }
-    public function search()
+    public function search(Request $request)
     {
-        $documents = Document::where('public',1)->get();
+        $documents = [];
+        $request_documents = [];
+        if($request->search)
+        {
+            $documents = Document::where('control_code','like','%' . $request->search. '%')->orWhere('title','like','%' . $request->search. '%')->get();
+        }
+       
         $departments = Department::with('documents','obsoletes')->whereHas('documents')->orWhereHas('obsoletes')->get();
         return view('search',
         array(
             'documents' => $documents,
+            'search' => $request->search,
+            'request_documents' => $request_documents,
         ));
     }
 }

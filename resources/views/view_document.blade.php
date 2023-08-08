@@ -18,8 +18,9 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="m-b-md">
-                                    <a href="#" class="btn btn-danger btn-sm ">Request Copy</a>
-                                    <a href="#" class="btn btn-warning btn-sm ">Request Change</a>
+                                    <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
+                                    <a href="#" class="btn btn-warning btn-sm ">Change Request </a>
+                                    <a href="#" class="btn btn-danger btn-sm ">Obsolete Request </a>
                                 </div>
                             </div>
                         </div>
@@ -42,14 +43,14 @@
                                     <dt>Last Updated:</dt> <dd>{{date('M d Y h:i:s',strtotime($document->created_at))}}</dd>
                                     <dt>Effective Date:</dt> <dd>{{date('M d Y',strtotime($document->effective_date))}}</dd>
                                     <dt>Process Owner:</dt> <dd>@if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif</dd>
-                                    <dt>Access:</dt>
+                                    {{-- <dt>Access:</dt>
                                     <dd class="project-people">
                                         <a href=""><img alt="image" class="img-circle" src="{{asset('login_css/img/a3.jpg')}}"></a>
                                         <a href=""><img alt="image" class="img-circle" src="{{asset('login_css/img/a1.jpg')}}"></a>
                                         <a href=""><img alt="image" class="img-circle" src="{{asset('login_css/img/a2.jpg')}}"></a>
                                         <a href=""><img alt="image" class="img-circle" src="{{asset('login_css/img/a4.jpg')}}"></a>
                                         <a href=""><img alt="image" class="img-circle" src="{{asset('login_css/img/a5.jpg')}}"></a>
-                                    </dd>
+                                    </dd> --}}
                                 </dl>
                             </div>
                         </div>
@@ -132,11 +133,19 @@
                                             <th>Date Needed</th>
                                             <th>Requestor</th>
                                             <th>Status</th>
-                                            <th>Issued By</th>
-                                            <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach($document->copy_requests as $copy_request)
+                                        <tr>
+                                            <td>CR-{{str_pad($copy_request->id, 5, '0', STR_PAD_LEFT)}}</td>
+                                            <td>{{$copy_request->type_of_document}}</td>
+                                            <td>{{date('M d Y',strtotime($copy_request->created_at))}}</td>
+                                            <td>{{date('M d Y',strtotime($copy_request->date_needed))}}</td>
+                                            <td>{{$copy_request->user->name}}</td>
+                                            <td>{{$copy_request->status}}</td>
+                                        </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
 
@@ -154,6 +163,7 @@
         </div>
     </div>
 </div>
+@include('copy_request')
 @endsection
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>

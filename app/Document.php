@@ -24,4 +24,8 @@ class Document extends Model implements Auditable
     {
         return $this->hasMany(DocumentAttachment::class);
     }
+    public function copy_requests()
+    {
+        return $this->hasMany(CopyRequest::class);
+    }
 }
