@@ -43,6 +43,14 @@ class User extends Authenticatable implements Auditable
     {
         return $this->belongsTo(Department::class);
     }
+    public function department_head()
+    {
+        return $this->hasMany(Department::class,'user_id','id');
+    }
+    public function permits()
+    {
+        return $this->hasMany(Department::class,'id','permit_accountable');
+    }
     public function company()
     {
         return $this->belongsTo(Company::class);
@@ -50,5 +58,17 @@ class User extends Authenticatable implements Auditable
     public function dco()
     {
         return $this->hasMany(DepartmentDco::class);
+    }
+    public function department_approvers()
+    {
+        return $this->hasMany(DepartmentApprover::class);
+    }
+    public function copy_approvers()
+    {
+        return $this->hasMany(CopyApprover::class);
+    }
+    public function change_approvers()
+    {
+        return $this->hasMany(RequestApprover::class);
     }
 }

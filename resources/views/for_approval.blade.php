@@ -12,7 +12,7 @@
                     <h5>For Approval</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($copy_for_approvals->where('status','Pending'))}}</h1>
+                    <h1 class="no-margins">{{count($copy_for_approvals->where('status','Pending'))+count($change_for_approvals->where('status','Pending'))}}</h1>
                 </div>
             </div>
         </div>
@@ -22,7 +22,7 @@
                     <h5>Approved</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($copy_for_approvals->where('status','Approved'))}}</h1>
+                    <h1 class="no-margins">{{count($copy_for_approvals->where('status','Approved'))+count($change_for_approvals->where('status','Approved'))}}</h1>
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
                     <h5>Declined</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($copy_for_approvals->where('status','Approved'))}}</h1>
+                    <h1 class="no-margins">{{count($copy_for_approvals->where('status','Declined'))+count($change_for_approvals->where('status','Declined'))}}</h1>
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
         <div class="col-lg-6">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Change Requests</h5>
+                    <h5>Copy Requests</h5>
                 </div>
                 <div class="ibox-content">
 
@@ -49,30 +49,33 @@
                         <table class="table table-striped table-bordered table-hover tables" >
                             <thead>
                                 <tr>
+                                    
+                                    <th>Actions</th>
                                     <th>Reference Number</th>
                                     <th>Date Requested</th>
                                     <th>Document</th>
-                                    <th>Request By</th>
-                                    <th>Approver</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
+                                    <th>Requested By</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($copy_for_approvals as $copy_approval)
+                                @foreach($copy_for_approvals->where('status','Pending') as $copy_approval)
+                                @php
+                                    $request = $copy_approval->copy_request;
+                                @endphp
                                 <tr>
-                                    <td>CR-{{str_pad($copy_approval->id, 5, '0', STR_PAD_LEFT)}}</td>
+                                    
+                                    <td><a href="#"  data-target="#view_request{{$copy_approval->copy_request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a></td>
+                                    <td>CR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</td>
                                     <td>{{date('M d Y',strtotime($copy_approval->copy_request->created_at))}}</td>
                                     <td><small>
                                         {{$copy_approval->copy_request->control_code}} Rev. {{$copy_approval->copy_request->revision}}<br>
                                         {{$copy_approval->copy_request->title}} <br>
                                         {{$copy_approval->copy_request->type_of_document}}
                                     </small></td>
-                                    <td>Request By</td>
-                                    <td>Approver</td>
-                                    <td>Status</td>
-                                    <td>Actions</td>
+                                    <td>{{$copy_approval->copy_request->user->name}}</td>
                                 </tr>
+                                
+                                @include('view_approval_copy')
                                 @endforeach
                             </tbody>
                         </table>
@@ -84,7 +87,7 @@
         <div class="col-lg-6">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Copy Requests</h5>
+                    <h5>Change Requests</h5>
                   
                 </div>
                 <div class="ibox-content">
@@ -93,15 +96,34 @@
                         <table class="table table-striped table-bordered table-hover tables" >
                         <thead>
                         <tr>
+                            <th>Actions</th>
+                            <th>Reference Number</th>
                             <th>Date Requested</th>
                             <th>Document</th>
-                            <th>Request By</th>
-                            <th>Approver</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th>Requested By</th>
+                            <th>Request Type</th>
                         </tr>
                         </thead>
                         <tbody>
+                            @foreach($change_for_approvals->where('status','Pending') as $change_approval)
+                            @php
+                                $request = $change_approval->change_request;
+                            @endphp
+                            <tr>
+                                
+                                <td><a href="#"  data-target="#view_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a></td>
+                                <td>DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</td>
+                                <td>{{date('M d Y',strtotime($request->created_at))}}</td>
+                                <td><small>
+                                    {{$request->control_code}} Rev. {{$request->revision}}<br>
+                                    {{$request->title}} <br>
+                                    {{$request->type_of_document}}
+                                </small></td>
+                                <td>{{$request->user->name}}</td>
+                                <td>{{$request->request_type}}</td>
+                            </tr>
+                            @include('view_approval_change')
+                            @endforeach
                         </tbody>
                         </table>
                     </div>
@@ -112,7 +134,6 @@
 
     </div>
 </div>
-{{-- @include('properties.create') --}}
 @endsection
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
@@ -121,10 +142,11 @@
     $(document).ready(function(){
         
 
-        $('.locations').chosen({width: "100%"});
+        $('.cat').chosen({width: "100%"});
         $('.tables').DataTable({
             pageLength: 25,
             responsive: true,
+            sorting: false,
             dom: '<"html5buttons"B>lTfgitp',
             buttons: [
                 { extend: 'copy'},

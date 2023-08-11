@@ -88,7 +88,7 @@
                     </div>
                     <div class='row'>
                         <div class='col-md-6'>
-                            DRC / BPO : 
+                            DRC : 
                             @if(count($document->department->drc) != 0) 
                                 @foreach($document->department->drc as $drc) 
                                      {{$drc->name}}
@@ -103,7 +103,7 @@
                             @endif
                         </div>
                         <div class='col-md-6'>
-                            DRC / BPO Immediate Head : 
+                            DRC Immediate Head : 
                                 @if(count($document->department->drc) != 0) 
                                     @foreach($document->department->drc as $drc)
                                         {{$drc->department->dep_head->name}}

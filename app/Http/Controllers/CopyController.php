@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use App\CopyRequest;
 use App\CopyApprover;
+use App\DocumentAccess;
+use App\DocumentAttachment;
 use Illuminate\Http\Request;
 
 use RealRashid\SweetAlert\Facades\Alert;
@@ -51,5 +53,82 @@ class CopyController extends Controller
         
         Alert::success('Successfully Requested')->persistent('Dismiss');
         return redirect('/request');
+    }
+
+    public function action(Request $request,$id)
+    {
+        // dd($request->all(),$id);
+
+        $copyRequestApprover = CopyApprover::findOrfail($id);
+        $copyRequestApprover->status = $request->action;
+        $copyRequestApprover->remarks = $request->remarks;
+        $copyRequestApprover->save();
+
+        $copyApprover = CopyApprover::where('copy_request_id',$copyRequestApprover->copy_request_id)->where('status','Waiting')->orderBy('level','asc')->first();
+        $copyRequest = CopyRequest::findOrfail($copyRequestApprover->copy_request_id);
+
+        if($request->action == "Approved")
+        {
+            if($copyApprover == null)
+            {
+                $copyRequest->status = "Approved";
+                $copyRequest->expiration_date = date('Y-m-d',strtotime("+7 day"));
+                $copyRequest->save();
+                if($copyRequest->type_of_document == "E-Copy")
+                {
+                    $copyRequestDocument = DocumentAttachment::where('document_id',$copyRequest->document_id)->where('type','pdf_copy')->first();
+                    $access = new DocumentAccess;
+                    $access->attachment_id = $copyRequestDocument->id;
+                    $access->user_id = $copyRequest->user_id;
+                    $access->expiration_date = date('Y-m-d',strtotime("+7 day"));
+                    $access->expiration_date = date('Y-m-d',strtotime("+7 day"));
+                    $access->copy_request_id = $copyRequest->id;
+                    $access->save();
+                }
+                
+            }
+            else
+            {
+                $copyApprover->start_date = date('Y-m-d');
+                $copyApprover->status = "Pending";
+                $copyApprover->save();
+                $copyRequest->level = $copyRequest->level+1;
+                $copyRequest->save();
+                
+            }
+            Alert::success('Successfully Approved')->persistent('Dismiss');
+            return back();
+        }
+        else
+        {
+            $copyRequest->status = "Declined";
+            $copyRequest->save(); 
+            Alert::success('Successfully Declined')->persistent('Dismiss');
+            return back();
+        }
+
+       
+        
+    }
+
+    public function copyReports(Request $request)
+    {
+        $search = $request->yearmonth;
+        if($search)
+        {
+        $year = date('Y',strtotime($search."-01"));
+        $month = date('m',strtotime($search."-01"));
+        $requests = CopyRequest::whereYear('created_at', '=', $year)
+        ->whereMonth('created_at', '=', $month)->orderBy('id','desc')->get();
+        }
+        else
+        {
+            $requests = CopyRequest::orderBy('id','desc')->get();
+        }
+        return view('copy_reports',
+        array(
+            'requests' =>  $requests,
+            'search' =>  $search,
+        ));
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App;
 
-use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class DocumentAttachment extends Model  implements Auditable
+class ObsoleteAttachment extends Model implements Auditable
 {
     //
     use \OwenIt\Auditing\Auditable;

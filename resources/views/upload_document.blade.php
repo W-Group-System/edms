@@ -64,7 +64,7 @@
                         <input type="date" class="form-control-sm form-control "  name="effective_date" required/>
                     </div>
                     <div class='col-md-4'>
-                        Version :
+                        Revision :
                         <input type="number" class="form-control-sm form-control "  value="{{ old('version') }}" min='0'  name="version" required/>
                     </div>
                     <div class='col-md-12'>
@@ -72,15 +72,15 @@
                     </div>
                     <div class='col-md-4'>
                         SOFT Copy <small><i>(.word,.csv,.ppt,etc)</i></small>
-                        <input type="file" class="form-control-sm form-control " accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint"  name="attachment['soft_copy']" required/>
+                        <input type="file" class="form-control-sm form-control " accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint"  name="attachment[soft_copy]" required/>
                     </div>
                     <div class='col-md-4'>
                         PDF/Scanned Copy <small><i>(.pdf)</i></small>
-                        <input type="file" class="form-control-sm form-control " accept="application/pdf"  name="attachment['pdf_copy']" required/>
+                        <input type="file" class="form-control-sm form-control " accept="application/pdf"  name="attachment[pdf_copy]" required/>
                     </div>
                     <div class='col-md-4'>
                         FILLABLE Copy <small><i>(.pdf)</i><small>
-                        <input type="file" class="form-control-sm form-control "  name="attachment['fillable_copy']" />
+                        <input type="file" class="form-control-sm form-control "  name="attachment[fillable_copy]" />
                     </div>
                    </div>
                 </div>

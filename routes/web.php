@@ -16,12 +16,12 @@
 Auth::routes();
 Route::group(['middleware' => 'auth'], function () {
 
-    Route::get('/', 'HomeController@index')->name('home');
-    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/', 'HomeController@index')->name('home')->middleware('role');
+    Route::get('/home', 'HomeController@index')->name('home')->middleware('role');
     Route::get('/search', 'HomeController@search')->name('search');
 
     Route::get('/request', 'RequestController@index')->name('requests');
-    Route::get('/for-review','RequestController@forReview')->name('for-review');
+    Route::get('/change-requests','RequestController@changeRequests')->name('change-requests');
     Route::get('/for-approval','RequestController@forApproval')->name('for-approval');
 
 
@@ -31,6 +31,11 @@ Route::group(['middleware' => 'auth'], function () {
 
     //copyrequest
     Route::post('copy-request','CopyController@store');
+    Route::post('copy-request-action/{id}','CopyController@action');
+
+    //ChangeRequest
+    Route::post('change-request','RequestController@store');
+    Route::post('change-request-action/{id}','RequestController@action');
 
 
     Route::get('/permits', 'PermitController@index')->name('permits');
@@ -64,4 +69,5 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     Route::get('/logs', 'AuditController@index')->name('reports');
+    Route::get('copy-reports','CopyController@copyReports')->name('reports');
 });

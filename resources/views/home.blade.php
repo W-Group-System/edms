@@ -26,7 +26,7 @@
                     <h5>New Requests</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{(count($change_requests->where('created_at','>=',date('Y-m-d 00:00:01'))))}}</h1>
+                    <h1 class="no-margins">{{count($change_requests->where('created_at','>=',date('Y-m-d')))+count($copy_requests->where('created_at','>=',date('Y-m-d')))}}</h1>
                     {{-- <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div> --}}
                     <small>&nbsp;</small>
                 </div>
@@ -36,10 +36,10 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <span class="label label-success pull-right">as of Today</span>
-                    <h5>For Approval</h5>
+                    <h5>Pending</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{(count($change_requests->where('status','Pending')))}}</h1>
+                    <h1 class="no-margins">{{count($change_requests->where('status','Pending'))+count($copy_requests->where('status','Pending'))}}</h1>
                     {{-- <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div> --}}
                     <small>&nbsp;</small>
                 </div>
@@ -48,11 +48,11 @@
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <span class="label label-success pull-right">as of Today</span>
-                    <h5>For Review</h5>
+                    <span class="label label-success pull-right">as of this Month ({{date('M. Y')}})</span>
+                    <h5>Approved</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{(count($change_requests->where('status','For Review')))}}</h1>
+                    <h1 class="no-margins">{{count($change_requests->where('status','Approved')) + count($copy_requests->where('status','Approved'))}}</h1>
                     {{-- <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div> --}}
                     <small>&nbsp;</small>
                 </div>
@@ -116,17 +116,8 @@
                     </div>
                 </div>
             </div>
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Documents Library</h5>
-                </div>
-                <div class="ibox-content">
-                    <div>
-                        <canvas id="barChart" height="140"></canvas>
-                    </div>
-                </div>
-            </div>
         </div>
+        @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Document Control Officer') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (count(auth()->user()->permits) !=0 ))
         <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
@@ -151,13 +142,12 @@
                                     <td ><span class="label label-danger">{{date('M d, Y',strtotime($permit->expiration_date))}}</span></td>
                                 </tr>
                             @endforeach
-                       
-                      
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+        @endif
     </div>
 </div>
 
@@ -171,54 +161,38 @@
 <script src="{{ asset('login_css/js/plugins/d3/d3.min.js') }}"></script>
 <script src="{{ asset('login_css/js/plugins/c3/c3.min.js') }}"></script>
 <script>
-    var departments = {!! json_encode(($departments->pluck('code'))->toArray()) !!};
+    var departments = {!! json_encode(($departments)->toArray()) !!};
     var types = {!! json_encode(($categories->pluck('name'))->toArray()) !!};
-    var documents = {!! json_encode(($departments->pluck('documents_count'))->toArray()) !!};
     var obsoletes = {!! json_encode(($departments->pluck('obsoletes_count'))->toArray()) !!};
 
-    $(function () {
-        
-
-        var barData = {
-        labels: departments,
-        datasets: [
-            {
-                label: "Documents",
-                backgroundColor: 'rgba(220, 220, 220, 0.5)',
-                pointBorderColor: "#fff",
-                data: documents
-            },
-            {
-                label: "Obsolete",
-                backgroundColor: 'rgba(26,179,148,0.5)',
-                borderColor: "rgba(26,179,148,0.7)",
-                pointBackgroundColor: "rgba(26,179,148,1)",
-                pointBorderColor: "#fff",
-                data: obsoletes
-            }
-        ]
-    };
-
-    var barOptions = {
-        responsive: true
-    };
-
-    
-    var ctx2 = document.getElementById("barChart").getContext("2d");
-    new Chart(ctx2, {type: 'bar', data: barData, options:barOptions});
-    });
     $(document).ready(function(){
         var types_names = {!! json_encode(($categories)->toArray()) !!};
         var colors ={};
-    var  columns= [['x', "HRD", "ITD", "BPD"]];
+        var column = ['x'];
+ 
+    for(y=0;y<departments.length;y++)
+    {
+        column.push(departments[y].code+"("+departments[y].documents_count+")");
+    }
     var types = [];
-  
+    var  columns= [column];
     for(i =0;i< types_names.length;i++)
     {
-        columns.push([types_names[i].code,1,1,1]);
+        
+        type_column=[types_names[i].code];
+        for(z=0;z<departments.length;z++)
+        {
+            var doc = departments[z].documents;
+            var count = doc.filter(o => o.category === types_names[i].name);
+            type_column.push(count.length)
+           
+        }
+        
+        columns.push(type_column);
         colors[types_names[i].code] = types_names[i].color;
         types.push(types_names[i].code);
     }
+    console.log(columns);
     final_types = [types];
         c3.generate({
                 bindto: '#stocked',

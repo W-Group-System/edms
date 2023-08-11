@@ -13,7 +13,7 @@
                     <h5>Documents</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($documents)}}</h1>
+                    <h1 class="no-margins">{{count($documents->where('status',null))}}</h1>
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
                     <h5>Obsoletes</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($obsoletes)}}</h1>
+                    <h1 class="no-margins">{{count($obsoletes)+count($documents->where('status',"Obsolete"))}}</h1>
                 </div>
             </div>
         </div>
@@ -62,6 +62,7 @@
                             <tr>
                                 <th>Action</th>
                                 <th>Control Code</th>
+                                <th>Revisions</th>
                                 <th>Company</th>
                                 <th>Department</th>
                                 <th>Document</th>
@@ -69,13 +70,15 @@
                                 <th>Effective Date</th>
                                 <th>Process Owner</th>
                                 <th>Uploaded By</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($documents as $document)
                                 <tr>
                                     <td><a href="{{url('view-document/'.$document->id)}}" target="_blank" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a></td>
-                                    <td>{{$document->control_code}} v{{$document->version}}</td>
+                                    <td>{{$document->control_code}}</td>
+                                    <td>{{$document->version}}</td>
                                     <td>{{$document->company->name}}</td>
                                     <td>{{$document->department->name}}</td>
                                     <td>{{$document->title}}</td>
@@ -83,6 +86,7 @@
                                     <td>{{date('M d, Y',strtotime($document->effective_date))}}</td>
                                     <td>@if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> <br>@endforeach @else <small class="label label-danger">No Process Owner</small>  @endif</td>
                                     <td>{{$document->user->name}}</td>
+                                    <td>@if($document->status == null)<span class="label label-primary">Active</span> @else<span class="label label-danger">Obsolete</span> @endif</td>
                                 </tr>
                             @endforeach
                         </tbody>

@@ -1,25 +1,20 @@
 <?php
 
 namespace App;
+
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
-class ChangeRequest extends Model  implements Auditable
+class RequestApprover extends Model  implements Auditable
 {
     //
     use \OwenIt\Auditing\Auditable;
-
-    public function approvers()
-    {
-        return $this->hasMany(RequestApprover::class);
-    }
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    public function department()
+    public function change_request()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(ChangeRequest::class);
     }
-  
 }

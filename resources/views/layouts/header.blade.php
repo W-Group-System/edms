@@ -39,6 +39,9 @@
         float: left;
         text-align: left;
         }
+        textarea {
+    resize: vertical;
+    }
 
     </style>
     <!-- Fonts -->
@@ -69,10 +72,12 @@
                         </div>
                     </li>
                     <!-- //sidebar -->
-                    <li class="{{ Route::current()->getName() == 'home' ? 'active' : '' }}">
-                        <a href="{{url('/home')}}"><i class="fa fa-th-large"></i> <span
-                                class="nav-label">Dashboard </span></a>
-                    </li>
+                    @if((auth()->user()->role != "User"))
+                        <li class="{{ Route::current()->getName() == 'home' ? 'active' : '' }}">
+                            <a href="{{url('/home')}}"><i class="fa fa-th-large"></i> <span
+                                    class="nav-label">Dashboard </span></a>
+                        </li>
+                    @endif
                     <li class="{{ Route::current()->getName() == 'search' ? 'active' : '' }}">
                         <a href="{{url('/search')}}"><i class="fa fa-search"></i> <span
                                 class="nav-label">Search </span></a>
@@ -81,22 +86,31 @@
                         <a href="{{url('/request')}}"><i class="fa fa-paper-plane"></i> <span
                                 class="nav-label">Copy Requests </span></a>
                     </li>
-                    <li class="{{ Route::current()->getName() == 'for-review' ? 'active' : '' }}">
-                        <a href="{{url('/for-review')}}"><i class="fa fa-eye"></i> <span
+                    @if((auth()->user()->role != "User"))
+                    <li class="{{ Route::current()->getName() == 'change-requests' ? 'active' : '' }}">
+                        <a href="{{url('/change-requests')}}"><i class="fa fa-eye"></i> <span
                                 class="nav-label">Change Requests </span></a>
                     </li>
+                    @endif
+                    @if((count(auth()->user()->copy_approvers) != 0) || (count(auth()->user()->department_approvers) != 0) || (count(auth()->user()->change_approvers) != 0))
                     <li class="{{ Route::current()->getName() == 'for-approval' ? 'active' : '' }}">
                         <a href="{{url('/for-approval')}}"><i class="fa fa-check-square-o"></i> <span
                                 class="nav-label">For Approval </span></a>
                     </li>
+                    @endif
+                    @if((auth()->user()->role != "User"))
                     <li class="{{ Route::current()->getName() == 'documents' ? 'active' : '' }}">
                         <a href="{{url('/documents')}}"><i class="fa fa-files-o"></i> <span
                                 class="nav-label">Documents </span></a>
                     </li>
+                    @endif
+                    @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Document Control Officer') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (count(auth()->user()->permits) !=0 ))
                     <li class="{{ Route::current()->getName() == 'permits' ? 'active' : '' }}">
                         <a href="{{url('/permits')}}"><i class="fa fa-file-archive-o"></i> <span
                                 class="nav-label">Permits & Licenses </span></a>
                     </li>
+                    @endif
+                    @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative'))
                     <li class="{{ Route::current()->getName() == 'settings' ? 'active' : '' }}">
                         <a href="#"><i class="fa fa-gavel"></i> <span class="nav-label">Settings</span><span
                                 class="fa arrow"></span></a>
@@ -107,15 +121,19 @@
                             <li><a href="{{url('/dco')}}"></i>DCO</a></li>
                         </ul>
                     </li>
+                    
                     <li class="{{ Route::current()->getName() == 'reports' ? 'active' : '' }}">
                         <a href="#"><i class="fa fa-list-ul"></i> <span class="nav-label">Reports</span><span
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">
+                            @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Management Representative'))
                             <li><a href="{{url('/logs')}}"></i>Logs</a></li>
-                            <li><a href="{{url('/dicr-reports')}}"></i>DICR</a></li>
-                            <li><a href="{{url('/change-reports')}}"></i>Change Requests</a></li>
+                            @endif
+                            <li><a href="{{url('/dicr-reports')}}"></i>Change Requests</a></li>
+                            <li><a href="{{url('/copy-reports')}}"></i>Copy Requests</a></li>
                         </ul>
                     </li>
+                    @endif
                     
                 </ul>
             </div>

@@ -21,6 +21,7 @@ class DocumentController extends Controller
     public function index()
     {
         //
+       
         $documents = Document::get();
         $obsoletes = Obsolete::get();
         $departments = Department::whereHas('drc')->with('drc')->get();

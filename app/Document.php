@@ -28,4 +28,12 @@ class Document extends Model implements Auditable
     {
         return $this->hasMany(CopyRequest::class);
     }
+    public function change_requests()
+    {
+        return $this->hasMany(ChangeRequest::class);
+    }
+    public function revisions()
+    {
+        return $this->hasMany(Obsolete::class);
+    }
 }

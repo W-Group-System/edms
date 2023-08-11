@@ -43,23 +43,22 @@
         <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Request Documents </h5>
+                    <h5>Public Documents </h5>
                 </div>
                 <div class="ibox-content">
                     <table class="table table-striped table-bordered table-hover tables">
                         <thead>
                             <tr>
                                 <th>Document</th>
-                                <th>Status</th>
-                                <th>Expiration</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($request_documents as $req_doc)
                                 <tr>
-                                    <td><a href="#"><i class="fa fa-file"></i> {{$req_doc->title}}</a></td>
-                                    <td></td>
-                                    <td></td>
+                                    @php
+                                        $attchment = ($req_doc->attachments)->where('type','pdf_copy')->first();
+                                    @endphp
+                                    <td><a href="{{url($attchment->attachment)}}" target="_blank"><i class="fa fa-file"></i> {{$req_doc->title}}</a></td>
                                 </tr>
                             @endforeach
                         </tbody>
