@@ -28,7 +28,7 @@
                             Department Head :
                             <select name='user_id' class='form-control-sm form-control cat' >
                                 <option value=""></option>
-                                @foreach($employees->where('role','Department Head') as $employee)
+                                @foreach($employees as $employee)
                                     <option value='{{$employee->id}}' @if(old('user_id') == $employee->id) selected @endif>{{$employee->name}}</option>
                                 @endforeach
                             </select>
