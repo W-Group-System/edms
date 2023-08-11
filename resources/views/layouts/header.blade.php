@@ -131,6 +131,7 @@
                             @endif
                             <li><a href="{{url('/dicr-reports')}}"></i>Change Requests</a></li>
                             <li><a href="{{url('/copy-reports')}}"></i>Copy Requests</a></li>
+                            <li><a href="{{url('/dco-reports')}}"></i>DCO</a></li>
                         </ul>
                     </li>
                     @endif

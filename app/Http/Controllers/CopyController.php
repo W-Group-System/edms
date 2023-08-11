@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 use App\CopyRequest;
 use App\CopyApprover;
+use App\User;
 use App\DocumentAccess;
 use App\DocumentAttachment;
 use Illuminate\Http\Request;
+use App\Notifications\ForApproval;
 
 use RealRashid\SweetAlert\Facades\Alert;
 class CopyController extends Controller
@@ -13,7 +15,7 @@ class CopyController extends Controller
     //
     public function store(Request $request)
     {
-        // dd($request->all());
+    
         $copy_request = new CopyRequest;
         $copy_request->type_of_document = $request->type_of_document;
         $copy_request->document_id = $request->id;
@@ -36,6 +38,9 @@ class CopyController extends Controller
         $copy_approver->start_date = date('Y-m-d');
         $copy_approver->level = 1;
         $copy_approver->save();
+
+        $first_notify = User::where('id',$request->immediate_head)->first();
+        $first_notify->notify(new ForApproval($copy_request));
 
         $copy_approver = new CopyApprover;
         $copy_approver->copy_request_id = $copy_request->id;

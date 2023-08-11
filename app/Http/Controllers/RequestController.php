@@ -13,6 +13,7 @@ use App\RequestApprover;
 use App\ObsoleteAttachment;
 use App\Obsolete;
 use App\DocumentType;
+use App\User;
 
 
 use RealRashid\SweetAlert\Facades\Alert;
@@ -470,5 +471,27 @@ class RequestController extends Controller
             'requests' =>  $requests,
             'search' =>  $search,
         ));
+    }
+    public function docReports(Request $request)
+    {
+        $dco = $request->dco;
+        $dcos = User::where('role','Document Control Officer')->get();
+        $requests = ChangeRequest::orderBy('id','desc')->get();
+        if($dco != null)
+        {
+          
+            $user = User::where('id',$request->dco)->first();
+            $requests = ChangeRequest::whereIn('department_id',($user->dco)->pluck('department_id')->toArray())->orderBy('id','desc')->get();
+        }
+        
+
+        return view('dcoReports',
+        
+        array(
+            'requests' =>  $requests,
+            'dcos' =>  $dcos,
+            'dco' =>  $dco,
+        ));
+        
     }
 }

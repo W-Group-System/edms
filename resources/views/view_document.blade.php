@@ -111,7 +111,9 @@
 
                                     <dt>Attachments</dt>
                                         @foreach($document->attachments as $attachment)
+                                            @if($attachment->attachment != null)
                                              <dd><a href='{{url($attachment->attachment)}}' target="_blank" >{{$attachment->type}}</a></dd>
+                                             @endif
                                         @endforeach
                                    
                                 </dl>
@@ -157,7 +159,7 @@
                                                 <td>{{$revision->user->name}}</td>
                                                 <td>
                                                     @foreach($revision->attachments as $att)
-                                                    <a href='{{url($attach->attachment)}}' target='_blank'>{{$att->type}}</a>
+                                                    <a href='{{url($att->attachment)}}' target='_blank'>{{$att->type}}</a>
                                                     <br>
                                                     @endforeach
                                             </td>

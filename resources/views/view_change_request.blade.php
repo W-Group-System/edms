@@ -31,11 +31,11 @@
                            
                             @endif
                            @if($request->original_attachment_pdf != null)
-                           Original PDF Link : <a href='{{url($request->original_attachment_pdf)}}' target="_blank">Link</a> <br>
+                           Original PDF Link : <a href='{{url($request->original_attachment_pdf."?page=hsn#toolbar=0")}}' target="_blank">Link</a> <br>
                            @endif
-                           @if($request->original_attachment_soft_copy != null)
+                           {{-- @if($request->original_attachment_soft_copy != null)
                            Original Soft Copy : <a href='{{url($request->original_attachment_soft_copy)}}' target="_blank">Link</a> <br>
-                           @endif
+                           @endif --}}
                         </div>
                     </div>
                     <hr>

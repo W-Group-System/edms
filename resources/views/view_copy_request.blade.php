@@ -101,7 +101,9 @@
                                                 E-Copy Request, Expiration Date : {{date("M. d, Y",strtotime($request->expiration_date))}}
                                             </div>
                                             <div class="panel-body">
+                                                @if($request->document_access->attachment != null)
                                                 <iframe width='100%' height='500px;'  src=" {{url($request->document_access->attachment->attachment."?page=hsn#toolbar=0")}}" title="Access"></iframe>
+                                                @endif
                                                 <p></p>
                                             </div>
                                         </div>

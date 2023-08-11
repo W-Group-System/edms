@@ -72,4 +72,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/logs', 'AuditController@index')->name('reports');
     Route::get('copy-reports','CopyController@copyReports')->name('reports');
     Route::get('dicr-reports','RequestController@changeReports')->name('reports');
+    Route::get('dco-reports','RequestController@docReports')->name('reports');
 });

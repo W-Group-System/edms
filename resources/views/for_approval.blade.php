@@ -74,6 +74,7 @@
                                     </small></td>
                                     <td>{{$copy_approval->copy_request->user->name}}</td>
                                 </tr>
+                               
                                 @endforeach
                             </tbody>
                         </table>
@@ -120,6 +121,7 @@
                                 <td>{{$request->user->name}}</td>
                                 <td>{{$request->request_type}}</td>
                             </tr>
+                            @include('view_approval_change')
                             @endforeach
                         </tbody>
                         </table>
@@ -132,9 +134,15 @@
     </div>
 </div>
 @foreach($change_for_approvals->where('status','Pending') as $change_approval)
+@php
+$request = $change_approval->change_request;
+@endphp
 @include('view_approval_change')
 @endforeach
 @foreach($copy_for_approvals->where('status','Pending') as $copy_approval)
+@php
+$request = $copy_approval->copy_request;
+@endphp
 @include('view_approval_copy')
 @endforeach
 @endsection
