@@ -44,7 +44,7 @@ class DocumentController extends Controller
             $documents = Document::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->get();
             $obsoletes = Obsolete::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->get();
         }
-        $departments = Department::whereHas('drc')->with('drc')->get();
+        $departments = Department::get();
         $companies = Company::get();
         $document_types = DocumentType::orderBy('name','desc')->get();
         return view('documents',

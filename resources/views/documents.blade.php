@@ -52,8 +52,11 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Documents <button class="btn btn-success "  data-target="#uploadDocument" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;Upload Document</button></h5>
-                </div>
+                    <h5>Documents
+                        @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') ||(auth()->user()->role == 'Document Control Officer') )
+                        <button class="btn btn-success "  data-target="#uploadDocument" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;Upload Document</button></h5>
+                        @endif
+                    </div>
                 <div class="ibox-content">
 
                     <div class="table-responsive">
