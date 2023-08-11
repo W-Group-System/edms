@@ -64,9 +64,11 @@
                                     <th>Actions</th>
                                     <th>Reference No.</th>
                                     <th>Date Requested</th>
-                                    <th>Document</th>
+                                    <th>Code</th>
+                                    <th>Title</th>
+                                    <th>Revision</th>
+                                    <th>Type</th>
                                     <th>Requested By</th>
-                                    <th>Approvers</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -77,33 +79,11 @@
                                         <td><a href="#"  data-target="#view_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a></td>
                                         <td>CR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</td>
                                         <td>{{date('M d Y',strtotime($request->created_at))}}</td>
-                                        <td>
-                                            <small>
-                                                {{$request->control_code}} Rev. {{$request->revision}}<br>
-                                                {{$request->title}} <br>
-                                                {{$request->type_of_document}}
-                                            </small>
-                                        </td>
+                                        <td>{{$request->control_code}}</td>
+                                        <td>{{$request->title}}</td>
+                                        <td>{{$request->revision}}</td>
+                                        <td>{{$request->type_of_document}}</td>
                                         <td>{{$request->user->name}}</td>
-                                        <td>
-                                            <small>
-                                                @foreach($request->approvers as $approver)
-                                                    {{$approver->user->name}} - 
-                                                    @if($approver->status == "Pending")
-                                                        <span class='label label-warning'>
-                                                    @elseif($approver->status ==  "Approved")
-                                                        <span class='label label-info'>    
-                                                    @elseif($approver->status ==  "Declined")
-                                                            <span class='label label-danger'>
-                                                    @else<span class='label label-success'>
-                                                        @endif
-                                                        {{$approver->status}}</span>  
-                                                        @if($request->level == $approver->level)
-                                                        - {{date('M d, Y',strtotime($approver->updated_at))}}
-                                                        @endif  <br><br>
-                                                @endforeach
-                                            </small>
-                                        </td>
                                         <td> @if($request->status == "Pending")
                                             <span class='label label-warning'>
                                         @elseif($request->status ==  "Approved")

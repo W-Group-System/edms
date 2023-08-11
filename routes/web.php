@@ -36,6 +36,7 @@ Route::group(['middleware' => 'auth'], function () {
     //ChangeRequest
     Route::post('change-request','RequestController@store');
     Route::post('change-request-action/{id}','RequestController@action');
+    Route::post('new-change-request','RequestController@new_request');
 
 
     Route::get('/permits', 'PermitController@index')->name('permits');
@@ -70,4 +71,5 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/logs', 'AuditController@index')->name('reports');
     Route::get('copy-reports','CopyController@copyReports')->name('reports');
+    Route::get('dicr-reports','RequestController@changeReports')->name('reports');
 });

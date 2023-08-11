@@ -52,6 +52,14 @@ class HomeController extends Controller
                 $documents = Document::where('department_id',auth()->user()->department_id)->where('status',null)->get();
 
             }
+            elseif((auth()->user()->role == "Document Control Officer"))
+            {
+                $departments = Department::where('id',auth()->user()->department_id)->with('documents','obsoletes')->withCount('documents','obsoletes')->get();
+                $change_requests = ChangeRequest::where('user_id',auth()->user()->id)->get();
+                $copy_requests = CopyRequest::where('user_id',auth()->user()->id)->get();
+                $documents = Document::where('department_id',auth()->user()->department_id)->where('status',null)->get();
+
+            }
 
         }
 

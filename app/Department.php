@@ -33,7 +33,7 @@ class Department extends Model  implements Auditable
     }
     public function drc()
     {
-        return $this->hasMany(User::class)->where('role','Documents and Records Controller');
+        return $this->hasMany(User::class)->where('role','Documents and Records Controller')->where('status',null);
     }
     public function approvers()
     {

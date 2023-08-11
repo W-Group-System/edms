@@ -51,7 +51,8 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Change Requests </h5>
+                    <h5>Change Requests
+                        @if(auth()->user()->role == "Documents and Records Controller")<button class="btn btn-success "  data-target="#newRequest" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New </button>@endif</h5>
                   
                 </div>
                 <div class="ibox-content">
@@ -65,7 +66,10 @@
                                     <th>Reference No.</th>
                                     <th>Request Type</th>
                                     <th>Date Requested</th>
-                                    <th>Document</th>
+                                    <th>Code</th>
+                                    <th>Title</th>
+                                    <th>Revision</th>
+                                    <th>Type</th>
                                     <th>Requested By</th>
                                     <th>Status</th>
                                 </tr>
@@ -78,15 +82,26 @@
                                         <td>DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</td>
                                         <td>{{$request->request_type}}</td>
                                         <td>{{date('M d Y',strtotime($request->created_at))}}</td>
-                                        <td>
+                                     
                                             @if($request->document_id != null)
-                                            <small>
-                                                {{$request->control_code}} Rev. {{$request->revision}}<br>
-                                                {{$request->title}} <br>
-                                                {{$request->type_of_document}}
-                                            </small>
+                                            <td>
+                                                {{$request->control_code}}
+                                            </td>   
+                                            <td>
+                                                {{$request->title}}
+                                            </td>   
+                                            <td>
+                                                {{$request->revision}}
+                                            </td>   
+                                           
+                                            @else
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                             @endif
-                                        </td>
+                                            <td>
+                                                {{$request->type_of_document}}
+                                            </td>   
                                         <td>{{$request->user->name}}</td>
                                         <td> @if($request->status == "Pending")
                                             <span class='label label-warning'>
@@ -111,7 +126,7 @@
 
     </div>
 </div>
-{{-- @include('properties.create') --}}
+@include('new_change_request')
 @endsection
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
@@ -120,7 +135,7 @@
     $(document).ready(function(){
         
 
-        $('.locations').chosen({width: "100%"});
+        $('.cat').chosen({width: "100%"});
         $('.tables').DataTable({
             pageLength: 25,
             responsive: true,

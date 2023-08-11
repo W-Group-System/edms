@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Document;
+use App\Department;
+use App\Company;
 use App\DepartmentApprover;
 use App\CopyRequest;
 use App\ChangeRequest;
@@ -10,6 +12,7 @@ use App\CopyApprover;
 use App\RequestApprover;
 use App\ObsoleteAttachment;
 use App\Obsolete;
+use App\DocumentType;
 
 
 use RealRashid\SweetAlert\Facades\Alert;
@@ -25,6 +28,7 @@ class RequestController extends Controller
     public function index()
     {
         //
+       
         $requests = CopyRequest::orderBy('id','desc')->get();
         if(auth()->user()->role == "User")
         {
@@ -50,7 +54,10 @@ class RequestController extends Controller
     public function changeRequests()
     {
         //
-        $documents = Document::get();
+        $departments = Department::where('id',auth()->user()->department_id)->where('status',null)->get();
+        $companies = Company::where('status',null)->get();
+        $document_types = DocumentType::get();
+        $approvers = DepartmentApprover::where('department_id',auth()->user()->department_id)->get();
         $requests = ChangeRequest::orderBy('id','desc')->get();
         if(auth()->user()->role == "User")
         {
@@ -72,6 +79,11 @@ class RequestController extends Controller
         
         array(
             'requests' =>  $requests,
+            
+            'companies' =>  $companies,
+            'departments' =>  $departments,
+            'approvers' =>  $approvers,
+            'document_types' =>  $document_types,
         ));
     }
     public function forApproval()
@@ -164,6 +176,51 @@ class RequestController extends Controller
 
 
     }
+    public function new_request(Request $request)
+    {
+        //
+
+      
+        $changeRequest = new ChangeRequest;
+        $changeRequest->request_type = $request->request_type;
+        $changeRequest->effective_date = $request->effective_date;
+        $changeRequest->department_id = $request->department;
+        $changeRequest->company_id = $request->company;
+        $changeRequest->title = $request->title;
+        $changeRequest->user_id = auth()->user()->id;
+        $changeRequest->type_of_document = $request->category;
+        $changeRequest->change_request = $request->description;
+        $changeRequest->link_draft = $request->draft_link;
+        $changeRequest->status = "Pending";
+        $changeRequest->level = 1;
+        $changeRequest->save();
+    
+        $approvers = DepartmentApprover::where('department_id',auth()->user()->department_id)->orderBy('level','asc')->get();
+        foreach($approvers as $approver)
+        {
+            $copy_approver = new RequestApprover;
+            $copy_approver->change_request_id = $changeRequest->id;
+            $copy_approver->user_id = $approver->user_id;
+           
+            if($approver->level == 1)
+            {
+                $copy_approver->status = "Pending";
+                $copy_approver->start_date = date('Y-m-d');
+            }
+            else
+            {
+                $copy_approver->status = "Waiting";
+               
+            }
+            $copy_approver->level = $approver->level;
+            $copy_approver->save();
+        }
+
+        Alert::success('Successfully Submitted')->persistent('Dismiss');
+        return redirect('/change-requests');
+
+
+    }
 
     /**
      * Display the specified resource.
@@ -224,8 +281,6 @@ class RequestController extends Controller
         {
             if(auth()->user()->role == "Document Control Officer")
             {
-                // dd($request->all());
-                $docuAttach = Document::findOrfail($copyRequest->document_id);
                 if($request->has('soft_copy'))
                 {
                     $attachment = $request->file('soft_copy');
@@ -320,7 +375,57 @@ class RequestController extends Controller
                 }
                 if($copyRequest->request_type == "New")
                 {
-                   dd('renz');
+                   $company = Company::findOrFail($copyRequest->company_id);
+                   $department = Department::findOrFail($copyRequest->department_id);
+                   $type_of_doc = DocumentType::where('name',$copyRequest->type_of_document)->first();
+
+                   $document_get_latest = Document::where('company_id',$copyRequest->company_id)->where('department_id',$copyRequest->department_id)->where('category',$copyRequest->type_of_document)->orderBy('id','desc')->first();
+                   if($document_get_latest == null)
+                   {
+                        $code = $company->code."-".$type_of_doc->code."-".$department->code."-001";
+                   }
+                   else
+                   {
+                        $c = $document_get_latest->control_code;
+                        $c = explode("-", $c);
+                        $last_code = ((int)$c[count($c)-1])+1;
+                        $code = $company->code."-".$type_of_doc->code."-".$department->code."-".str_pad($last_code, 3, '0', STR_PAD_LEFT);
+                   }
+                   $new_document = new Document;
+                   $new_document->company_id = $copyRequest->company_id;
+                   $new_document->department_id = $copyRequest->department_id;
+                   $new_document->title = $copyRequest->title;
+                   $new_document->category = $copyRequest->type_of_document;
+                   $new_document->effective_date = date('Y-m-d');
+                   $new_document->user_id = $copyRequest->user_id;
+                   $new_document->version = 0;
+                   $new_document->control_code = $code;
+                   $new_document->save();
+
+                   $copyRequest->document_id = $new_document->id;
+                   $copyRequest->control_code = $code;
+                   $copyRequest->revision = 0;
+
+                   $new_attach = new DocumentAttachment;
+                    $new_attach->document_id = $new_document->id; 
+                    $new_attach->type = "soft_copy"; 
+                    $new_attach->attachment = $copyRequest->soft_copy; 
+                    $new_attach->save(); 
+
+                    $new_attach = new DocumentAttachment;
+                    $new_attach->document_id = $new_document->id; 
+                    $new_attach->type = "pdf_copy"; 
+                    $new_attach->attachment = $copyRequest->pdf_copy; 
+                    $new_attach->save(); 
+
+                    if($copyRequest->fillable_copy != null)
+                    {
+                        $new_attach = new DocumentAttachment;
+                        $new_attach->document_id = $new_document->id; 
+                        $new_attach->type = "fillable_copy"; 
+                        $new_attach->attachment = $copyRequest->fillable_copy; 
+                        $new_attach->save(); 
+                    }
                 }
                 $copyRequest->status = "Approved";
                 $copyRequest->save();
@@ -345,5 +450,25 @@ class RequestController extends Controller
             return back();
         }
     
+    }
+    public function changeReports(Request $request)
+    {
+        $search = $request->yearmonth;
+        if($search)
+        {
+        $year = date('Y',strtotime($search."-01"));
+        $month = date('m',strtotime($search."-01"));
+        $requests = ChangeRequest::whereYear('created_at', '=', $year)
+        ->whereMonth('created_at', '=', $month)->orderBy('id','desc')->get();
+        }
+        else
+        {
+            $requests = ChangeRequest::orderBy('id','desc')->get();
+        }
+        return view('change_reports',
+        array(
+            'requests' =>  $requests,
+            'search' =>  $search,
+        ));
     }
 }

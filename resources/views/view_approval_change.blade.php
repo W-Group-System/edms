@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class='col-md-10'>
-                    <h5 class="modal-title" id="exampleModalLabel">Change Request ({{$request->status}})</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Change Request ({{$request->status}}) - <b class='label label-danger'>{{$request->request_type}}</b></h5>
                 </div>
                 <div class='col-md-2'>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
@@ -43,9 +43,11 @@
                     </div>
                     <hr>
                     <div class='row '>
+                        @if($request->request_type != "New")
                         <div class='col-md-6'>
                             Control Code : {{$request->control_code}} Rev. {{$request->revision}}
                         </div>
+                        @endif
                         <div class='col-md-6'>
                             Title : {{$request->title}}
                         </div>
@@ -59,24 +61,50 @@
                         </div>
                     </div>
                     <hr>
-                    <div class='row '>
-                        <div class='col-md-12'>
-                            Request Type: {{$request->request_type}}
-                        </div>
-                        <div class='col-md-12 border border-primary border-top-bottom border-left-right '>
-                            OVERALL DESCRIPTION OF CHANGE: 
-                            <br>{!!nl2br(e($request->change_request))!!}
+                    <div class='row'>
+                        <div class='col-md-12 '>
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    @if($request->request_type != "Revision")
+                                        Descriptions/Remarks
+                                    @else
+                                    Overall Description of Change
+                                    @endif
+                                </div>
+                                <div class="panel-body">
+                                   {!!nl2br(e($request->change_request))!!}
+                                </div>
+                            </div>
+                            
+                            
                         </div>
                     </div>
+                    @if($request->request_type == "Revision")
                     <div class='row '>
-                        <div class='col-md-6 border border-primary border-top-bottom border-left-right'>
-                            From (Indicate clause): <br>{!! nl2br(e($request->indicate_clause)) !!}
+                        <div class='col-md-6 '>
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    From (Indicate clause)
+                                </div>
+                                <div class="panel-body">
+                                    {!! nl2br(e($request->indicate_clause)) !!}
+                                </div>
+                            </div>
                         </div>
-                        <div class='col-md-6 border border-primary border-top-bottom border-left-right'>
-                            To (Indicate the changes):
-                            <br>{!! nl2br(e($request->indicate_changes)) !!}
+                        <div class='col-md-6'>
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    To (Indicate the changes)
+                                </div>
+                                <div class="panel-body">
+                                    {!! nl2br(e($request->indicate_changes)) !!}
+                                </div>
+                            </div>
+                           
+                            
                         </div>
                     </div>
+                    @endif
                     <hr>
                     <div class="panel panel-primary">
                         <div class="panel-heading">

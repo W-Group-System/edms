@@ -24,6 +24,26 @@ class DocumentController extends Controller
        
         $documents = Document::get();
         $obsoletes = Obsolete::get();
+        if(auth()->user()->role == "Document Control Officer")
+        { 
+   
+            $documents = Document::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->get();
+            $obsoletes = Obsolete::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->get();
+                   
+        }
+        if(auth()->user()->role == "Documents and Records Controller")
+        { 
+   
+            $documents = Document::where('department_id',auth()->user()->department_id)->get();
+            $obsoletes = Obsolete::where('department_id',auth()->user()->department_id)->get();
+                   
+        }
+        
+        if((auth()->user()->role == "Department Head"))
+        {
+            $documents = Document::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->get();
+            $obsoletes = Obsolete::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->get();
+        }
         $departments = Department::whereHas('drc')->with('drc')->get();
         $companies = Company::get();
         $document_types = DocumentType::orderBy('name','desc')->get();

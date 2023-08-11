@@ -74,8 +74,6 @@
                                     </small></td>
                                     <td>{{$copy_approval->copy_request->user->name}}</td>
                                 </tr>
-                                
-                                @include('view_approval_copy')
                                 @endforeach
                             </tbody>
                         </table>
@@ -122,7 +120,6 @@
                                 <td>{{$request->user->name}}</td>
                                 <td>{{$request->request_type}}</td>
                             </tr>
-                            @include('view_approval_change')
                             @endforeach
                         </tbody>
                         </table>
@@ -134,6 +131,12 @@
 
     </div>
 </div>
+@foreach($change_for_approvals->where('status','Pending') as $change_approval)
+@include('view_approval_change')
+@endforeach
+@foreach($copy_for_approvals->where('status','Pending') as $copy_approval)
+@include('view_approval_copy')
+@endforeach
 @endsection
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
