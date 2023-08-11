@@ -65,11 +65,11 @@ class RequestController extends Controller
         }
         else if(auth()->user()->role == "Document Control Officer")
         {
-            $requests = ChangeRequest::where('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->orderBy('id','desc')->get();
+            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->orderBy('id','desc')->get();
         }
         else if(auth()->user()->role == "Department Head")
         {
-            $requests = ChangeRequest::where('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->orderBy('id','desc')->get();
+            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->orderBy('id','desc')->get();
         }
         else if(auth()->user()->role == "Documents and Records Controller")
         {
