@@ -50,6 +50,8 @@
                                     <th>Type of Request</th>
                                     <th>Date Requested</th>
                                     <th>Control Code</th>
+                                    <th>Company</th>
+                                    <th>Department</th>
                                     <th>Title</th>
                                     <th>Request By</th>
                                     <th>Effective Date</th>
@@ -82,6 +84,8 @@
                                         <td>{{$request->request_type}}</td>
                                         <td>{{date('M d Y',strtotime($request->created_at))}}</td>
                                         <td>{{$request->control_code}}</td>
+                                        <td>{{$request->company->name}}</td>
+                                        <td>{{$request->department->name    }}</td>
                                         <td><small>{{$request->title}}</small></td>
                                         <td>{{$request->user->name}}</td>
                                         <td>{{date('M d, Y',strtotime($request->effective_date))}}</td>

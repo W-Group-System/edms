@@ -21,5 +21,9 @@ class ChangeRequest extends Model  implements Auditable
     {
         return $this->belongsTo(Department::class);
     }
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
   
 }
