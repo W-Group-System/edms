@@ -41,9 +41,14 @@ class SendEmails extends Command
     public function handle()
     {
         //
-        info("call dito");
+        $request = $this->email_notif();
+
+        return $this->info($request);
+    }
+    public function email_notif()
+    {
+        info("START EMAIL");
         $users = User::where('status',null)->get();
-        // dd($users);
         foreach($users as $user)
         {
             $permits = Permit::with('company', 'department')->get();
@@ -67,5 +72,7 @@ class SendEmails extends Command
                 $user->notify(new ForRenewal($countPermit));
             }
         }
+        info("END EMAIL");
+        return "success";
     }
 }
