@@ -16,6 +16,7 @@ use App\DocumentType;
 use App\User;
 
 
+
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
 

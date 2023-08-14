@@ -73,4 +73,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('copy-reports','CopyController@copyReports')->name('reports');
     Route::get('dicr-reports','RequestController@changeReports')->name('reports');
     Route::get('dco-reports','RequestController@docReports')->name('reports');
+
+    Route::get('email_notif','PermitController@email_notif')->name('email-notif');
 });
