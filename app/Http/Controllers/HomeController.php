@@ -54,10 +54,10 @@ class HomeController extends Controller
             }
             elseif((auth()->user()->role == "Document Control Officer"))
             {
-                $departments = Department::whereIn('id',(auth()->user()->dco))->with('documents','obsoletes')->withCount('documents','obsoletes')->get();
-                $change_requests = ChangeRequest::whereIn('department_id',(auth()->user()->dco))->get();
-                $copy_requests = CopyRequest::whereIn('department_id',(auth()->user()->dco))->get();
-                $documents = Document::whereIn('department_id',(auth()->user()->dco))->where('status',null)->get();
+                $departments = Department::whereIn('id',(auth()->user()->dco)->pluck('department_id')->toArray())->with('documents','obsoletes')->withCount('documents','obsoletes')->get();
+                $change_requests = ChangeRequest::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->get();
+                $copy_requests = CopyRequest::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->get();
+                $documents = Document::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->where('status',null)->get();
 
             }
 
