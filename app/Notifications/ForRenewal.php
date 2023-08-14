@@ -46,7 +46,7 @@ class ForRenewal extends Notification
                     ->greeting('Good Day!')
                     ->subject('Permit / License / Certificate Renewal')
                     ->greeting('Good day,')
-                    ->line('This is a friendly reminder that you have a (Permit / License / Certificate) that needed for renewal.')
+                    ->line('This is a friendly reminder that you have a (Permit / License / Certificate) that is subject for renewal.')
                     ->line('For Renewal : '.$this->count)
                     ->line('Please click the button provided for faster transaction')
                     ->action('Permits & Licenses', url('/permits'))
