@@ -10,20 +10,10 @@
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Permits</h5>
+                    <h5>Total</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($permits->where('type','Permit'))}}</h1>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Licenses</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins">{{count($permits->where('type','License'))}}</h1>
+                    <h1 class="no-margins">{{count($permits)}}</h1>
                 </div>
             </div>
         </div>
@@ -81,15 +71,18 @@
                                     <td>{{$permit->description}}</td>
                                     <td>{{$permit->company->name}}</td>
                                     <td>{{$permit->department->name}}</td>
-                                    <td>{{$permit->department->permit_account->name}}</td>
+                                    <td><small>@foreach($permit->department->permit_accounts as $accountable)
+                                        {{$accountable->user->name}} <hr>
+                                    @endforeach</small></td>
                                     <td>{{date('M d, Y',strtotime($permit->created_at))}}</td>
                                     <td><a href='{{url($permit->file)}}' target='_blank'><i class='fa fa-file'></i></a></td>
                                     <td>{{$permit->type}}</td>
-                                    <td>{{date('M d Y',strtotime($permit->expiration_date))}}</td>
-                                    <td>@if($permit->expiration_date < date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))) <small class="label label-danger">For Renewal</small> @else <small class="label label-primary">Active</small> @endif</td>
+                                    <td>@if($permit->expiration_date != null){{date('M d Y',strtotime($permit->expiration_date))}}@endif</td>
+                                    <td>@if($permit->expiration_date != null)@if($permit->expiration_date < date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))) <small class="label label-danger">For Renewal</small> @else <small class="label label-primary">Active</small> @endif @endif</td>
                                     <td>
+                                        {{-- {{auth()->user()->role}} --}}
                                         <button class="btn btn-sm btn-primary "  title="Upload " data-target="#upload{{$permit->id}}" data-toggle="modal"><i class="fa fa-upload"></i></button>
-                                        <button class="btn btn-sm btn-warning "  title="Transfer Department" data-target="#change{{$permit->id}}" data-toggle="modal"><i class="fa fa-users"></i></button>
+                                       @if((auth()->user()->role != "User") && (auth()->user()->role != "Department Head") && (auth()->user()->role != "Documents and Records Controller") ) <button class="btn btn-sm btn-warning "  title="Transfer Department" data-target="#change{{$permit->id}}" data-toggle="modal"><i class="fa fa-users"></i></button>@endif
                                         {{-- <button class="btn btn-sm btn-warning "  title="View History "><i class="fa fa-eye"></i></button> --}}
                                     </td>
                                 </tr>

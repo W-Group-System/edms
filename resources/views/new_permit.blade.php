@@ -38,7 +38,7 @@
                             <select name='department' class='form-control-sm form-control cat' required>
                                 <option value=""></option>
                                 @foreach($departments as $dep)
-                                    <option value='{{$dep->id}}' @if(old('department') == $dep->id) selected @endif>{{$dep->code}} - {{$dep->name}} - {{$dep->permit_account->name}}</option>
+                                    <option value='{{$dep->id}}' @if(old('department') == $dep->id) selected @endif>{{$dep->code}} - {{$dep->name}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -48,6 +48,7 @@
                                 <option value=""></option>
                                 <option value="License">License</option>
                                 <option value="Permit">Permit</option>
+                                <option value="Certification">Certification</option>
                                 
                             </select>
                         </div>

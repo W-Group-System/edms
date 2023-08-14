@@ -138,7 +138,9 @@
                                 <tr>
                                     <td><a href='{{url($permit->file)}}' target='_blank'>{{$permit->title}}</a></td>
                                     <td>{{$permit->company->name}}</td>
-                                    <td>{{$permit->department->permit_account->name}}</td>
+                                    <td><small>@foreach($permit->department->permit_accounts as $accountable)
+                                        {{$accountable->user->name}} <hr>
+                                    @endforeach</small></td>
                                     <td ><span class="label label-danger">{{date('M d, Y',strtotime($permit->expiration_date))}}</span></td>
                                 </tr>
                             @endforeach
