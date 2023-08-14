@@ -35,10 +35,10 @@
                         </div>
                         <div class='col-md-12'>
                             Permits Accountable<i>(optional)</i> :
-                            <select name='permit_id' class='form-control-sm form-control cat' >
+                            <select name='permit_id[]' class='form-control-sm form-control cat' multiple>
                                 <option value=""></option>
                                 @foreach($employees as $employee)
-                                    <option value='{{$employee->id}}' @if($department->permit_accountable == $employee->id) selected @endif>{{$employee->name}}</option>
+                                    <option value='{{$employee->id}}' @if(count(($department->permit_accounts)->where('user_id',$employee->id)) == 1) selected @endif>{{$employee->name}}</option>
                                 @endforeach
                             </select>
                         </div>

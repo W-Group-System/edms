@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Department;
 use App\DepartmentApprover;
+use App\PermitAccountable;
 use App\User;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -56,7 +57,6 @@ class DepartmentController extends Controller
         $department->code = $request->code;
         $department->name = $request->name;
         $department->user_id = $request->user_id;
-        $department->permit_accountable = $request->permit_id;
         $department->save();
 
         foreach($request->approvers as $key => $approver)
@@ -66,6 +66,13 @@ class DepartmentController extends Controller
             $departmentapprover->user_id = $approver;
             $departmentapprover->level = $key+1;
             $departmentapprover->save();
+        }
+        foreach($request->permit_id as $key => $permit_id)
+        {
+            $PermitAccountable = new PermitAccountable;
+            $PermitAccountable->department_id = $department->id;
+            $PermitAccountable->user_id = $permit_id;
+            $PermitAccountable->save();
         }
       
 
@@ -114,9 +121,10 @@ class DepartmentController extends Controller
         $department = Department::findOrfail($id);
         $department->name = $request->name;
         $department->user_id = $request->user_id;
-        $department->permit_accountable = $request->permit_id;
         $department->save();
+
         $approvers = DepartmentApprover::where('department_id',$id)->delete();
+        $PermitAccountables = PermitAccountable::where('department_id',$id)->delete();
         foreach($request->edit_approvers as $key => $approver)
         {
             $departmentapprover = new DepartmentApprover;
@@ -124,6 +132,14 @@ class DepartmentController extends Controller
             $departmentapprover->user_id = $approver;
             $departmentapprover->level = $key+1;
             $departmentapprover->save();
+        }
+
+        foreach($request->permit_id as $key => $permit_id)
+        {
+            $PermitAccountable = new PermitAccountable;
+            $PermitAccountable->department_id = $department->id;
+            $PermitAccountable->user_id = $permit_id;
+            $PermitAccountable->save();
         }
       
 

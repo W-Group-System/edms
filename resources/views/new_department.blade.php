@@ -35,7 +35,7 @@
                         </div>
                         <div class='col-md-12'>
                             Permits Accountable<i>(optional)</i> :
-                            <select name='permit_id' class='form-control-sm form-control cat' >
+                            <select name='permit_id[]' class='form-control-sm form-control cat' multiple>
                                 <option value=""></option>
                                 @foreach($employees as $employee)
                                     <option value='{{$employee->id}}' @if(old('permit_id') == $employee->id) selected @endif>{{$employee->name}}</option>

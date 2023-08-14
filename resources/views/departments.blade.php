@@ -70,7 +70,9 @@
                                 <td>{{$department->code}}</td>
                                 <td>{{$department->name}}</td>
                                 <td>{{($department->dep_head != null) ? $department->dep_head->name : "No Head"}}</td>
-                                <td>{{($department->permit_account != null) ? $department->permit_account->name : "N/A"}}</td>
+                                <td>@foreach($department->permit_accounts as $accountable)
+                                    {{$accountable->user->name}}<br>
+                                @endforeach</td>
                                 <td>
                                     @foreach($department->approvers as $approver)
                                         {{$approver->level.". ".$approver->user->name}}<br>

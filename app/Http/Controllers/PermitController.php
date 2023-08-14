@@ -32,10 +32,15 @@ class PermitController extends Controller
                    
         }
         
-        if((auth()->user()->role == "User") || (auth()->user()->role == "Department Head"))
+        if((auth()->user()->role == "Department Head"))
         {
             $permits = Permit::with('company', 'department')->whereIn('department_id',(auth()->user()->permits)->pluck('department_id')->toArray())->get();
             $departments = Department::whereHas('permit_account')->whereIn('id',(auth()->user()->permits)->pluck('department_id')->toArray())->where('status', '=', null)->get();
+        }
+        if((auth()->user()->role == "User"))
+        {
+            $permits = Permit::with('company', 'department')->whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->get();
+            $departments = Department::whereHas('permit_account')->whereIn('id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('status', '=', null)->get();
         }
        
         $archives = Archive::get();

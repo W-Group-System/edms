@@ -104,7 +104,7 @@
                                 class="nav-label">Documents </span></a>
                     </li>
                     @endif
-                    @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Document Control Officer') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (count(auth()->user()->permits) !=0 ))
+                    @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Document Control Officer') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (count(auth()->user()->accountable_persons) !=0 ))
                     <li class="{{ Route::current()->getName() == 'permits' ? 'active' : '' }}">
                         <a href="{{url('/permits')}}"><i class="fa fa-file-archive-o"></i> <span
                                 class="nav-label">Permits & Licenses </span></a>
