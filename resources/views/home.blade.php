@@ -135,13 +135,25 @@
     @if((auth()->user()->role == "Administrator") || (auth()->user()->role == "Management Representative") || (auth()->user()->role == "Business Process Manager"))
     
     <div class='row'>
-        <div class="col-lg-12">
+        <div class="col-lg-8">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Requests</h5>
                 </div>
                 <div class="ibox-content">
                     <div id="morris-bar-chart"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Document Requests Status this {{date('Y')}}</h5>
+                </div>
+                <div class="ibox-content">
+                    <div>
+                        <div id="pie"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -170,6 +182,10 @@
     var types = {!! json_encode(($categories->pluck('name'))->toArray()) !!};
     var obsoletes = {!! json_encode(($departments->pluck('obsoletes_count'))->toArray()) !!};
     var months = {!! json_encode(($months)) !!};
+
+    var pending = {!!json_encode(($yearChangeRequests->where('status','Pending')->count()))!!}
+    var approved = {!!json_encode(($yearChangeRequests->where('status','Approved')->count()))!!}
+    var declined = {!!json_encode(($yearChangeRequests->where('status','Declined')->count()))!!}
     $(function() {
             Morris.Donut({
             element: 'morris-donut-chart',
@@ -246,6 +262,23 @@
                         show: true,
                         label: 'Counts'
                     },
+                }
+            });
+
+            c3.generate({
+                bindto: '#pie',
+                data:{
+                    columns: [
+                        ['Approved', approved],
+                        ['Declined', declined],
+                        ['Pending', pending]
+                    ],
+                    colors:{
+                        Approved: '#54cdb4',
+                        Declined: '#f44336',
+                        Pending: '#BABABA',
+                    },
+                    type : 'pie'
                 }
             });
         

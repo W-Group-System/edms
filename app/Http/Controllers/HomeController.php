@@ -32,6 +32,9 @@ class HomeController extends Controller
         
         $change_requests = ChangeRequest::get();
         $copy_requests = CopyRequest::get();
+
+        $yearChangeRequests = ChangeRequest::whereYear('created_at',date('Y'))->get();
+        $yearCopyRequests = CopyRequest::whereYear('created_at',date('Y'))->get();
         $documents = Document::where('status',null)->get();
         $departments = Department::with('documents','obsoletes')->withCount('documents','obsoletes')->get();
         $permits = Permit::with('company', 'department')->get();
@@ -85,6 +88,8 @@ class HomeController extends Controller
             'categories' =>  $categories,
             'copy_requests' =>  $copy_requests,
             'months' =>  $months,
+            'yearChangeRequests' =>  $yearChangeRequests,
+            'yearCopyRequests' =>  $yearCopyRequests,
 
         ));
     }
