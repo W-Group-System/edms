@@ -132,6 +132,21 @@
         </div>
         @endif
     </div>
+    @if((auth()->user()->role == "Administrator") || (auth()->user()->role == "Management Representative") || (auth()->user()->role == "Business Process Manager"))
+    
+    <div class='row'>
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Requests</h5>
+                </div>
+                <div class="ibox-content">
+                    <div id="morris-bar-chart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 
 @endsection
@@ -152,10 +167,9 @@
     var for_renewal = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))))) !!};
     var active = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','>=',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))))) !!};
     var no_expiration = {!! json_encode((count($permits->where('expiration_date','==',null)))) !!};
-    console.log(no_expiration);
     var types = {!! json_encode(($categories->pluck('name'))->toArray()) !!};
     var obsoletes = {!! json_encode(($departments->pluck('obsoletes_count'))->toArray()) !!};
-
+    var months = {!! json_encode(($months)) !!};
     $(function() {
             Morris.Donut({
             element: 'morris-donut-chart',
@@ -167,6 +181,17 @@
             resize: true,
             colors: ['#f44336', '#54cdb4','#1ab394'],
         });
+        var aaa= months;
+        Morris.Bar({
+        element: 'morris-bar-chart',
+        data: aaa,
+        xkey: 'y',
+        ykeys: ['a', 'b'],
+        labels: ['Change Requests', 'Copy Requests'],
+        hideHover: 'auto',
+        resize: true,
+        barColors: ['#1ab394', '#cacaca'],
+    });
         
     });
 
@@ -197,7 +222,6 @@
         colors[types_names[i].code] = types_names[i].color;
         types.push(types_names[i].code);
     }
-    console.log(columns);
     final_types = [types];
         c3.generate({
                 bindto: '#stocked',
