@@ -8,6 +8,8 @@ use App\DocumentAccess;
 use App\DocumentAttachment;
 use Illuminate\Http\Request;
 use App\Notifications\ForApproval;
+use App\Notifications\ApprovedRequest;
+use App\Notifications\DeclineRequest;
 
 use RealRashid\SweetAlert\Facades\Alert;
 class CopyController extends Controller
@@ -40,7 +42,7 @@ class CopyController extends Controller
         $copy_approver->save();
 
         $first_notify = User::where('id',$request->immediate_head)->first();
-        $first_notify->notify(new ForApproval($copy_request));
+        $first_notify->notify(new ForApproval($copy_request,"CR-","Copy Request"));
 
         $copy_approver = new CopyApprover;
         $copy_approver->copy_request_id = $copy_request->id;
@@ -76,6 +78,7 @@ class CopyController extends Controller
         {
             if($copyApprover == null)
             {
+                
                 $copyRequest->status = "Approved";
                 $copyRequest->expiration_date = date('Y-m-d',strtotime("+7 day"));
                 $copyRequest->save();
@@ -90,15 +93,21 @@ class CopyController extends Controller
                     $access->copy_request_id = $copyRequest->id;
                     $access->save();
                 }
+                $approvedRequestsNotif = User::where('id',$copyRequest->user_id)->first();
+                $approvedRequestsNotif->notify(new ApprovedRequest($copyRequest,"CR-","Copy Request","request"));
                 
             }
             else
             {
+        
                 $copyApprover->start_date = date('Y-m-d');
                 $copyApprover->status = "Pending";
                 $copyApprover->save();
                 $copyRequest->level = $copyRequest->level+1;
                 $copyRequest->save();
+
+                $nextNotify = User::where('id',$copyApprover->user_id)->first();
+                $nextNotify->notify(new ForApproval($copyRequest,"CR-","Copy Request"));
                 
             }
             Alert::success('Successfully Approved')->persistent('Dismiss');
@@ -109,6 +118,10 @@ class CopyController extends Controller
             $copyRequest->status = "Declined";
             $copyRequest->save(); 
             Alert::success('Successfully Declined')->persistent('Dismiss');
+
+            $declinedRequestNotif = User::where('id',$copyRequest->user_id)->first();
+            $declinedRequestNotif->notify(new DeclineRequest($copyRequest,"CR-","Copy Request","request"));
+
             return back();
         }
 

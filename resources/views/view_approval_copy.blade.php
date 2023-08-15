@@ -67,16 +67,16 @@
                     @foreach($request->approvers as $approver)
                         <div class='row text-left'>
                             <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                            {{$approver->user->name}}
+                            {{$approver->user->name}} &nbsp;
                             </div>
                             <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                {{$approver->status}}
+                                {{$approver->status}} &nbsp;
                             </div>
                             <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                @if($approver->start_date != null){{$approver->start_date}}@endif &nbsp;
+                                @if($approver->start_date != null){{date('M d, Y',strtotime($approver->start_date))}}@endif &nbsp;
                             </div>
                             <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                @if($approver->level < $request->level){{$approver->updated_at}}@endif &nbsp;
+                                @if($approver->level < $request->level){{date('M d, Y',strtotime($approver->updated_at))}}@endif &nbsp;
                             </div>
                             <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                 {!! nl2br(e($approver->remarks))!!} &nbsp;

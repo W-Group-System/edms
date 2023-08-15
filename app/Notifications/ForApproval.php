@@ -17,11 +17,16 @@ class ForApproval extends Notification
      * @return void
      */
     protected $copy_request;
-    public function __construct($copy_request)
+    protected $type;
+    protected $typedata;
+    public function __construct($copy_request,$type,$typedata)
     {
         //
         $this->copy_request = $copy_request;
+        $this->type = $type;
+        $this->typedata = $typedata;
     }
+    
 
     /**
      * Get the notification's delivery channels.
@@ -47,9 +52,9 @@ class ForApproval extends Notification
                     ->subject('For Approval Notification')
                     ->greeting('Good day,')
                     ->line('Request for Approval.')
-                    ->line('Reference Number : CR-'.str_pad($this->copy_request->id, 5, '0', STR_PAD_LEFT))
-                    ->line('Requestor : '.auth()->user()->name)
-                    ->line('Type of Request : Copy Request')
+                    ->line('Reference Number : '.$this->type.str_pad($this->copy_request->id, 5, '0', STR_PAD_LEFT))
+                    ->line('Requestor : '.$this->copy_request->user->name)
+                    ->line('Type of Request : '.$this->typedata)
                     ->line('Please click the button provided for faster transaction')
                     ->action('Pending For Approval', url('/for-approval'))
                     ->line('Thank you for using our application!');

@@ -14,6 +14,9 @@ use App\ObsoleteAttachment;
 use App\Obsolete;
 use App\DocumentType;
 use App\User;
+use App\Notifications\ForApproval;
+use App\Notifications\ApprovedRequest;
+use App\Notifications\DeclineRequest;
 
 
 
@@ -93,6 +96,12 @@ class RequestController extends Controller
         //
         $copy_for_approvals = CopyApprover::orderBy('id','desc')->where('user_id',auth()->user()->id)->get();
         $change_for_approvals = RequestApprover::orderBy('id','desc')->where('user_id',auth()->user()->id)->get();
+        if(auth()->user()->role == "Administrator")
+        {
+            $copy_for_approvals = CopyApprover::orderBy('id','desc')->get();
+            $change_for_approvals = RequestApprover::orderBy('id','desc')->get();
+        }
+       
 
         return view('for_approval',
         array(
@@ -163,6 +172,8 @@ class RequestController extends Controller
             {
                 $copy_approver->status = "Pending";
                 $copy_approver->start_date = date('Y-m-d');
+                $ApproverNotif = User::where('id',$copy_approver->user_id)->first();
+                $ApproverNotif->notify(new ForApproval($changeRequest,"DICR-","Change Request"));
             }
             else
             {
@@ -208,6 +219,8 @@ class RequestController extends Controller
             {
                 $copy_approver->status = "Pending";
                 $copy_approver->start_date = date('Y-m-d');
+                $copy_approver = User::where('id',$copy_approver->user_id)->first();
+                $copy_approver->notify(new ForApproval($changeRequest,"DICR-","Document Information Change Request"));
             }
             else
             {
@@ -431,6 +444,9 @@ class RequestController extends Controller
                 }
                 $copyRequest->status = "Approved";
                 $copyRequest->save();
+
+                $approvedRequestsNotif = User::where('id',$copyRequest->user_id)->first();
+                $approvedRequestsNotif->notify(new ApprovedRequest($copyRequest,"DICR-","Document Information Change Request","request"));
             }
             else
             {
@@ -439,7 +455,9 @@ class RequestController extends Controller
                 $copyApprover->save();
                 $copyRequest->level = $copyRequest->level+1;
                 $copyRequest->save();
-                
+
+                $nextApproverNotif = User::where('id',$copyApprover->user_id)->first();
+                $nextApproverNotif->notify(new ForApproval($copyRequest,"DICR-","Document Information Change Request"));
             }
             Alert::success('Successfully Approved')->persistent('Dismiss');
             return back();
@@ -448,6 +466,10 @@ class RequestController extends Controller
         {
             $copyRequest->status = "Declined";
             $copyRequest->save(); 
+            
+            $declinedRequestNotif = User::where('id',$copyRequest->user_id)->first();
+            $declinedRequestNotif->notify(new DeclineRequest($copyRequest,"DICR-","Document Information Change Request","change-requests"));
+
             Alert::success('Successfully Declined')->persistent('Dismiss');
             return back();
         }

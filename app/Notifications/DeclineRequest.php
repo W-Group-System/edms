@@ -7,7 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class ApprovedRequest extends Notification
+class DeclineRequest extends Notification
 {
     use Queueable;
 
@@ -49,17 +49,16 @@ class ApprovedRequest extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->greeting('Good Day!')
-            ->subject('Approved Notification')
-            ->greeting('Good day,')
-            ->line('Thank you for waiting, your request has been approved.')
-            ->line('Reference Number : '.$this->type.str_pad($this->copy_request->id, 5, '0', STR_PAD_LEFT))
-            ->line('Type of Request : '.$this->typedata)
-            ->line('Please click the button provided for faster transaction')
-            ->action('Approved Request', url($this->req))
-            ->line('Thank you for using our application!');
+                ->greeting('Good Day!')
+                ->subject('Declined Request')
+                ->greeting('Good day,')
+                ->line('We regret to inform you that your request has been Declined. You may view the reason/remarks in the system.')
+                ->line('Reference Number : '.$this->type.str_pad($this->copy_request->id, 5, '0', STR_PAD_LEFT))
+                ->line('Type of Request : '.$this->typedata)
+                ->line('Please click the button provided for faster transaction')
+                ->action('Approved Request', url($this->req))
+                ->line('Thank you for using our application!');
     }
-    
 
     /**
      * Get the array representation of the notification.
