@@ -206,7 +206,35 @@ class RequestController extends Controller
         $changeRequest->link_draft = $request->draft_link;
         $changeRequest->status = "Pending";
         $changeRequest->level = 1;
+        if($request->has('soft_copy'))
+        {
+            $attachment = $request->file('soft_copy');
+        
+            $name = time() . '_' . $attachment->getClientOriginalName();
+            $attachment->move(public_path() . '/document_attachments/', $name);
+            $file_name = '/document_attachments/' . $name;
+            $changeRequest->soft_copy = $file_name;
+        }
+        if($request->has('pdf_copy'))
+        {
+            $attachment = $request->file('pdf_copy');
+            $name = time() . '_' . $attachment->getClientOriginalName();
+            $attachment->move(public_path() . '/document_attachments/', $name);
+            $file_name = '/document_attachments/' . $name;
+            $changeRequest->pdf_copy = $file_name;
+        }
+        if($request->has('fillable_copy'))
+        {
+            $attachment = $request->file('fillable_copy');
+            $name = time() . '_' . $attachment->getClientOriginalName();
+            $attachment->move(public_path() . '/document_attachments/', $name);
+            $file_name = '/document_attachments/' . $name;
+            $changeRequest->fillable_copy = $file_name;
+        }
+        
         $changeRequest->save();
+
+        
     
         $approvers = DepartmentApprover::where('department_id',auth()->user()->department_id)->orderBy('level','asc')->get();
         foreach($approvers as $approver)

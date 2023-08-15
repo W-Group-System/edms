@@ -52,7 +52,13 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Change Requests
-                        @if(auth()->user()->role == "Documents and Records Controller")<button class="btn btn-success "  data-target="#newRequest" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New </button>@endif</h5>
+                        @if(auth()->user()->role == "Documents and Records Controller")
+                        <button class="btn btn-success "  data-target="#newRequest" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New </button>
+                        @endif
+                        @if(auth()->user()->role == "Document Control Officer")
+                        <button class="btn btn-success "  data-target="#newRequest" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New </button>
+                        @endif
+                    </h5>
                   
                 </div>
                 <div class="ibox-content">

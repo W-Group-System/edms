@@ -74,6 +74,22 @@
                             <textarea placeholder="To (Indicate the changes)" rows="8" cols="50" charswidth="23" class="form-control-sm form-control " name='to_changes'></textarea>
                         </div>
                     </div>
+                    @if((auth()->user()->role == "Document Control Officer"))
+                    <div class='row'>
+                        <div class='col-md-4'>
+                            SOFT Copy <small><i>(.word,.csv,.ppt,etc)</i></small>
+                            <input type="file" class="form-control-sm form-control " accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint"  name="soft_copy" required/>
+                        </div>
+                        <div class='col-md-4'>
+                            PDF/Scanned Copy <small><i>(.pdf)</i></small>
+                            <input type="file" class="form-control-sm form-control " accept="application/pdf"  name="pdf_copy" required/>
+                        </div>
+                        <div class='col-md-4'>
+                            FILLABLE Copy <small><i>(.pdf)</i><small>
+                            <input type="file" class="form-control-sm form-control "  name="fillable_copy" />
+                        </div>
+                    </div>
+                    @endif
                     <div class='row '>
                         <div class='col-md-12 border'>
                             <hr>
@@ -93,14 +109,14 @@
                             @foreach($document->department->approvers as $approver)
                             
                         
-                                        <div class='row'>
-                                            <div class='col-md-1 text-right border border-primary border-top-bottom border-left-right'>
-                                                {{$approver->level}}
-                                            </div>
-                                            <div class='col-md-11 border border-primary border-top-bottom border-left-right'>
-                                                {{$approver->user->name}}
-                                            </div>
-                                        </div>
+                            <div class='row'>
+                                <div class='col-md-1 text-right border border-primary border-top-bottom border-left-right'>
+                                    {{$approver->level}}
+                                </div>
+                                <div class='col-md-11 border border-primary border-top-bottom border-left-right'>
+                                    {{$approver->user->name}}
+                                </div>
+                            </div>
                             
                             @endforeach
                         </div>

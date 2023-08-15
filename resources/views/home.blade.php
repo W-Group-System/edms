@@ -1,6 +1,7 @@
 @extends('layouts.header')
 @section('css')
 <link href="{{ asset('login_css/css/plugins/c3/c3.min.css') }}" rel="stylesheet">
+<link href="{{ asset('login_css/css/plugins/morris/morris-0.4.3.min.css') }}" rel="stylesheet">
 @endsection
 @section('content')
 
@@ -122,30 +123,10 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Permits and licenses ({{count($permits)}})</h5>
+                   
                 </div>
                 <div class="ibox-content">
-                    <table class="table table-striped table-bordered table-hover tables">
-                        <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Company</th>
-                            <th>Responsible</th>
-                            <th>Expiration Date</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($permits as $permit)
-                                <tr>
-                                    <td><a href='{{url($permit->file)}}' target='_blank'>{{$permit->title}}</a></td>
-                                    <td>{{$permit->company->name}}</td>
-                                    <td><small>@foreach($permit->department->permit_accounts as $accountable)
-                                        {{$accountable->user->name}} <hr>
-                                    @endforeach</small></td>
-                                    <td ><span class="label label-danger">{{date('M d, Y',strtotime($permit->expiration_date))}}</span></td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div id="morris-donut-chart" ></div>
                 </div>
             </div>
         </div>
@@ -160,12 +141,34 @@
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
 <script src="{{ asset('login_css/js/plugins/chartJs/Chart.min.js') }}"></script>
 
+<script src="{{ asset('login_css/js/plugins/morris/raphael-2.1.0.min.js') }}"></script>
+<script src="{{ asset('login_css/js/plugins/morris/morris.js') }}"></script>
+
+
 <script src="{{ asset('login_css/js/plugins/d3/d3.min.js') }}"></script>
 <script src="{{ asset('login_css/js/plugins/c3/c3.min.js') }}"></script>
 <script>
     var departments = {!! json_encode(($departments)->toArray()) !!};
+    var for_renewal = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))))) !!};
+    var active = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','>=',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))))) !!};
+    var no_expiration = {!! json_encode((count($permits->where('expiration_date','==',null)))) !!};
+    console.log(no_expiration);
     var types = {!! json_encode(($categories->pluck('name'))->toArray()) !!};
     var obsoletes = {!! json_encode(($departments->pluck('obsoletes_count'))->toArray()) !!};
+
+    $(function() {
+            Morris.Donut({
+            element: 'morris-donut-chart',
+            data: [
+                
+                { label: "For Renewal", value: for_renewal },
+                { label: "Active", value: active },
+                { label: "No Expiration", value: no_expiration } ],
+            resize: true,
+            colors: ['#f44336', '#54cdb4','#1ab394'],
+        });
+        
+    });
 
     $(document).ready(function(){
         var types_names = {!! json_encode(($categories)->toArray()) !!};

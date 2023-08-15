@@ -34,7 +34,7 @@ class HomeController extends Controller
         $copy_requests = CopyRequest::get();
         $documents = Document::where('status',null)->get();
         $departments = Department::with('documents','obsoletes')->withCount('documents','obsoletes')->get();
-        $permits = Permit::with('company', 'department')->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->get();
+        $permits = Permit::with('company', 'department')->get();
         if((auth()->user()->role != "Administrator") || (auth()->user()->role != "Management Representative") || (auth()->user()->role != "Business Process Manager"))
         {
             if((auth()->user()->role == "Department Head"))
