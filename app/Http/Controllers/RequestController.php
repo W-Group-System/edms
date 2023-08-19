@@ -237,6 +237,7 @@ class RequestController extends Controller
         
     
         $approvers = DepartmentApprover::where('department_id',auth()->user()->department_id)->orderBy('level','asc')->get();
+        // dd($approvers);
         foreach($approvers as $approver)
         {
             $copy_approver = new RequestApprover;
@@ -247,8 +248,8 @@ class RequestController extends Controller
             {
                 $copy_approver->status = "Pending";
                 $copy_approver->start_date = date('Y-m-d');
-                $copy_approver = User::where('id',$copy_approver->user_id)->first();
-                $copy_approver->notify(new ForApproval($changeRequest,"DICR-","Document Information Change Request"));
+                $ApproverNotif= User::where('id',$copy_approver->user_id)->first();
+                $ApproverNotif->notify(new ForApproval($changeRequest,"DICR-","Document Information Change Request"));
             }
             else
             {

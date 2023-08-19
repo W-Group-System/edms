@@ -17,16 +17,17 @@
             @endphp
             <form method='post' action='{{url('new-change-request')}}' onsubmit='show();' class="form-horizontal"  enctype="multipart/form-data" >
        
+                {{ csrf_field() }}
                 <div class="modal-body">
                         <input type="hidden" class="form-control-sm form-control " name="request_type" value='New'  />
-                    <div class='row '>
-                        <div class='col-md-12'>
-                            Title :
-                            <input type="text" class="form-control-sm form-control "  value="{{ old('title') }}"  name="title" required/>
+                    
+                        <div class='row '>
+                            <div class='col-md-12'>
+                                Title :
+                                <input type="text" class="form-control-sm form-control "  value="{{ old('title') }}"  name="title" required/>
+                            </div>
                         </div>
-                    </div>
                     <div class='row '>
-                        {{ csrf_field() }}
                         <div class='col-md-4'>
                             Company :
                             <select name='company' class='form-control-sm form-control cat' required>
@@ -64,7 +65,7 @@
                     
                     <div class='row'>
                         <div class='col-md-4' >
-                            Proposed Effectice Date :
+                            Proposed Effective Date :
                             <input type="date" class="form-control-sm form-control " min='{{date('Y-m-d')}}' name="effective_date" required/>
                         </div>
                         <div class='col-md-8' >

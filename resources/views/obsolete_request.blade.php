@@ -50,7 +50,7 @@
                     </div>
                     <div class='row'>
                         <div class='col-md-4' >
-                            Proposed Effectice Date :
+                            Proposed Effective Date :
                             <input type="date" class="form-control-sm form-control " min='{{date('Y-m-d')}}' name="effective_date" required/>
                         </div>
                     </div>
