@@ -176,11 +176,11 @@
                         <div class='row'>
                             <div class='col-md-4'>
                                 SOFT Copy <small><i>(.word,.csv,.ppt,etc)</i></small>
-                                <input type="file" class="form-control-sm form-control " accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint"  name="soft_copy" required/>
+                                <input type="file" class="form-control-sm form-control "  name="soft_copy" required/>
                             </div>
                             <div class='col-md-4'>
                                 PDF/Scanned Copy <small><i>(.pdf)</i></small>
-                                <input type="file" class="form-control-sm form-control " accept="application/pdf"  name="pdf_copy" required/>
+                                <input type="file" class="form-control-sm form-control "  name="pdf_copy" required/>
                             </div>
                             <div class='col-md-4'>
                                 FILLABLE Copy <small><i>(.pdf)</i><small>
@@ -188,7 +188,7 @@
                             </div>
                         </div>
                     @endif
-                        
+
                     <div class='row'>
                         <div class='col-md-4'>
                             Action :
