@@ -61,7 +61,7 @@ return [
             [
                 'name' => 'EDMS',
                 'description' => 'EDMS',
-                'url' => '175.18.72.121:8081',
+                'url' => '175.18.72.121',
                 'icons' => [
                     "src" => "/images/icons/icon-72x72.png",
                     "purpose" => "any"
