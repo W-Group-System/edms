@@ -15,10 +15,11 @@
                         <h5>{{$document->title}} </h5>@if($document->status == null)<span class="label label-primary">Active</span> @else<span class="label label-danger">Obsolete</span> @endif
                     </div>
                     <div class="ibox-content">
+                        
+                        @if($document->status != "Obsolete")
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="m-b-md">
-                                    @if($document->status != "Obselete")
                                         @if((auth()->user()->role == "User") || (auth()->user()->role == "Documents and Records Controller") || (auth()->user()->role == "Document Control Officer"))
                                             @if(auth()->user()->role == "Documents and Records Controller")
                                                 @if(auth()->user()->department_id != $document->department_id)
@@ -51,11 +52,11 @@
                                         @endif
                                     @endif
                                     
-                                    @endif
                                 </div>
                             </div>
                         </div>
                         
+                        @endif
                         <div class="row">
                             <div class="col-lg-6">
                                 <dl class="dl-horizontal">
