@@ -67,14 +67,16 @@ class DepartmentController extends Controller
             $departmentapprover->level = $key+1;
             $departmentapprover->save();
         }
-        foreach($request->permit_id as $key => $permit_id)
+        if($request->permit_id)
         {
-            $PermitAccountable = new PermitAccountable;
-            $PermitAccountable->department_id = $department->id;
-            $PermitAccountable->user_id = $permit_id;
-            $PermitAccountable->save();
+            foreach($request->permit_id as $key => $permit_id)
+            {
+                $PermitAccountable = new PermitAccountable;
+                $PermitAccountable->department_id = $department->id;
+                $PermitAccountable->user_id = $permit_id;
+                $PermitAccountable->save();
+            }
         }
-      
 
         Alert::success('Successfully Store')->persistent('Dismiss');
         return back();
