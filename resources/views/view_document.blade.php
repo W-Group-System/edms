@@ -18,22 +18,23 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="m-b-md">
-                                    @if((auth()->user()->role == "User") || (auth()->user()->role == "Documents and Records Controller") || (auth()->user()->role == "Document Control Officer"))
-                                        @if(auth()->user()->role == "Documents and Records Controller")
-                                            @if(auth()->user()->department_id != $document->department_id)
+                                    @if($document->status != "Obselete")
+                                        @if((auth()->user()->role == "User") || (auth()->user()->role == "Documents and Records Controller") || (auth()->user()->role == "Document Control Officer"))
+                                            @if(auth()->user()->role == "Documents and Records Controller")
+                                                @if(auth()->user()->department_id != $document->department_id)
+                                                    <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
+                                                @endif
+                                            @elseif(auth()->user()->role == "Document Control Officer") 
+                                                @php
+                                                    $dep = (auth()->user()->dco)->where('department_id',$document->department_id);
+                                                @endphp
+                                                @if(count($dep) == 0)
+                                                    <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
+                                                @endif
+                                            @else
                                                 <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
                                             @endif
-                                        @elseif(auth()->user()->role == "Document Control Officer") 
-                                            @php
-                                                $dep = (auth()->user()->dco)->where('department_id',$document->department_id);
-                                            @endphp
-                                            @if(count($dep) == 0)
-                                                <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
-                                            @endif
-                                        @else
-                                            <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
                                         @endif
-                                    @endif
                                     @if(auth()->user()->role == "Documents and Records Controller")
                                         @if(auth()->user()->department_id == $document->department_id)
                                             <a href="#" data-target="#changeRequest" data-toggle="modal" class="btn btn-warning btn-sm ">Change Request </a>
@@ -50,6 +51,7 @@
                                         @endif
                                     @endif
                                     
+                                    @endif
                                 </div>
                             </div>
                         </div>
