@@ -70,7 +70,11 @@ return [
             [
                 'name' => 'EDMS',
                 'description' => 'EDMS',
-                'url' => '127.0.0.1:8000',
+                'url' => '175.18.72.121:8081',
+                'icons' => [
+                    "src" => "/images/icons/icon-72x72.png",
+                    "purpose" => "any"
+                ]
             ]
         ],
         'custom' => []
