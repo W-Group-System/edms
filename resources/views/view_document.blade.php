@@ -124,7 +124,7 @@
                                                 @if($attachment->type == "soft_copy")
                                                 <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-word-o"></i> Editable Copy</a></dd>
                                                 @elseif($attachment->type == "pdf_copy")
-                                                <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> Fillable Copy</a></dd>
+                                                <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a></dd>
                                                 @else
                                                 <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> Fillable Copy</a></dd>
                                                 @endif
