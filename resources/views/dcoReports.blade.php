@@ -57,7 +57,7 @@
                                     <th>Effective Date</th>
                                     <th>Start Date</th>
                                     <th>End Date</th>
-                                    <th>TOT</th>
+                                    <th>TAT</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>

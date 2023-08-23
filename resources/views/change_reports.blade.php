@@ -53,7 +53,7 @@
                                     <th>Approver</th>
                                     <th>Start Date</th>
                                     <th>Action Date</th>
-                                    <th>TOT</th>
+                                    <th>TAT</th>
                                     <th>Remarks</th>
                                     <th>Status</th>
                                 </tr>
