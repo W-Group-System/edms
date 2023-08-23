@@ -40,7 +40,7 @@
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Obsoletes</h5>
+                    <h5>Obsolete</h5>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">{{count($obsoletes)+count($documents->where('status',"Obsolete"))}}</h1>
