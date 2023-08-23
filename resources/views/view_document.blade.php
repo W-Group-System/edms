@@ -69,9 +69,9 @@
                             <div class="col-lg-6" >
                                 <dl class="dl-horizontal" >
 
-                                    <dt>Created:</dt> <dd> 	{{date('M d Y h:i:s',strtotime($document->updated_at))}} </dd>
-                                    <dt>Last Updated:</dt> <dd>{{date('M d Y h:i:s',strtotime($document->created_at))}}</dd>
-                                    <dt>Effective Date:</dt> <dd>{{date('M d Y',strtotime($document->effective_date))}}</dd>
+                                    <dt>Created:</dt> <dd> 	{{date('M, d Y h:i:s',strtotime($document->updated_at))}} </dd>
+                                    <dt>Last Updated:</dt> <dd>{{date('M, d Y h:i:s',strtotime($document->created_at))}}</dd>
+                                    <dt>Effective Date:</dt> <dd>{{date('M, d Y',strtotime($document->effective_date))}}</dd>
                                     <dt>Process Owner:</dt> <dd>@if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif</dd>
                                     {{-- <dt>Access:</dt>
                                     <dd class="project-people">
