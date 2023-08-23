@@ -171,7 +171,6 @@
                         </div>
                         @endif
                     </div>
-                    @endif
                     @if((auth()->user()->role == "Document Control Officer") && ($request->request_type != "Obsolete"))
                         <div class='row'>
                             <div class='col-md-4'>
