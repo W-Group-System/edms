@@ -423,7 +423,7 @@ class RequestController extends Controller
                    $department = Department::findOrFail($copyRequest->department_id);
                    $type_of_doc = DocumentType::where('name',$copyRequest->type_of_document)->first();
 
-                   $document_get_latest = Document::where('company_id',$copyRequest->company_id)->where('department_id',$copyRequest->department_id)->where('category',$copyRequest->type_of_document)->orderBy('id','desc')->first();
+                   $document_get_latest = Document::where('company_id',$copyRequest->company_id)->where('department_id',$copyRequest->department_id)->where('category',$copyRequest->type_of_document)->orderBy('control_code','desc')->first();
                    if($document_get_latest == null)
                    {
                         $code = $company->code."-".$type_of_doc->code."-".$department->code."-001";
