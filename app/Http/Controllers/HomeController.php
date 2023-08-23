@@ -36,7 +36,7 @@ class HomeController extends Controller
         $yearChangeRequests = ChangeRequest::whereYear('created_at',date('Y'))->get();
         $yearCopyRequests = CopyRequest::whereYear('created_at',date('Y'))->get();
         $documents = Document::where('status',null)->get();
-        $departments = Department::with('documents','obsoletes')->withCount('documents','obsoletes')->get();
+        $departments = Department::whereHas('documents')->with('documents','obsoletes')->withCount('documents','obsoletes')->get();
         $permits = Permit::with('company', 'department')->get();
         $months = [];
        
