@@ -66,7 +66,7 @@ return [
                     "src" => "/images/icons/icon-72x72.png",
                     "purpose" => "any"
                 ]
-            ],
+            ]
         ],
         'custom' => []
     ]
