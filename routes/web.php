@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/documents', 'DocumentController@index')->name('documents');
     Route::post('upload-document','DocumentController@store')->name('documents');
     Route::get('/view-document/{id}','DocumentController@show')->name('documents');
+    Route::get('/view-pdf/{id}','DocumentController@showPDF')->name('documents');
 
     //copyrequest
     Route::post('copy-request','CopyController@store');

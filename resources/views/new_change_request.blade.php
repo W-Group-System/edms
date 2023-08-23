@@ -31,16 +31,16 @@
                         <div class='col-md-4'>
                             Company :
                             <select name='company' class='form-control-sm form-control cat' required>
-                                <option value=""></option>
                                 @foreach($companies as $company)
+                                    @if(auth()->user()->company_id == $company->id)
                                     <option value='{{$company->id}}' @if(old('company') == $company->id) selected @endif>{{$company->code}} - {{$company->name}}</option>
-                                @endforeach
+                                    @endif
+                                    @endforeach
                             </select>
                          </div>
                         <div class='col-md-4'>
                             Department :
                             <select name='department' class='form-control-sm form-control cat' required>
-                                <option value=""></option>
                                 @foreach($departments as $dep)
                                     @if(auth()->user()->department_id == $dep->id)
                                     <option value='{{$dep->id}}' @if(old('department') == $dep->id) selected @endif>{{$dep->code}} - {{$dep->name}}</option>

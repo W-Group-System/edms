@@ -164,4 +164,8 @@ class DocumentController extends Controller
     {
         //
     }
+    public function showPDF($id)
+    {
+        
+    }
 }
