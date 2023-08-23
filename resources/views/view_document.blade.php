@@ -152,7 +152,7 @@
 
                             <div class="tab-content">
                             <div class="tab-pane active" id="tab-1">
-                                <table class="table table-striped">
+                                <table class="table table-striped tables">
                                     <thead>
                                         <tr>
                                             <th>Control Code</th>
@@ -186,7 +186,7 @@
                             </div>
                             <div class="tab-pane" id="tab-2">
 
-                                <table class="table table-striped">
+                                <table class="table table-striped tables">
                                     <thead>
                                         <tr>
                                             
@@ -228,7 +228,7 @@
                             </div>
                             <div class="tab-pane" id="tab-3">
 
-                                <table class="table table-striped">
+                                <table class="table table-striped tables">
                                     <thead>
                                         <tr>
                                             <th>Reference #</th>
@@ -283,12 +283,11 @@
         $('.tables').DataTable({
             pageLength: 25,
             responsive: true,
+            bPaginate: false,
+            bInfo : false,
             dom: '<"html5buttons"B>lTfgitp',
             buttons: [
-                { extend: 'copy'},
-                {extend: 'csv'},
-                {extend: 'excel', title: 'ExampleFile'},
-                {extend: 'pdf', title: 'ExampleFile'},
+                {extend: 'pdf', title: 'Histories'},
 
                 {extend: 'print',
                  customize: function (win){
