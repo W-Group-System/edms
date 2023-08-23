@@ -1,11 +1,11 @@
 <?php
 
 return [
-    'name' => 'LaravelPWA',
+    'name' => 'EDMS',
     'manifest' => [
-        'name' => env('APP_NAME', 'My PWA App'),
-        'short_name' => 'PWA',
-        'start_url' => '/',
+        'name' => env('APP_NAME', 'EDMS'),
+        'short_name' => 'EDMS',
+        'start_url' => '.',
         'background_color' => '#ffffff',
         'theme_color' => '#000000',
         'display' => 'standalone',
@@ -61,7 +61,7 @@ return [
             [
                 'name' => 'EDMS',
                 'description' => 'EDMS',
-                'url' => '175.18.72.121:8081',
+                'url' => '127.0.0.1:8000',
                 'icons' => [
                     "src" => "/images/icons/icon-72x72.png",
                     "purpose" => "any"
@@ -70,11 +70,7 @@ return [
             [
                 'name' => 'EDMS',
                 'description' => 'EDMS',
-                'url' => '175.18.72.121:8081',
-                'icons' => [
-                    "src" => "/images/icons/icon-72x72.png",
-                    "purpose" => "any"
-                ]
+                'url' => '127.0.0.1:8000',
             ]
         ],
         'custom' => []
