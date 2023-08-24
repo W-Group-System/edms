@@ -20,6 +20,7 @@ class CopyController extends Controller
     
         $copy_request = new CopyRequest;
         $copy_request->type_of_document = $request->type_of_document;
+        $copy_request->purpose = $request->purpose;
         $copy_request->document_id = $request->id;
         $copy_request->control_code = $request->control_code;
         $copy_request->title = $request->title;

@@ -174,6 +174,11 @@
                     <hr>
                     @if((auth()->user()->role == "Document Control Officer") && ($request->request_type != "Obsolete"))
                         <div class='row'>
+                            <div class='col-md-12'>
+                                <i class='text-danger'>Note : No need to protect the PDF/Scanned Copy for all document types except (Forms / Template).</i>
+                            </div>
+                        </div>
+                        <div class='row'>
                             <div class='col-md-4'>
                                 SOFT Copy <small><i>(.word,.csv,.ppt,etc)</i></small>
                                 <input type="file" class="form-control-sm form-control "  name="soft_copy" required/>

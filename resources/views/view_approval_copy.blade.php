@@ -46,6 +46,11 @@
                             Date Requested : {{date('M d, Y',strtotime($request->created_at))}}
                         </div>
                     </div>
+                    <div class='row '>
+                        <div class='col-md-12'>
+                            Purpose : {{$request->purpose}} 
+                        </div>
+                    </div>
                     <hr>
                         <div class='row text-center'>
                             <div class='col-md-3 border  border-primary border-top-bottom border-left-right'>

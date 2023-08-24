@@ -65,6 +65,13 @@
                             <input type="date" class="form-control-sm form-control " min='{{date('Y-m-d')}}' name="date_needed" required/>
                         </div>
                     </div>
+                    <div class='row'>
+                        <div class='col-md-12'>
+                            Purpose :
+                            <textarea name='purpose'  rows="5" cols="100" charswidth="23" class="form-control-sm form-control " required></textarea>
+                            
+                        </div>
+                    </div>
                     <div class='row '>
                         <div class='col-md-12 border'>
                             <hr>
