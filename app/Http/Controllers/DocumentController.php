@@ -8,6 +8,7 @@ use App\DocumentType;
 use App\DocumentAttachment;
 use App\Company;
 use Illuminate\Http\Request;
+use \setasign\Fpdi\PdfParser\StreamReader;
 
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -166,6 +167,23 @@ class DocumentController extends Controller
     }
     public function showPDF($id)
     {
-        
+        $attachment = DocumentAttachment::findOrFail($id);
+        $pdf = new \setasign\Fpdi\Fpdi();
+        $newFile = str_replace(' ', '%20', $attachment->attachment);
+        $fileContentData = file_get_contents(url($newFile));
+        $pageCount = $pdf->setSourceFile(StreamReader::createByString($fileContentData));
+
+        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+            $pdf->AddPage();
+                $pdf->setSourceFile(StreamReader::createByString($fileContentData));
+                $tplIdx = $pdf->importPage($pageNo);
+                $pdf->useTemplate($tplIdx);
+                $pdf->SetFont('Helvetica');
+                $pdf->SetTextColor(255, 0, 0);
+                $pdf->SetXY(10, 250);
+                // $this->Rect(5, 5, 200, 287, 'D');
+                $pdf->Image('images/stamp.png', 50, 250, 100, '', '', '', '', false, 300);
+        }
+        $pdf->Output();
     }
 }
