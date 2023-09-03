@@ -19,6 +19,8 @@
     <link href="{{ asset('login_css/css/style.css') }}" rel="stylesheet">
     @yield('css')
     <style>
+        .shownext { display: none; }
+        li:hover + .shownext { display: block; }
         .loader {
             position: fixed;
             left: 0px;
@@ -48,13 +50,13 @@
     <!-- Styles -->
     {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
 </head>
-<body>
+<body class='pace-done mini-navbar'>
     <div id="loader" style="display:none;" class="loader">
     </div>
     <div id="wrapper">
         <nav class="navbar-default navbar-static-side" role="navigation" style="margin-bottom: 0">
             <div class="sidebar-collapse">
-                <ul class="nav metismenu" id="side-menu">
+                <ul class="nav metismenu tooltip-demo" id="side-menu">
                     <li class="nav-header">
                         <div class="dropdown profile-element"> <span>
                                 <img alt="image" class="img-circle" style='width:50px;' src="{{asset('images/no_image.png')}}" />
@@ -63,54 +65,56 @@
                                 <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">{{auth()->user()->name}}</strong>
                                  </span> <span class="text-muted text-xs block">{{auth()->user()->role}} <b class="caret"></b></span> </span> </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                                <li><a href="{{url('profile')}}">Profile</a></li>
+                                <li><a href="#">Change Password</a></li>
                             </ul>
                         </div>
                         <div class="logo-element">
+                            
                             <img alt="image" class="img-circle" style='width:50px;' src="{{asset('images/no_image.png')}}" />
                         </div>
+                        
                     </li>
                     <!-- //sidebar -->
                     @if((auth()->user()->role != "User"))
-                        <li class="{{ Route::current()->getName() == 'home' ? 'active' : '' }}">
+                        <li class="{{ Route::current()->getName() == 'home' ? 'active' : '' }} shownext" data-toggle="tooltip" data-placement="right" title="Dashboard">
                             <a href="{{url('/home')}}"><i class="fa fa-th-large"></i> <span
-                                    class="nav-label">Dashboard </span></a>
+                                    class="nav-label " >Dashboard </span></a>
                         </li>
                     @endif
-                    <li class="{{ Route::current()->getName() == 'search' ? 'active' : '' }}">
+                    <li class="{{ Route::current()->getName() == 'search' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Search">
                         <a href="{{url('/search')}}"><i class="fa fa-search"></i> <span
                                 class="nav-label">Search </span></a>
                     </li>
-                    <li class="{{ Route::current()->getName() == 'requests' ? 'active' : '' }}">
+                    <li class="{{ Route::current()->getName() == 'requests' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Copy Requests">
                         <a href="{{url('/request')}}"><i class="fa fa-paper-plane"></i> <span
                                 class="nav-label">Copy Requests </span></a>
                     </li>
                     @if((auth()->user()->role != "User"))
-                    <li class="{{ Route::current()->getName() == 'change-requests' ? 'active' : '' }}">
+                    <li class="{{ Route::current()->getName() == 'change-requests' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Change Requests">
                         <a href="{{url('/change-requests')}}"><i class="fa fa-eye"></i> <span
                                 class="nav-label">Change Requests </span></a>
                     </li>
                     @endif
                     @if((count(auth()->user()->copy_approvers) != 0) || (count(auth()->user()->department_approvers) != 0) || (count(auth()->user()->change_approvers) != 0))
-                    <li class="{{ Route::current()->getName() == 'for-approval' ? 'active' : '' }}">
+                    <li class="{{ Route::current()->getName() == 'for-approval' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="For Approval">
                         <a href="{{url('/for-approval')}}"><i class="fa fa-check-square-o"></i> <span
                                 class="nav-label">For Approval </span></a>
                     </li>
                     @endif
                     @if((auth()->user()->role != "User"))
-                    <li class="{{ Route::current()->getName() == 'documents' ? 'active' : '' }}">
+                    <li class="{{ Route::current()->getName() == 'documents' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Documents">
                         <a href="{{url('/documents')}}"><i class="fa fa-files-o"></i> <span
                                 class="nav-label">Documents </span></a>
                     </li>
                     @endif
                     @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Document Control Officer') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (count(auth()->user()->accountable_persons) !=0 ))
-                    <li class="{{ Route::current()->getName() == 'permits' ? 'active' : '' }}">
+                    <li class="{{ Route::current()->getName() == 'permits' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Permits & Licenses">
                         <a href="{{url('/permits')}}"><i class="fa fa-file-archive-o"></i> <span
                                 class="nav-label">Permits & Licenses </span></a>
                     </li>
                     @endif
                     @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative'))
-                    <li class="{{ Route::current()->getName() == 'settings' ? 'active' : '' }}">
+                    <li class="{{ Route::current()->getName() == 'settings' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Settings">
                         <a href="#"><i class="fa fa-gavel"></i> <span class="nav-label">Settings</span><span
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">
@@ -121,7 +125,7 @@
                         </ul>
                     </li>
                     
-                    <li class="{{ Route::current()->getName() == 'reports' ? 'active' : '' }}">
+                    <li class="{{ Route::current()->getName() == 'reports' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Reports">
                         <a href="#"><i class="fa fa-list-ul"></i> <span class="nav-label">Reports</span><span
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">
@@ -144,7 +148,9 @@
                 <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
                     <div class="navbar-header">
                         <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i
-                                class="fa fa-bars"></i> </a>
+                                class="fa fa-bars"></i>
+                             </a>
+                            
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
                         <li>

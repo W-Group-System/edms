@@ -105,7 +105,7 @@
                 </div>
             </div>
         </div> --}}
-        <div class="col-lg-8">
+        <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Documents Library </h5>
@@ -115,6 +115,21 @@
                     <div>
                         <div id="stocked"></div>
                     </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    @if((auth()->user()->role == "Administrator") || (auth()->user()->role == "Management Representative") || (auth()->user()->role == "Business Process Manager"))
+    
+    <div class='row'>
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Requests</h5>
+                </div>
+                <div class="ibox-content">
+                    <div id="morris-bar-chart"></div>
                 </div>
             </div>
         </div>
@@ -131,20 +146,6 @@
             </div>
         </div>
         @endif
-    </div>
-    @if((auth()->user()->role == "Administrator") || (auth()->user()->role == "Management Representative") || (auth()->user()->role == "Business Process Manager"))
-    
-    <div class='row'>
-        <div class="col-lg-8">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Requests</h5>
-                </div>
-                <div class="ibox-content">
-                    <div id="morris-bar-chart"></div>
-                </div>
-            </div>
-        </div>
         <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
