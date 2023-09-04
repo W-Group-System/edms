@@ -91,7 +91,7 @@
                     </li>
                     @if((auth()->user()->role != "User"))
                     <li class="{{ Route::current()->getName() == 'change-requests' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Change Requests">
-                        <a href="{{url('/change-requests')}}"><i class="fa fa-eye"></i> <span
+                        <a href="{{url('/change-requests')}}"><i class="fa fa-edit"></i> <span
                                 class="nav-label">Change Requests </span></a>
                     </li>
                     @endif
