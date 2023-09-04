@@ -34,22 +34,22 @@ class RequestController extends Controller
     {
         //
        
-        $requests = CopyRequest::orderBy('id','desc')->get();
+        $requests = CopyRequest::with('document')->orderBy('id','desc')->get();
         if(auth()->user()->role == "User")
         {
-            $requests = CopyRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->get();
+            $requests = CopyRequest::with('document')->where('user_id',auth()->user()->id)->orderBy('id','desc')->get();
         }
         else if(auth()->user()->role == "Document Control Officer")
         {
-            $requests = CopyRequest::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->orderBy('id','desc')->get();
+            $requests = CopyRequest::with('document')->whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->orderBy('id','desc')->get();
         }
         else if(auth()->user()->role == "Department Head")
         {
-            $requests = CopyRequest::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->orderBy('id','desc')->get();
+            $requests = CopyRequest::with('document')->whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->orderBy('id','desc')->get();
         }
         else if(auth()->user()->role == "Documents and Records Controller")
         {
-            $requests = CopyRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->get();
+            $requests = CopyRequest::with('document')->where('user_id',auth()->user()->id)->orderBy('id','desc')->get();
         }
         return view('requests',
         array(

@@ -20,4 +20,8 @@ class CopyRequest extends Model implements Auditable
     {
         return $this->hasOne(DocumentAccess::class);
     }
+    public function document()
+    {
+        return $this->belongsTo(Document::class,'document_id','id');
+    }
 }

@@ -73,6 +73,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                          
                                 @foreach($requests as $request)
                                     <tr>
                                         

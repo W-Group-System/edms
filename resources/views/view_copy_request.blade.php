@@ -107,8 +107,12 @@
                                             </div>
                                             <div class="panel-body">
                                                 @if($request->document_access->attachment != null)
-                                                    <iframe width='100%' height='500px;'  src=" {{url('view-pdf/'.$request->document_access->attachment_id.'?page=hsn#toolbar=0')}}" title="Access"></iframe>
-                                                @endif
+                                                    @if(($request->document->category == "FORM") || ($request->document->category == "TEMPLATE"))
+                                                        <iframe width='100%' height='500px;'  src="{{url($request->document_access->attachment->attachment)}}" title="Access"></iframe>
+                                                    @else
+                                                        <iframe width='100%' height='500px;'  src="{{url('view-pdf/'.$request->document_access->attachment_id.'?page=hsn#toolbar=0')}}" title="Access"></iframe>
+                                                    @endif
+                                                 @endif
                                                 <p></p>
                                             </div>
                                         </div>
