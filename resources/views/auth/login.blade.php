@@ -20,14 +20,14 @@
                     <strong>{{$errors->first()}}</strong>
                 </div>
             @endif
-                <div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
+                <div class="wrap-input100" data-validate = "Valid email is required: ex@abc.xyz">
                     <input  type="email" class="input100" name="email" value="" required >
                     <span class="focus-input100"></span>
                     <span class="label-input100">Email</span>
                 </div>
                 
                 
-                <div class="wrap-input100 validate-input" data-validate="Password is required">
+                <div class="wrap-input100" data-validate="Password is required">
                     <input  id="password" type="password" class="input100" name="password" required>
                     <span class="focus-input100"></span>
                     <span class="label-input100">Password</span>
