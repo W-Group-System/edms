@@ -184,13 +184,13 @@
                                 <input type="file" class="form-control-sm form-control "  name="soft_copy" required/>
                             </div>
                             <div class='col-md-4'>
-                                PDF/Scanned Copy <small><i>(.pdf)</i></small>
+                                FILLABLE/SCANNED Copy <small><i>(.pdf,excel,word)</i></small>
                                 <input type="file" class="form-control-sm form-control "  name="pdf_copy" required/>
                             </div>
-                            <div class='col-md-4'>
+                            {{-- <div class='col-md-4'>
                                 FILLABLE Copy <small><i>(.pdf)</i><small>
                                 <input type="file" class="form-control-sm form-control "  name="fillable_copy" />
-                            </div>
+                            </div> --}}
                         </div>
                     @endif
 
