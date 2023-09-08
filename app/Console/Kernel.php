@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('command:send_renewals')->everyMinute();
+        $schedule->command('command:send_renewals')->dailyAt('08:00');
     }
 
     /**
