@@ -65,7 +65,7 @@ class SendEmails extends Command
             {
                 $permits = Permit::with('company', 'department')->whereIn('department_id',($user->accountable_persons)->pluck('department_id')->toArray())->get();
             }
-            if(($user->role == "Documents Records and Controller"))
+            if(($user->role == "Documents and Records Controller"))
             {
                 $permits = Permit::with('company', 'department')->whereIn('department_id',($user->accountable_persons)->pluck('department_id')->toArray())->get();
             }
