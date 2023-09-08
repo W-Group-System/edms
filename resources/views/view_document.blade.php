@@ -117,32 +117,32 @@
                             @endif
                         @endforeach
                         @if($allow == 1)
-                        @if($document->status != "obsolete")
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <dl class="dl-horizontal">
+                        @if($document->status == null)
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <dl class="dl-horizontal">
 
-                                        <dt>Attachments</dt>
-                                            @foreach($document->attachments as $attachment)
-                                                @if($attachment->attachment != null)
-                                                    @if($attachment->type == "soft_copy")
-                                                    <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-word-o"></i> Editable Copy</a></dd>
-                                                    @elseif($attachment->type == "pdf_copy")
-                                                        @if(($document->category == "FORM") || ($document->category == "TEMPLATE"))
-                                                        <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a></dd>
-                                                        @else
-                                                        <dd><a href='{{url('view-pdf/'.$attachment->id)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a></dd>
-                                                        @endif
+                                    <dt>Attachments</dt>
+                                        @foreach($document->attachments as $attachment)
+                                            @if($attachment->attachment != null)
+                                                @if($attachment->type == "soft_copy")
+                                                <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-word-o"></i> Editable Copy</a></dd>
+                                                @elseif($attachment->type == "pdf_copy")
+                                                    @if(($document->category == "FORM") || ($document->category == "TEMPLATE"))
+                                                    <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a></dd>
                                                     @else
-                                                    <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> Fillable Copy</a></dd>
+                                                    <dd><a href='{{url('view-pdf/'.$attachment->id)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a></dd>
                                                     @endif
-                                                
+                                                @else
+                                                <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> Fillable Copy</a></dd>
                                                 @endif
-                                            @endforeach
-                                    
-                                    </dl>
-                                </div>
+                                            
+                                             @endif
+                                        @endforeach
+                                   
+                                </dl>
                             </div>
+                        </div>
                         @endif
                         <div class="row m-t-sm">
                             <div class="col-lg-12">
