@@ -225,7 +225,6 @@
     var  columns= [column];
     for(i =0;i< types_names.length;i++)
     {
-        
         type_column=[types_names[i].code];
         for(z=0;z<departments.length;z++)
         {
@@ -240,6 +239,7 @@
         types.push(types_names[i].code);
     }
     final_types = [types];
+    console.log(columns);
         c3.generate({
                 bindto: '#stocked',
                 data:{
