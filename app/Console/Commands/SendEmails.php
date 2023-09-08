@@ -65,6 +65,10 @@ class SendEmails extends Command
             {
                 $permits = Permit::with('company', 'department')->whereIn('department_id',($user->accountable_persons)->pluck('department_id')->toArray())->get();
             }
+            if(($user->role == "Documents Records and Controller"))
+            {
+                $permits = Permit::with('company', 'department')->whereIn('department_id',($user->accountable_persons)->pluck('department_id')->toArray())->get();
+            }
 
             $countPermit = count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))));
             if($countPermit > 0)
