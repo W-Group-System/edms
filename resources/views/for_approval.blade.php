@@ -121,7 +121,7 @@
                                 <td>{{$request->user->name}}</td>
                                 <td>{{$request->request_type}}</td>
                             </tr>
-                            @include('view_approval_change')
+                            {{-- @include('view_approval_change') --}}
                             @endforeach
                         </tbody>
                         </table>
