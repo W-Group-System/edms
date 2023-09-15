@@ -47,7 +47,7 @@ class User extends Authenticatable implements Auditable
     {
         return $this->hasMany(Department::class,'user_id','id');
     }
-public function permits()
+    public function permits()
     {
         return $this->hasMany(Department::class,'id','permit_accountable');
     }
