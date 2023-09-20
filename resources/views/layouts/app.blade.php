@@ -30,12 +30,41 @@
     <!--===============================================================================================-->
         <link rel="stylesheet" type="text/css" href="{{asset('login_design/css/util.css')}}">
         <link rel="stylesheet" type="text/css" href="{{asset('login_design/css/main.css')}}">
+        <style>
+            .shownext { display: none; }
+            li:hover + .shownext { display: block; }
+            .loader {
+                position: fixed;
+                left: 0px;
+                top: 0px;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+                background: url("{{ asset('login_css/img/loader.gif') }}") 50% 50% no-repeat white;
+                opacity: .8;
+                background-size: 120px 120px;
+            }
+    
+            .dataTables_filter {
+            float: right;
+            text-align: right;
+            }
+            .dataTables_info {
+            float: left;
+            text-align: left;
+            }
+            textarea {
+        resize: vertical;
+        }
+    
+        </style>
     <!-- Fonts -->
     <!-- Styles -->
     {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
 </head>
 <body style="background-color: #666666;">
-    
+    <div id="loader" style="display:none;" class="loader">
+    </div>
     @yield('content')
     @include('sweetalert::alert')
     <!--===============================================================================================-->
@@ -54,5 +83,11 @@
         <script src="{{ asset('login_design/vendor/countdowntime/countdowntime.js')}}"></script>
     <!--===============================================================================================-->
         <script src="{{ asset('login_design/js/main.js')}}"></script>
+
+        <script>
+            function show() {
+                document.getElementById("loader").style.display = "block";
+            }
+        </script>
 </body>
 </html>
