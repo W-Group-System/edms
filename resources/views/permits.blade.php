@@ -78,7 +78,7 @@
                                     <td><a href='{{url($permit->file)}}' target='_blank'><i class='fa fa-file'></i></a></td>
                                     <td>{{$permit->type}}</td>
                                     <td>@if($permit->expiration_date != null){{date('M d Y',strtotime($permit->expiration_date))}}@endif</td>
-                                    <td>@if($permit->expiration_date != null)@if($permit->expiration_date < date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))) <small class="label label-danger">For Renewal</small> @else <small class="label label-primary">Active</small> @endif @endif</td>
+                                    <td>@if($permit->expiration_date != null)@if($permit->expiration_date < date("Y-m-d")) <small class="label label-danger">For Renewal (Overdue)</small> @elseif($permit->expiration_date < date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))) <small class="label label-warning">For Renewal</small> @else <small class="label label-primary">Active</small> @endif @endif</td>
                                     <td>
                                         {{-- {{auth()->user()->role}} --}}
                                         <button class="btn btn-sm btn-primary "  title="Upload " data-target="#upload{{$permit->id}}" data-toggle="modal"><i class="fa fa-upload"></i></button>
@@ -117,6 +117,7 @@
         $('.tables').DataTable({
             pageLength: 25,
             responsive: true,
+            stateSave: true,
             dom: '<"html5buttons"B>lTfgitp',
             buttons: [
                 { extend: 'copy'},

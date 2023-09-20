@@ -171,6 +171,7 @@
         $('.tables').DataTable({
             pageLength: 25,
             responsive: true,
+            stateSave: true,
             dom: '<"html5buttons"B>lTfgitp',
             buttons: [
                 { extend: 'copy'},
