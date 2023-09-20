@@ -49,7 +49,7 @@ class ForRenewal extends Notification
                     ->subject('Permit / License / Certificate Renewal')
                     ->greeting('Good day,')
                     ->line('This is a friendly reminder that you have a (Permit / License / Certificate) that is subject for renewal.')
-                    ->line('For Renewal : '.$this->count)
+                    ->line('For Renewal : '.$this->count-$this->countOverdue)
                     ->line('Overdue : '.$this->countOverdue)
                     ->line('Please click the button provided for faster transaction')
                     ->action('Permits & Licenses', "http://152.32.90.99:3001/permits")
