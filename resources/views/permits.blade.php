@@ -82,12 +82,17 @@
                                     <td>
                                         {{-- {{auth()->user()->role}} --}}
                                         <button class="btn btn-sm btn-primary "  title="Upload " data-target="#upload{{$permit->id}}" data-toggle="modal"><i class="fa fa-upload"></i></button>
-                                       @if((auth()->user()->role != "User") && (auth()->user()->role != "Department Head") && (auth()->user()->role != "Documents and Records Controller") ) <button class="btn btn-sm btn-warning "  title="Transfer Department" data-target="#change{{$permit->id}}" data-toggle="modal"><i class="fa fa-users"></i></button>@endif
+                                       @if((auth()->user()->role != "User") && (auth()->user()->role != "Department Head") && (auth()->user()->role != "Documents and Records Controller") )
+                                       <button class="btn btn-sm btn-warning "  title="Transfer Department" data-target="#change{{$permit->id}}" data-toggle="modal"><i class="fa fa-users"></i></button>
+                                       <button class="btn btn-sm btn-info "  title="Change Types" data-target="#changeType{{$permit->id}}" data-toggle="modal"><i class="fa fa-edit"></i></button>
+                                       
+                                       @endif
                                         {{-- <button class="btn btn-sm btn-warning "  title="View History "><i class="fa fa-eye"></i></button> --}}
                                     </td>
                                 </tr>
                                 @include('upload_permit')
                                 @include('transfer_department')
+                                @include('edit_type')
                                 @endforeach
                             </tbody>
                         </table>

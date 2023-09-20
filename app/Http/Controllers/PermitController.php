@@ -142,6 +142,16 @@ class PermitController extends Controller
         Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
     }
+    public function change_type(Request $request, $id)
+    {
+        //
+        $permit = Permit::findOrfail($id);
+        $permit->type = $request->type;
+        $permit->save();
+
+        Alert::success('Successfully Updated')->persistent('Dismiss');
+        return back();
+    }
 
     /**
      * Remove the specified resource from storage.

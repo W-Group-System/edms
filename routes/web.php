@@ -31,6 +31,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/view-document/{id}','DocumentController@show')->name('documents');
     Route::get('/view-pdf/{id}','DocumentController@showPDF')->name('documents');
 
+
     //copyrequest
     Route::post('copy-request','CopyController@store');
     Route::post('copy-request-action/{id}','CopyController@action');
@@ -45,6 +46,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('new-permit', 'PermitController@store')->name('permits');
     Route::post('/upload-permit/{id}', 'PermitController@upload')->name('permits');
     Route::post('/change-department/{id}', 'PermitController@update')->name('permits');
+    Route::post('change-type/{id}','PermitController@change_type')->name('permits');
 
 
     Route::get('/companies', 'CompanyController@index')->name('settings');
