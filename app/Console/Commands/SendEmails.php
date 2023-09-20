@@ -71,9 +71,10 @@ class SendEmails extends Command
             }
 
             $countPermit = count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))));
+            $countOverdue = count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d')));
             if($countPermit > 0)
             {
-                $user->notify(new ForRenewal($countPermit));
+                $user->notify(new ForRenewal($countPermit,$countOverdue));
             }
         }
         info("END EMAIL");
