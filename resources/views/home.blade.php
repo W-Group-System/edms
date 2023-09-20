@@ -7,7 +7,7 @@
 
 <div class="wrapper wrapper-content ">
     <div class="row">
-        <div class="col-lg-3">
+        <div class="col-lg-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <span class="label label-success pull-right">as of Today</span>
@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <span class="label label-success pull-right">as of Today</span>
@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <span class="label label-success pull-right">as of Today</span>
@@ -46,7 +46,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <span class="label label-success pull-right">as of this Month ({{date('M. Y')}})</span>
@@ -137,7 +137,7 @@
         <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Permits and licenses ({{count($permits)}})</h5>
+                    <h5>Permits and licenses ({{count($permits)}}) </h5>
                    
                 </div>
                 <div class="ibox-content">
@@ -178,6 +178,7 @@
 <script>
     var departments = {!! json_encode(($departments)->toArray()) !!};
     var for_renewal = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))))) !!};
+    var over_due = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d'))))) !!};
     var active = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','>=',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))))) !!};
     var no_expiration = {!! json_encode((count($permits->where('expiration_date','==',null)))) !!};
     var types = {!! json_encode(($categories->pluck('name'))->toArray()) !!};
@@ -192,11 +193,12 @@
             element: 'morris-donut-chart',
             data: [
                 
-                { label: "For Renewal", value: for_renewal },
+                { label: "For Renewal", value: for_renewal-over_due },
+                { label: "Overdue", value: over_due },
                 { label: "Active", value: active },
                 { label: "No Expiration", value: no_expiration } ],
             resize: true,
-            colors: ['#f44336', '#54cdb4','#1ab394'],
+            colors: ['#FFA500','#f44336', '#54cdb4','#1ab394'],
         });
         var aaa= months;
         Morris.Bar({

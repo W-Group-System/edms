@@ -23,7 +23,17 @@
                     <h5>For Renewal</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))))}}</h1>
+                    <h1 class="no-margins">{{count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))))-count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d')))}}</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Overdue</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">{{count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d')))}}</h1>
                 </div>
             </div>
         </div>
