@@ -19,6 +19,12 @@
                     {{ csrf_field() }}
                     <div class='row'>
                         <div class='col-md-12'>
+                            Title :
+                            <input name='title' value='{{$permit->title}}' class='form-control form-control-sm' required>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-md-12'>
                             Type :
                             <input name='type' value='{{$permit->type}}' class='form-control form-control-sm' required>
                         </div>

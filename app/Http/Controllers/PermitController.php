@@ -147,6 +147,7 @@ class PermitController extends Controller
         //
         $permit = Permit::findOrfail($id);
         $permit->type = $request->type;
+        $permit->title = $request->title;
         $permit->save();
 
         Alert::success('Successfully Updated')->persistent('Dismiss');
