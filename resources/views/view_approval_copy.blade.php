@@ -51,6 +51,28 @@
                             Purpose : {{$request->purpose}} 
                         </div>
                     </div>
+                    @php
+                        $document =$request->document;
+                    @endphp
+                    @if($request->level > 1)
+                    <hr>
+                     <div class="row">
+                            <div class="col-lg-12">
+                               Document Request : 
+                                        @foreach($document->attachments as $attachment)
+                                            @if($attachment->attachment != null)
+                                               @if($attachment->type == "pdf_copy")
+                                                    @if(($document->category == "FORM") || ($document->category == "TEMPLATE"))<a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a>
+                                                    @else<a href='{{url('view-pdf/'.$attachment->id)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a>
+                                                    @endif
+                                                @endif
+                                             @endif
+                                        @endforeach
+                                   
+                                </dl>
+                            </div>
+                    </div>
+                    @endif
                     <hr>
                         <div class='row text-center'>
                             <div class='col-md-3 border  border-primary border-top-bottom border-left-right'>
