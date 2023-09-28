@@ -186,4 +186,17 @@ class DocumentController extends Controller
         }
         $pdf->Output();
     }
+
+    public function audit()
+    {
+        $documents = Document::get();
+        $obsoletes = Obsolete::get();
+
+        return view('documents',
+        array(
+            'documents' => $documents,
+            'obsoletes' => $obsoletes,
+            )
+        );
+    }
 }

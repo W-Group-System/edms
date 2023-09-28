@@ -23,17 +23,23 @@
                                         @if((auth()->user()->role == "User") || (auth()->user()->role == "Documents and Records Controller") || (auth()->user()->role == "Document Control Officer"))
                                             @if(auth()->user()->role == "Documents and Records Controller")
                                                 @if(auth()->user()->department_id != $document->department_id)
-                                                    <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
+                                                    @if(auth()->user()->audit_role == null)
+                                                        <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
+                                                    @endif
                                                 @endif
                                             @elseif(auth()->user()->role == "Document Control Officer") 
                                                 @php
                                                     $dep = (auth()->user()->dco)->where('department_id',$document->department_id);
                                                 @endphp
                                                 @if(count($dep) == 0)
-                                                    <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
+                                                    @if(auth()->user()->audit_role == null)
+                                                        <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
+                                                    @endif
                                                 @endif
                                             @else
-                                                <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
+                                                @if(auth()->user()->audit_role == null)
+                                                    <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
+                                                @endif
                                             @endif
                                         @endif
                                     @if(auth()->user()->role == "Documents and Records Controller")
@@ -87,6 +93,7 @@
                                 </dl>
                             </div>
                         </div>
+                        
                         @php
                             $allow = 0;
                         @endphp
@@ -104,18 +111,25 @@
                                 @endphp
                             @endif
                         @endforeach
+                        
                         @if((auth()->user()->role == "Administrator") || (auth()->user()->role == "Business Process Manager") || (auth()->user()->role == "Management Representative"))
                             @php
                                 $allow = 1;
                             @endphp
                         @endif
                         @foreach(auth()->user()->department_head as $head)
-                            @if($head->user_id == auth()->user()->id)
+                            @if($head->user_id == $document->department_id)
                                 @php
                                         $allow = 1;
                                 @endphp
                             @endif
                         @endforeach
+                        @if((auth()->user()->audit_role != null))
+                                @php
+                                    $allow = 1;
+                                @endphp
+                        @endif
+                        
                         @if($allow == 1)
                         @if($document->status == null)
                         <div class="row">
@@ -125,7 +139,7 @@
                                     <dt>Attachments</dt>
                                         @foreach($document->attachments as $attachment)
                                             @if($attachment->attachment != null)
-                                                @if($attachment->type == "soft_copy")
+                                                @if(($attachment->type == "soft_copy") && (auth()->user()->audit_role == null))
                                                 <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-word-o"></i> Editable Copy</a></dd>
                                                 @elseif($attachment->type == "pdf_copy")
                                                     @if(($document->category == "FORM") || ($document->category == "TEMPLATE"))
@@ -134,7 +148,10 @@
                                                     <dd><a href='{{url('view-pdf/'.$attachment->id)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a></dd>
                                                     @endif
                                                 @else
+                                                @if((auth()->user()->audit_role == null))
+                                               
                                                 <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> Fillable Copy</a></dd>
+                                                @endif
                                                 @endif
                                             
                                              @endif
@@ -144,6 +161,7 @@
                             </div>
                         </div>
                         @endif
+                        @if((auth()->user()->audit_role == null))
                         <div class="row m-t-sm">
                             <div class="col-lg-12">
                             <div class="panel blank-panel">
@@ -270,6 +288,7 @@
                             </div>
                             </div>
                         </div>
+                        @endif
                         @endif
                     </div>
                 </div>

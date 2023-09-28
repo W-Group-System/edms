@@ -113,6 +113,12 @@
                                 class="nav-label">Permits & Licenses </span></a>
                     </li>
                     @endif
+                    @if(auth()->user()->audit_role != null)
+                    <li class="{{ Route::current()->getName() == 'audit' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Audit">
+                        <a href="{{url('/audits')}}"><i class="fa fa-files-o"></i> <span
+                                class="nav-label">Documents IA</span></a>
+                    </li>
+                    @endif
                     @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative'))
                     <li class="{{ Route::current()->getName() == 'settings' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Settings">
                         <a href="#"><i class="fa fa-gavel"></i> <span class="nav-label">Settings</span><span
