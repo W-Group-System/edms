@@ -52,7 +52,7 @@ class ForRenewal extends Notification
                     ->line('For Renewal : '.$this->count-$this->countOverdue)
                     ->line('Overdue : '.$this->countOverdue)
                     ->line('Please click the button provided for faster transaction')
-                    ->action('Permits & Licenses', "http://152.32.90.99:3001/permits")
+                    ->action('Permits & Licenses', url('/permits'))
                     ->line('Thank you for using our application!');
 
     }
