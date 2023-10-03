@@ -20,9 +20,9 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="m-b-md">
-                                        @if((auth()->user()->role == "User") || (auth()->user()->role == "Documents and Records Controller") || (auth()->user()->role == "Document Control Officer"))
+                                        @if((auth()->user()->role == "User") || (auth()->user()->role == "Documents and Records Controller") || (auth()->user()->role == "Document Control Officer") || (auth()->user()->role == "Department Head"))
                                             @if(auth()->user()->role == "Documents and Records Controller")
-                                                @if(auth()->user()->department_id != $document->department_id)
+                                                @if(auth()->user()->department_id = $document->department_id)
                                                     @if(auth()->user()->audit_role == null)
                                                         <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
                                                     @endif
@@ -32,6 +32,22 @@
                                                     $dep = (auth()->user()->dco)->where('department_id',$document->department_id);
                                                 @endphp
                                                 @if(count($dep) == 0)
+                                                    @if(auth()->user()->audit_role == null)
+                                                        <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
+                                                    @endif
+                                                @endif
+                                            @elseif(auth()->user()->role == "Department Head")
+                                                @php
+                                                    $depd = 0;
+                                                @endphp
+                                                @foreach(auth()->user()->department_head as $dep)
+                                                    @if($dep->id == $document->department_id)
+                                                        @php
+                                                                $depd = 1;
+                                                        @endphp
+                                                    @endif
+                                                @endforeach
+                                                @if($depd == 0)
                                                     @if(auth()->user()->audit_role == null)
                                                         <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
                                                     @endif
@@ -99,6 +115,13 @@
                         @endphp
                         @foreach($document->department->drc as $drc)
                             @if($drc->id == auth()->user()->id)
+                                @php
+                                        $allow = 1;
+                                @endphp
+                            @endif
+                        @endforeach
+                        @foreach(auth()->user()->department_head as $dep)
+                            @if($dep->id == $document->department_id)
                                 @php
                                         $allow = 1;
                                 @endphp
