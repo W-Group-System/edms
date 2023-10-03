@@ -23,6 +23,7 @@ class ForRenewal extends Notification
         //
         $this->count = $count;
         $this->countOverdue = $countOverdue;
+        $this->renewal = $count-$countOverdue;
     }
 
     /**
@@ -49,7 +50,7 @@ class ForRenewal extends Notification
                     ->subject('Permit / License / Certificate Renewal')
                     ->greeting('Good day,')
                     ->line('This is a friendly reminder that you have a (Permit / License / Certificate) that is subject for renewal.')
-                    ->line('For Renewal : '.$this->count-$this->countOverdue)
+                    ->line('For Renewal : '.$this->renewal)
                     ->line('Overdue : '.$this->countOverdue)
                     ->line('Please click the button provided for faster transaction')
                     ->action('Permits & Licenses', url('/permits'))
