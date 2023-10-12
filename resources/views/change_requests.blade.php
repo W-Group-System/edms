@@ -102,7 +102,7 @@
                                            
                                             @else
                                             <td></td>
-                                            <td></td>
+                                            <td>{{$request->title}}</td>
                                             <td></td>
                                             @endif
                                             <td>
