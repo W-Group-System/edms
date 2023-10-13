@@ -23,26 +23,26 @@ class PermitController extends Controller
     {
         //
         $companies = Company::where('status', '=', null)->get();
-        $departments = Department::whereHas('permit_accounts')->where('status', '=', null)->get();
+        $departments = Department::whereHas('permit_account')->where('status', '=', null)->get();
         $permits = Permit::with('company', 'department')->get();
         
         if(auth()->user()->role == "Document Control Officer")
         { 
    
             $permits = Permit::with('company', 'department')->whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->get();
-            $departments = Department::whereHas('permit_accounts')->whereIn('id',((auth()->user()->dco)->pluck('department_id')->toArray()))->where('status', '=', null)->get();
+            $departments = Department::whereHas('permit_account')->whereIn('id',((auth()->user()->dco)->pluck('department_id')->toArray()))->where('status', '=', null)->get();
                    
         }
         
         if((auth()->user()->role == "Department Head"))
         {
             $permits = Permit::with('company', 'department')->whereIn('department_id',(auth()->user()->permits)->pluck('department_id')->toArray())->get();
-            $departments = Department::whereHas('permit_accounts')->whereIn('id',(auth()->user()->permits)->pluck('department_id')->toArray())->where('status', '=', null)->get();
+            $departments = Department::whereHas('permit_account')->whereIn('id',(auth()->user()->permits)->pluck('department_id')->toArray())->where('status', '=', null)->get();
         }
         if((auth()->user()->role == "User"))
         {
             $permits = Permit::with('company', 'department')->whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->get();
-            $departments = Department::whereHas('permit_accounts')->whereIn('id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('status', '=', null)->get();
+            $departments = Department::whereHas('permit_account')->whereIn('id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('status', '=', null)->get();
         }
        
         $archives = Archive::get();
