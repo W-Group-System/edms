@@ -25,9 +25,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('command:send_renewals')->twiceDaily(8, 17);
-        $schedule->command('command:for_renewal')->weeklyOn(1, '10:00');
-        $schedule->command('command:dco')->twiceDaily(9, 18);
+        $schedule->command('command:send_renewals')->dailyAt('08:00');
+        $schedule->command('command:for_renewal')->weeklyOn(1, '08:00');
+        $schedule->command('command:dco')->dailyAt('08:00');
     }
 
     /**
