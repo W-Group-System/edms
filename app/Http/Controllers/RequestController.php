@@ -17,6 +17,7 @@ use App\User;
 use App\Notifications\ForApproval;
 use App\Notifications\ApprovedRequest;
 use App\Notifications\DeclineRequest;
+use App\Notifications\PendingRequest;
 
 
 
@@ -30,6 +31,11 @@ class RequestController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function test()
+    {
+       
+    }
     public function index()
     {
         //

@@ -64,7 +64,7 @@
                                                @if($attachment->type == "pdf_copy")
                                                     @if(($document->category == "FORM") || ($document->category == "TEMPLATE"))<a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a>
                                                     @else<a href='{{url('view-pdf/'.$attachment->id)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a>
-                                                    @endif
+                                                @endif
                                                 @endif
                                              @endif
                                         @endforeach

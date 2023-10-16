@@ -79,4 +79,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('dicr-reports','RequestController@changeReports')->name('reports');
     Route::get('dco-reports','RequestController@docReports')->name('reports');
 
+    Route::get('test-mail','RequestController@test');
+
 });

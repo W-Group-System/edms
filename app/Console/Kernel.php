@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('command:send_renewals')->twiceDaily(8, 17);
         $schedule->command('command:for_renewal')->weeklyOn(1, '10:00');
+        $schedule->command('command:dco')->twiceDaily(9, 18);
     }
 
     /**
