@@ -14,7 +14,7 @@ class SendEmails extends Command
      *
      * @var string
      */
-    protected $signature = 'command:send_renewals';
+    protected $signature = 'command:due';
 
     /**
      * The console command description.

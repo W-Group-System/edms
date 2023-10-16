@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('command:send_renewals')->dailyAt('08:00');
+        $schedule->command('command:due')->dailyAt('08:00');
         $schedule->command('command:for_renewal')->weeklyOn(1, '08:00');
         $schedule->command('command:dco')->dailyAt('08:00');
     }
