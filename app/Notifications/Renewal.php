@@ -7,7 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class ForRenewal extends Notification
+class Renewal extends Notification
 {
     use Queueable;
 
@@ -47,10 +47,10 @@ class ForRenewal extends Notification
     {
         return (new MailMessage)
                     ->greeting('Good Day!')
-                    ->subject('Over Due')
+                    ->subject('For Renewal')
                     ->greeting('Good day,')
-                    ->line('This is a friendly reminder that you have a (Permit / License / Certificate) that is subject for overdue.')
-                    ->line('Overdue : '.$this->countOverdue)
+                    ->line('This is a friendly reminder that you have a (Permit / License / Certificate) that is subject for renewal.')
+                    ->line('For Renewal : '.$this->renewal)
                     ->line('Please click the button provided for faster transaction')
                     ->action('Permits & Licenses', url('/permits'))
                     ->line('Thank you for using our application!');

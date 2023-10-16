@@ -37,8 +37,8 @@
                             Department :
                             <select name='department' class='form-control-sm form-control cat' required>
                                 <option value=""></option>
-                                @foreach($departments as $dep)
-                                    <option value='{{$dep->id}}' @if(old('department') == $dep->id) selected @endif>{{$dep->code}} - {{$dep->name}}</option>
+                                @foreach($departments as $department)
+                                    <option value='{{$department->id}}' @if(old('department') == $department->id) selected @endif>{{$department->code}} - {{$department->name}}</option>
                                 @endforeach
                             </select>
                         </div>

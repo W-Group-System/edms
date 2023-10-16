@@ -5,16 +5,16 @@ use App\Permit;
 use App\User;
 use Illuminate\Console\Command;
 
-use App\Notifications\ForRenewal;
+use App\Notifications\Renewal;
 
-class SendEmails extends Command
+class ForRenewals extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'command:send_renewals';
+    protected $signature = 'command:for_renewal';
 
     /**
      * The console command description.
@@ -45,6 +45,7 @@ class SendEmails extends Command
 
         return $this->info($request);
     }
+
     public function email_notif()
     {
         info("START EMAIL");
@@ -72,9 +73,9 @@ class SendEmails extends Command
 
             $countPermit = count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))));
             $countOverdue = count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d')));
-            if($countOverdue > 0)
+            if($countPermit > 0)
             {
-                $user->notify(new ForRenewal($countPermit,$countOverdue));
+                $user->notify(new Renewal($countPermit,$countOverdue));
             }
         }
         info("END EMAIL");
