@@ -79,7 +79,6 @@ class PermitController extends Controller
             'department' => 'required',
             'type' => 'required',
             'file' => 'required',
-            'expiration_date' => 'required',
         ]);
 
         $attachment = $request->file('file');
