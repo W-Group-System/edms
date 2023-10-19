@@ -61,6 +61,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('activate-department', 'DepartmentController@activate')->name('settings');
     Route::post('edit-department/{id}','DepartmentController@update')->name('settings');
 
+    Route::get('remove-approvers','RequestController@removeApprover')->name('remove-approvers');
+    Route::post('update-approvers/{id}','RequestController@removeApp')->name('remove-approvers');
+
     //Users
     Route::get('/users', 'UserController@index')->name('settings');
     Route::post('new-account', 'UserController@create')->name('settings');

@@ -149,6 +149,22 @@ $request = $copy_approval->copy_request;
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
 <script>
+    function remove_required(id,value)
+    {
+        if(value=="Declined")
+        {
+            console.log('renz');
+            $('#soft_copy_'+id).prop('required',false);
+            $('#pdf_copy_'+id).prop('required',false);
+        }
+        else
+        {
+            console.log('di ko alam');
+            $('#soft_copy_'+id).prop('required',true);
+            $('#pdf_copy_'+id).prop('required',true);
+        }
+        
+    }
     $(document).ready(function(){
         
 

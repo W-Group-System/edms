@@ -120,6 +120,10 @@
                     </li>
                     @endif
                     @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative'))
+                    <li class="{{ Route::current()->getName() == 'remove-approvers' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Approvers">
+                        <a href="{{url('/remove-approvers')}}"><i class="fa fa-search-minus"></i> <span
+                                class="nav-label">Approvers</span></a>
+                    </li>
                     <li class="{{ Route::current()->getName() == 'settings' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Settings">
                         <a href="#"><i class="fa fa-gavel"></i> <span class="nav-label">Settings</span><span
                                 class="fa arrow"></span></a>

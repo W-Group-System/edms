@@ -97,6 +97,25 @@ class RequestController extends Controller
             'document_types' =>  $document_types,
         ));
     }
+    public function removeApprover()
+    {
+        //
+       
+        $change_for_approvals = RequestApprover::orderBy('id','desc')->get();
+       
+
+        return view('for_removals',
+        array(
+           'change_for_approvals' => $change_for_approvals,
+        ));
+    }
+    public function removeApp(Request $request,$id)
+    {
+        $approvers = RequestApprover::orderBy('id','desc')->where('change_request_id',$id)->whereNotIn('id', $request->approver)->delete();
+        Alert::success('Successfully Updated')->persistent('Dismiss');
+        return back();
+        
+    }
     public function forApproval()
     {
         //

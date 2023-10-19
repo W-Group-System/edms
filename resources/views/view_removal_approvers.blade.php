@@ -12,7 +12,7 @@
                     </button>
                 </div>
             </div>
-            <form method='post' action='{{url('change-request-action/'.$change_approval->id)}}' onsubmit='show();' class="form-horizontal"  enctype="multipart/form-data" >
+            <form method='post' action='{{url('update-approvers/'.$request->id)}}' onsubmit='show();' class="form-horizontal"  enctype="multipart/form-data" >
                 {{ csrf_field() }}
                 <div class="modal-body">
                     <div class='row '>
@@ -34,9 +34,6 @@
                                @if($request->original_attachment_pdf != null)
                                Original PDF Link : <a href='{{url($request->original_attachment_pdf)}}' target="_blank">Link</a> <br>
                                @endif
-                               {{-- @if($request->original_attachment_soft_copy != null)
-                               Original Soft Copy : <a href='{{url($request->original_attachment_soft_copy)}}' target="_blank">Link</a> <br>
-                               @endif --}}
                             </div>
                            
                         </div>
@@ -75,8 +72,6 @@
                                    {!!nl2br(e($request->change_request))!!}
                                 </div>
                             </div>
-                            
-                            
                         </div>
                     </div>
                     @if($request->request_type == "Revision")
@@ -108,9 +103,11 @@
                     <hr>
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            Approvers
+                            Approvers <a class="btn btn-danger btn-sm" onclick='remove_approver({{$request->id}});'>
+                                <i class="fa fa-minus-circle"></i>
+                            </a>
                         </div>
-                        <div class="panel-body">
+                        <div class="panel-body approvers-data" id='{{$request->id}}'>
                             <div class='row'>
                                 <div class='col-md-3  border border-primary border-top-bottom border-left-right'>
                                     Name
@@ -129,90 +126,45 @@
                                 </div>
                             </div>
                             @foreach($request->approvers as $approver)
-                            
-                        
-                                        <div class='row'>
-                                            <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                                {{$approver->user->name}}
-                                            </div>
-                                            <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                                {{$approver->status}}
-                                            </div>
-                                            <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                                @if($approver->start_date != null){{$approver->start_date}}@endif &nbsp;
-                                            </div>
-                                            <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                                @if($approver->status != "Waiting"){{date('Y-m-d',strtotime($approver->updated_at))}}@endif &nbsp;
-                                            </div>
-                                            <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                                {!! nl2br(e($approver->remarks))!!}&nbsp;
-                                            </div>
-                                        </div>
-                            
+                                <div class='row' id='{{$approver->id}}'>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                        {{$approver->user->name}}
+                                        <input name='approver[]' value='{{$approver->id}}' type='hidden'>
+                                    </div>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                        {{$approver->status}}
+                                    </div>
+                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                        @if($approver->start_date != null){{$approver->start_date}}@endif &nbsp;
+                                    </div>
+                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                        @if($approver->status != "Waiting"){{date('Y-m-d',strtotime($approver->updated_at))}}@endif &nbsp;
+                                    </div>
+                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                        {!! nl2br(e($approver->remarks))!!}&nbsp;
+                                    </div>
+                                </div>
                             @endforeach
                         </div>
                     </div>
                     <hr>
-                
-                    <div class='row'>
-                        @if($request->soft_copy != null)
-                        <div class='col-md-4'>
-                            SOFT Copy : <a href='{{url($request->soft_copy)}}' target="_blank" ><i class="fa fa-file-word-o"></i> Editable Copy</a>
-                        </div>
-                        @endif
-                        @if($request->pdf_copy != null)
-                        <div class='col-md-4'>
-                            PDF/Scanned Copy : <a href='{{url($request->pdf_copy)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a>
-                        </div>
-                        @endif
-                        @if($request->fillable_copy != null)
-                        <div class='col-md-4'>
-                            FILLABLE Copy : <a href='{{url($request->fillable_copy)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> Fillable Copy</a>
-                        </div>
-                        @endif
-                    </div>
-                    <hr>
-                    @if((auth()->user()->role == "Document Control Officer") && ($request->request_type != "Obsolete"))
-                        <div class='row'>
-                            <div class='col-md-12'>
-                                <i class='text-danger'>Note : No need to protect the PDF/Scanned Copy for all document types except (Forms / Template).</i>
-                            </div>
-                        </div>
-                        <div class='row'>
-                            <div class='col-md-4'>
-                                SOFT Copy <small><i>(.word,.csv,.ppt,etc)</i></small>
-                                <input type="file" class="form-control-sm form-control " id='soft_copy_{{$request->id}}'  name="soft_copy" required/>
-                            </div>
-                            <div class='col-md-4'>
-                                FILLABLE/SCANNED Copy <small><i>(.pdf,excel,word)</i></small>
-                                <input type="file" class="form-control-sm form-control " id='pdf_copy_{{$request->id}}'  name="pdf_copy" required/>
-                            </div>
-                            {{-- <div class='col-md-4'>
-                                FILLABLE Copy <small><i>(.pdf)</i><small>
-                                <input type="file" class="form-control-sm form-control "  name="fillable_copy" />
-                            </div> --}}
-                        </div>
-                    @endif
-
-                    <div class='row'>
-                        <div class='col-md-4'>
-                            Action :
-                            <select name='action' class='form-control-sm form-control cat'  @if((auth()->user()->role == "Document Control Officer") && ($request->request_type != "Obsolete")) onchange='remove_required({{$request->id}},this.value)' @endif required>
-                                <option value=""></option>
-                                <option value="Approved" >Approve</option>
-                                <option value="Declined" >Decline</option>
-                            </select>
-                        </div>
-                        <div class='col-md-8'>
-                            Remarks :
-                            <textarea name='remarks' class='form-control-sm form-control' required></textarea>
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type='submit'  class="btn btn-primary">Submit</button>
+                    <button type='submit'  class="btn btn-primary">Update</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    function remove_approver(id)
+    {
+        if($('#'+id+' div.row').length > 1)
+        {
+        var lastItemID = $('#'+id+'').children().last().attr('id');
+        $('#'+lastItemID).remove();
+        }
+
+    }
+</script>

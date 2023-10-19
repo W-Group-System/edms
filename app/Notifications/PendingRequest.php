@@ -48,6 +48,7 @@ class PendingRequest extends Notification
                     ->subject('Pending Requests')
                     ->line("List of pending requests")
                     ->line(new HtmlString($this->table))
+                    ->action('Pending Requests', url('/change-requests'))
                     ->line('Thank you for using our application!');
     }
 
