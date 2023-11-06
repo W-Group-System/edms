@@ -133,7 +133,7 @@
                 </div>
             </div>
         </div>
-        @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Document Control Officer') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (count(auth()->user()->permits) !=0 ))
+        @if((auth()->user()->role == 'Administrator') && (auth()->user()->role == 'Document Control Officer') && (auth()->user()->role == 'Business Process Manager')  &&(auth()->user()->role == 'Management Representative') && (count(auth()->user()->permits) !=0 ))
         <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
