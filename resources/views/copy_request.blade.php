@@ -85,7 +85,7 @@
                             Immediate Head : 
                             @if(auth()->user()->department->dep_head != null)
                                 {{auth()->user()->department->dep_head->name}}
-                                <input type='hidden' name='immediate_head' value='{{auth()->user()->department->dep_head->id}}'>
+                            <input type='hidden' name='immediate_head' value='{{auth()->user()->department->user_id}}'>
                             @else 
                                 @php $submit = 1; 
                                 @endphp No Head
