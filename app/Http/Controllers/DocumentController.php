@@ -21,6 +21,12 @@ class DocumentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function api()
+    {
+        $request_documents = Document::where('public','!=',null)->where('status',null)->get();
+
+        return response()->json($request_documents,200);
+    }
     public function index()
     {
         //
