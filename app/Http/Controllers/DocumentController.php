@@ -23,7 +23,7 @@ class DocumentController extends Controller
      */
     public function api()
     {
-        $request_documents = Document::where('public','!=',null)->where('status',null)->get();
+        $request_documents = Document::with('attachments')->where('public','!=',null)->where('status',null)->get();
 
         return response()->json($request_documents,200);
     }
