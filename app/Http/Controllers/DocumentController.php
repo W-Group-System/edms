@@ -175,7 +175,7 @@ class DocumentController extends Controller
     }
     public function showPDF($id)
     {
-        $attachment = DocumentAttachment::findOrFail($id);
+        $attachment = DocumentAttachment::with('document')->findOrFail($id);
             $pdf = new \setasign\Fpdi\Fpdi();
             $newFile = str_replace(' ', '%20', $attachment->attachment);
           
@@ -188,11 +188,16 @@ class DocumentController extends Controller
                             $pdf->setSourceFile(StreamReader::createByString($fileContentData));
                             $tplIdx = $pdf->importPage($pageNo);
                             $pdf->useTemplate($tplIdx);
-                            $pdf->SetFont('Helvetica');
-                            $pdf->SetTextColor(255, 0, 0);
-                            $pdf->SetXY(10, 250);
-                            // $this->Rect(5, 5, 200, 287, 'D');
-                            $pdf->Image('images/stamp.png', 50, 250, 50, '', '', '', '', false, 300);
+                            $pdf->SetFont('Arial');
+                            $pdf->SetTextColor(1, 0, 0);
+                            $pdf->SetXY(10, 270);
+                            $pdf->SetFontSize(10);
+                            if($pageNo == 1)
+                            {
+                                $pdf->Write(1, "Effective Date: ".date("m/d/Y",strtotime($attachment->document->effective_date))); 
+                            }
+                           
+                            $pdf->Image('images/uncontrolled.png', 25, 120, 200, '', '', '', '', false, 300);
                     }
                     $pdf->Output();
                 }

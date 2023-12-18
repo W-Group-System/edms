@@ -12,7 +12,7 @@
             <div class="wrapper wrapper-content ">
                 <div class="ibox">
                     <div class="ibox-title">
-                        <h5>{{$document->title}} </h5>@if($document->status == null)<span class="label label-primary">Active</span> @else<span class="label label-danger">Obsolete</span> @endif
+                        <h5>{{$document->title}} </h5>@if($document->status == null)<span class="label label-primary">Active</span>  @else<span class="label label-danger">Obsolete</span> @endif
                     </div>
                     <div class="ibox-content">
                         
