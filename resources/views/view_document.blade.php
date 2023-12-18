@@ -12,7 +12,11 @@
             <div class="wrapper wrapper-content ">
                 <div class="ibox">
                     <div class="ibox-title">
+                        
                         <h5>{{$document->title}} </h5>@if($document->status == null)<span class="label label-primary">Active</span>  @else<span class="label label-danger">Obsolete</span> @endif
+                        <div class='float-right text-right'>
+                        <button class="btn btn-sm btn-info "  title='Edit' data-target="#edit_document" data-toggle="modal"><i class="fa fa-edit"></i></button> 
+                        </div>
                     </div>
                     <div class="ibox-content">
                         
@@ -94,8 +98,8 @@
                             <div class="col-lg-6" >
                                 <dl class="dl-horizontal" >
 
-                                    <dt>Created:</dt> <dd> 	{{date('M, d Y h:i:s',strtotime($document->updated_at))}} </dd>
-                                    <dt>Last Updated:</dt> <dd>{{date('M, d Y h:i:s',strtotime($document->created_at))}}</dd>
+                                    <dt>Created:</dt> <dd> 	{{date('M, d Y',strtotime($document->updated_at))}} </dd>
+                                    <dt>Last Updated:</dt> <dd>{{date('M, d Y',strtotime($document->created_at))}}</dd>
                                     <dt>Effective Date:</dt> <dd>{{date('M, d Y',strtotime($document->effective_date))}}</dd>
                                     <dt>Process Owner:</dt> <dd>@if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif</dd>
                                     {{-- <dt>Access:</dt>
@@ -323,6 +327,43 @@
 @include('change_request')
 @include('obsolete_request')
 @endsection
+
+<div class="modal" id="edit_document" tabindex="-1" role="dialog"  >
+    <div class="modal-dialog modal-lg " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class='col-md-10'>
+                    <h5 class="modal-title" id="exampleModalLabel">Change Document</h5>
+                </div>
+                <div class='col-md-2'>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+            <form method='post' action='edit-document/{{$document->id}}' onsubmit='show();'  enctype="multipart/form-data" >
+                <div class="modal-body">
+                    {{ csrf_field() }}
+                    <div class='row'>
+                        <div class='col-md-12'>
+                           Title :
+                            <input type="text" class="form-control-sm form-control "  value='{{$document->title}}' name="title" required/>
+                        </div>
+                        <div class='col-md-12'>
+                            Revision # :
+                            <input type="text" class="form-control-sm form-control "  value='{{$document->version}}'  name="revision" required/>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type='submit'  class="btn btn-primary" >Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>

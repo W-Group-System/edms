@@ -143,9 +143,17 @@ class DocumentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
         //
+
+        $document = Document::findOrfail($id);
+        $document->title = $request->title;
+        $document->version = $request->revision;
+        $document->save(['timestamps' => FALSE]);
+
+        Alert::success('Successfully Updated')->persistent('Dismiss');
+        return back();
       
         
     }
@@ -197,7 +205,7 @@ class DocumentController extends Controller
                                 $pdf->Write(1, "Effective Date: ".date("m/d/Y",strtotime($attachment->document->effective_date))); 
                             }
                            
-                            $pdf->Image('images/uncontrolled.png', 25, 120, 200, '', '', '', '', false, 300);
+                            $pdf->Image('images/uncontrolled.png', 20, 120, 200, '', '', '', '', false, 300);
                     }
                     $pdf->Output();
                 }
