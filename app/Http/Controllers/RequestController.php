@@ -31,7 +31,15 @@ class RequestController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function editTile (Request $request,$id)
+    {
+        $change_request = ChangeRequest::findOrfail($id);
+        $change_request->title = $request->title;
+        $change_request->save();
 
+        Alert::success('Successfully Updated')->persistent('Dismiss');
+        return back();
+    }
     public function test()
     {
           info("START DCO");

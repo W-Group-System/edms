@@ -110,7 +110,12 @@
                             @endphp
                             <tr>
                                 
-                                <td><a href="#"  data-target="#view_request_change{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a></td>
+                                <td>
+                                    <a href="#"  data-target="#view_request_change{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a>
+                                    @if(auth()->user()->role == "Document Control Officer")
+                                    <a href="#"  data-target="#edit_title{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-warning'><i class="fa fa-edit"></i></a>
+                                    @endif
+                                </td>
                                 <td>DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</td>
                                 <td>{{date('M d Y',strtotime($request->created_at))}}</td>
                                 <td><small>
@@ -137,6 +142,7 @@
 $request = $change_approval->change_request;
 @endphp
 @include('view_approval_change')
+@include('edit_title')
 @endforeach
 @foreach($copy_for_approvals->where('status','Pending') as $copy_approval)
 @php
