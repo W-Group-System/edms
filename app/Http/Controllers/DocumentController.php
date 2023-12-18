@@ -205,7 +205,7 @@ class DocumentController extends Controller
                                 $pdf->Write(1, "Effective Date: ".date("m/d/Y",strtotime($attachment->document->effective_date))); 
                             }
                            
-                            $pdf->Image('images/uncontrolled.png', 20, 120, 200, '', '', '', '', false, 300);
+                            $pdf->Image('images/uncontrolled.png', 15, 100, 200, '', '', '', '', false, 300);
                     }
                     $pdf->Output();
                 }
