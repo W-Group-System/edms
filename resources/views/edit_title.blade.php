@@ -20,7 +20,7 @@
                            Title :
                             <input type="text" class="form-control-sm form-control "  value='{{$request->title}}' name="title" required/>
                         </div>
-                        @if($request->request_type == "New")
+                        {{-- @if($request->request_type == "New") --}}
                             <div class='col-md-12'>
                             Document Type :
                             <select name='document_type' class='form-control-sm form-control cat' required>
@@ -30,7 +30,7 @@
                                 @endforeach
                             </select>
                             </div>
-                        @endif
+                        {{-- @endif --}}
                     </div>
                 </div>
                 <div class="modal-footer">
