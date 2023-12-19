@@ -35,6 +35,7 @@ class RequestController extends Controller
     {
         $change_request = ChangeRequest::findOrfail($id);
         $change_request->title = $request->title;
+        $change_request->type_of_document = $request->document_type;
         $change_request->save();
 
         Alert::success('Successfully Updated')->persistent('Dismiss');
@@ -206,6 +207,7 @@ class RequestController extends Controller
     public function forApproval()
     {
         //
+        $document_types = DocumentType::get();
         $copy_for_approvals = CopyApprover::orderBy('id','desc')->where('user_id',auth()->user()->id)->get();
         $change_for_approvals = RequestApprover::orderBy('id','desc')->where('user_id',auth()->user()->id)->get();
         if(auth()->user()->role == "Administrator")
@@ -219,6 +221,7 @@ class RequestController extends Controller
         array(
            'copy_for_approvals' => $copy_for_approvals,
            'change_for_approvals' => $change_for_approvals,
+           'document_types' => $document_types,
         ));
     }
 

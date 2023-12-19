@@ -20,6 +20,17 @@
                            Title :
                             <input type="text" class="form-control-sm form-control "  value='{{$request->title}}' name="title" required/>
                         </div>
+                        @if($request->request_type == "New")
+                            <div class='col-md-12'>
+                            Document Type :
+                            <select name='document_type' class='form-control-sm form-control cat' required>
+                                <option value=""></option>
+                                @foreach($document_types as $types)
+                                    <option value='{{$types->name}}' @if($request->type_of_document == $types->name) selected @endif>{{$types->code}} - {{$types->name}}</option>
+                                @endforeach
+                            </select>
+                            </div>
+                        @endif
                     </div>
                 </div>
                 <div class="modal-footer">
