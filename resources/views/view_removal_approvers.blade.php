@@ -102,11 +102,11 @@
                     @endif
                     <hr>
                     <div class="panel panel-primary">
-                        <div class="panel-heading">
+                        {{-- <div class="panel-heading">
                             Approvers <a class="btn btn-danger btn-sm" onclick='remove_approver({{$request->id}});'>
                                 <i class="fa fa-minus-circle"></i>
                             </a>
-                        </div>
+                        </div> --}}
                         <div class="panel-body approvers-data" id='{{$request->id}}'>
                             <div class='row'>
                                 <div class='col-md-3  border border-primary border-top-bottom border-left-right'>
@@ -128,8 +128,12 @@
                             @foreach($request->approvers as $approver)
                                 <div class='row' id='{{$approver->id}}'>
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                        {{$approver->user->name}}
-                                        <input name='approver[]' value='{{$approver->id}}' type='hidden'>
+                                        <a class=" btn-sm " onclick='remove_approver({{$request->id}});'>
+                                            @if($approver->status == "Waiting")
+                                                <i class="fa fa-minus-circle text-danger"></i>
+                                                <input name='approver[]' value='{{$approver->id}}' type='hidden'>
+                                            @endif
+                                        </a> {{$approver->user->name}}
                                     </div>
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
                                         {{$approver->status}}
