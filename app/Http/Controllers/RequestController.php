@@ -15,6 +15,7 @@ use App\Obsolete;
 use App\DocumentType;
 use App\User;
 use App\Notifications\ForApproval;
+use App\Notifications\NewPolicy;
 use App\Notifications\ApprovedRequest;
 use App\Notifications\DeclineRequest;
 use App\Notifications\PendingRequest;
@@ -592,6 +593,13 @@ class RequestController extends Controller
 
                 $approvedRequestsNotif = User::where('id',$copyRequest->user_id)->first();
                 $approvedRequestsNotif->notify(new ApprovedRequest($copyRequest,"DICR-","Document Information Change Request","request"));
+
+                $approvers_all = RequestApprover::where('change_request_id',$copyRequestApprover->change_request_id)->orderBy('level','asc')->get();
+                foreach($approvers_all as $user_approver)
+                {
+                    $app = User::where('id',$user_approver->user_id)->first();
+                    $app->notify(new NewPolicy($copyRequest,"DICR-","Document Information Change Request","request"));
+                }
             }
             else
             {
