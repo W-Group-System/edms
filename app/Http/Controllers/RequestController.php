@@ -200,7 +200,7 @@ class RequestController extends Controller
     }
     public function removeApp(Request $request,$id)
     {
-        $approvers = RequestApprover::orderBy('id','desc')->where('change_request_id',$id)->whereNotIn('id', $request->approver)->delete();
+        $approvers = RequestApprover::orderBy('id','desc')->where('change_request_id',$id)->whereNotIn('id', $request->approver)->where('status','Waiting')->delete();
         Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
         
