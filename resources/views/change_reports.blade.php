@@ -32,7 +32,7 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Copy Request Reports</h5>
+                    <h5>Change Request Reports</h5>
                   
                 </div>
                 <div class="ibox-content">
@@ -61,26 +61,24 @@
                             <tbody>
                             
                                 @foreach($requests as $request)
-                                <tr>
-                                    <td  rowspan='{{count($request->approvers)}}'><b>DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</b></td>
-                                    <td rowspan='{{count($request->approvers)}}'>{{date('M. d, Y',strtotime($request->created_at))}}</td>
-                                    <td rowspan='{{count($request->approvers)}}'>{{$request->control_code}}</td>
-                                    <td rowspan='{{count($request->approvers)}}'>{{$request->title}}</td>
-                                    <td rowspan='{{count($request->approvers)}}'>{{$request->user->name}}</td>
-                                    <td rowspan='{{count($request->approvers)}}'>{{date('M. d, Y',strtotime($request->effective_date))}}</td>
-                                    <td rowspan='{{count($request->approvers)}}' >@if($request->status == "Pending")
-                                        <span class='label label-warning'>
-                                    @elseif($request->status ==  "Approved")
-                                        <span class='label label-info'>    
-                                    @elseif($request->status ==  "Declined")
-                                            <span class='label label-danger'>
-                                    @else<span class='label label-success'>
-                                        @endif
-                                        {{$request->status}}</span> </td>
+                              
                                     @foreach($request->approvers as $key => $approver)
-                                    @if($key != 0)
                                     <tr>
-                                    @endif
+                                        <td  ><b>DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</b></td>
+                                        <td>{{date('M. d, Y',strtotime($request->created_at))}}</td>
+                                        <td >{{$request->control_code}}</td>
+                                        <td>{{$request->title}}</td>
+                                        <td>{{$request->user->name}}</td>
+                                        <td>{{date('M. d, Y',strtotime($request->effective_date))}}</td>
+                                        <td >@if($request->status == "Pending")
+                                            <span class='label label-warning'>
+                                        @elseif($request->status ==  "Approved")
+                                            <span class='label label-info'>    
+                                        @elseif($request->status ==  "Declined")
+                                                <span class='label label-danger'>
+                                        @else<span class='label label-success'>
+                                            @endif
+                                            {{$request->status}}</span> </td>
                                         <td>{{$approver->user->name}}</td>
                                         <td>{{$approver->start_date}}</td>
                                         <td>@if(($approver->status != "Waiting") && ($approver->status != "Pending")){{date('Y-m-d',strtotime($approver->updated_at))}}@endif</td>
