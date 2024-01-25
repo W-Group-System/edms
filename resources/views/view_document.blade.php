@@ -158,7 +158,12 @@
                                     $allow = 1;
                                 @endphp
                         @endif
-                        
+                        @php
+                        if(auth()->user()->department_id == $document->department_id)
+                        {
+                            $allow =1;
+                        }
+                        @endphp
                         @if($allow == 1)
                         @if($document->status == null)
                         <div class="row">

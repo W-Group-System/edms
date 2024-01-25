@@ -101,12 +101,12 @@
                                 class="nav-label">For Approval </span></a>
                     </li>
                     @endif
-                    @if((auth()->user()->role != "User"))
+                    {{-- @if((auth()->user()->role != "User")) --}}
                     <li class="{{ Route::current()->getName() == 'documents' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Documents">
                         <a href="{{url('/documents')}}"><i class="fa fa-files-o"></i> <span
                                 class="nav-label">Documents </span></a>
                     </li>
-                    @endif
+                    {{-- @endif --}}
                     @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Document Control Officer') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (count(auth()->user()->accountable_persons) !=0 ))
                     <li class="{{ Route::current()->getName() == 'permits' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Permits & Licenses">
                         <a href="{{url('/permits')}}"><i class="fa fa-file-archive-o"></i> <span
