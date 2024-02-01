@@ -191,6 +191,7 @@ class DocumentController extends Controller
     }
     public function showPDF($id)
     {
+        ini_set('memory_limit', '-1');
         $attachment = DocumentAttachment::with('document')->findOrFail($id);
             $pdf = new \setasign\Fpdi\Fpdi();
             $newFile = str_replace(' ', '%20', $attachment->attachment);
