@@ -207,11 +207,11 @@ class DocumentController extends Controller
                             $size = $pdf->getTemplateSize($tplIdx);
                             if($size[0])
                             {
-                                $pdf->AddPage('L', array($size[1],$size[0]));
+                                $pdf->AddPage('L');
                             }
                             else
                             {
-                                $pdf->AddPage('P', array($size[1],$size[0]));
+                                $pdf->AddPage('P');
                             }
                            
                             // dd($size);
