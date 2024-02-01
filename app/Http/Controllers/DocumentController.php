@@ -207,7 +207,7 @@ class DocumentController extends Controller
                             $size = $pdf->getTemplateSize($tplIdx);
                             $pdf->AddPage('L', array($size[1],$size[0]));
                             // dd($size);
-                            $pdf->useTemplate($tplIdx, null, null, $size[1], $size[0], FALSE);
+                            $pdf->useTemplate($tplIdx);
                             $pdf->SetFont('Arial');
                             $pdf->SetTextColor(1, 0, 0);
                             $pdf->SetXY(160, 5);
