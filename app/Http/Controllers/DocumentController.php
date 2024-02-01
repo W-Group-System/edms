@@ -204,7 +204,9 @@ class DocumentController extends Controller
                         $pdf->AddPage();
                             $pdf->setSourceFile(StreamReader::createByString($fileContentData));
                             $tplIdx = $pdf->importPage($pageNo);
-                            $pdf->useTemplate($tplIdx);
+                            $size = $pdf->getTemplateSize($tplIdx);
+                            // dd($size);
+                            $pdf->useTemplate($tplIdx, null, null, $size['width'], 310, FALSE);
                             $pdf->SetFont('Arial');
                             $pdf->SetTextColor(1, 0, 0);
                             $pdf->SetXY(160, 5);
