@@ -205,13 +205,13 @@ class DocumentController extends Controller
                             $pdf->setSourceFile(StreamReader::createByString($fileContentData));
                             $tplIdx = $pdf->importPage($pageNo);
                             $size = $pdf->getTemplateSize($tplIdx);
-                            if($size[0])
+                            if($size[0] > $size[1])
                             {
-                                $pdf->AddPage('L');
+                                $pdf->AddPage('L', array($size[1],$size[0]));
                             }
                             else
                             {
-                                $pdf->AddPage('P');
+                                $pdf->AddPage('P', array($size[1],$size[0]));
                             }
                            
                             // dd($size);
