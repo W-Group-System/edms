@@ -23,6 +23,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/request', 'RequestController@index')->name('requests');
     Route::get('/change-requests','RequestController@changeRequests')->name('change-requests');
+    Route::post('change-request-edit/{id}','RequestController@editRequest')->name('change-requests');
     Route::get('/for-approval','RequestController@forApproval')->name('for-approval');
     Route::post('/edit-title/{id}','RequestController@editTile');
 

@@ -38,6 +38,16 @@ class RequestController extends Controller
         $change_request->title = $request->title;
         $change_request->type_of_document = $request->document_type;
         $change_request->save();
+        Alert::success('Successfully Updated')->persistent('Dismiss');
+        return back();
+    }
+    public function editRequest (Request $request,$id)
+    {
+        $req = ChangeRequest::findOrfail($id);
+        $req->change_request = $request->description;
+        $req->indicate_clause = $request->from_clause;
+        $req->indicate_changes = $request->to_changes;
+        $req->save();
 
         Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();

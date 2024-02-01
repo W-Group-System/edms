@@ -84,7 +84,15 @@
                             @foreach($requests as $request)
                                     <tr>
                                         
-                                        <td><a href="#"  data-target="#view_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a></td>
+                                        <td><a href="#"  data-target="#view_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a>
+                                            @if((auth()->user()->role == "Document Control Officer") || (auth()->user()->role == "Administrator"))
+                                            @if($request->status == "Pending")
+                                            @if($request->request_type == "Revision")
+                                            <a href="#"  data-target="#edit_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-warning'><i class="fa fa-edit"></i></a>
+                                            @endif
+                                            @endif
+                                            @endif
+                                        </td>
                                         <td>DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</td>
                                         <td>{{$request->request_type}}</td>
                                         <td>{{date('M d Y',strtotime($request->created_at))}}</td>
@@ -120,6 +128,7 @@
                                             {{$request->status}}</span>  </td>
                                     </tr>
                                     @include('view_change_request')
+                                    @include('edit_change_request')
                                 @endforeach
                             
                         </tbody>
