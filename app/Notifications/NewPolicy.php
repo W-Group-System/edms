@@ -55,6 +55,7 @@ class NewPolicy extends Notification
             ->subject('Approved Notification')
             ->greeting('Good day,')
             ->line('You may now view the new approved document.')
+            ->line('Title : '.$this->copy_request->title)
             ->line('Reference Number : '.$this->type.str_pad($this->copy_request->id, 5, '0', STR_PAD_LEFT))
             ->line('Type of Request : '.$this->typedata)
             ->line(new HtmlString('<span><i>Please note that a filled-out <a href="https://edms.wsystem.online/document_attachments/FR-BPD-015%20Acknowledgment%20Form-lc.pdf" target="_blank">WGI-FR-BPD-003 Acknowledgement Form</a> shall be sent to BPD within 30 days after receipt of this email as proof of roll-out</i></span>'))
