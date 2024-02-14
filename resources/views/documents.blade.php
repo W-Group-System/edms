@@ -102,7 +102,7 @@
 
     </div>
 </div>
-{{-- @include('upload_document') --}}
+@include('upload_document')
 @endsection
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
