@@ -27,50 +27,73 @@ class DocumentController extends Controller
 
         return response()->json($request_documents,200);
     }
-    public function index()
+    public function index(Request $request)
     {
         //
+        $departments = Department::get();
+        $companies = Company::get();
+        $document_types = DocumentType::orderBy('name','desc')->get();
+        $search = $request->search;
+        $department = $request->department;
        
         $documents = Document::get();
+        $documents_filter = Document::query();
+        if($request->search != null)
+        {
+            $documents_filter->where('control_code','like','%'.$request->search.'%')->orWhere('title','like','%'.$request->search.'%');
+        }
+        if($request->department != null)
+        {
+            $documents_filter->where('department_id',$request->department);
+        }
         $obsoletes = Obsolete::get();
         if(auth()->user()->role == "Document Control Officer")
         { 
-   
             $documents = Document::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->get();
+            $documents_filter->whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray());
             $obsoletes = Obsolete::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->get();
+            $departments = $departments->whereIn('id',(auth()->user()->dco)->pluck('department_id')->toArray());
                    
         }
         if(auth()->user()->role == "Documents and Records Controller")
         { 
    
             $documents = Document::where('department_id',auth()->user()->department_id)->get();
+            $documents_filter->where('department_id',auth()->user()->department_id);
             $obsoletes = Obsolete::where('department_id',auth()->user()->department_id)->get();
+            $departments = $departments->where('id',auth()->user()->department_id);
                    
         }
         
         if((auth()->user()->role == "Department Head"))
         {
             $documents = Document::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->get();
+            $document_filter->whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray());
             $obsoletes = Obsolete::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->get();
+            $departments = $departments->whereIn('id',(auth()->user()->department_head)->pluck('id')->toArray());
+          
         }
         if((auth()->user()->role == "User"))
         {
             $documents = Document::where('department_id',auth()->user()->department_id)->get();
+            $documents_filter->where('department_id',auth()->user()->department_id);
             $obsoletes = Obsolete::where('department_id',auth()->user()->department_id)->get();
+            $departments = $departments->where('id',auth()->user()->department_id);
         }
 
+        $documents_na = $documents_filter->paginate(10);
         
-
-        $departments = Department::get();
-        $companies = Company::get();
-        $document_types = DocumentType::orderBy('name','desc')->get();
+      
         return view('documents',
         array(
             'documents' => $documents,
+            'documents_na' => $documents_na,
             'obsoletes' => $obsoletes,
             'departments' => $departments,
             'companies' => $companies,
             'document_types' => $document_types,
+            'search' => $search,
+            'dep' => $department,
             )
         );
     }

@@ -58,9 +58,28 @@
                         @endif
                     </div>
                 <div class="ibox-content">
-
+                    <form method="GET" action="" class="custom_form" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type='text' class='form-control' name='search' placeholder="Search Control Code,Title,Type of Document" >
+                               
+                            </div>
+                            <div class="col-md-2">
+                                <select class='form-control cat' name='department' placeholder="Department" >
+                                        <option value=''>Select All Department</option>
+                                        @foreach($departments as $department)
+                                            <option value='{{$department->id}}' {{ ($department->id == $dep) ? 'selected="selected"' : '' }}  >{{$department->name}}</option>
+                                        @endforeach
+                                </select>
+                               
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary btn-md btn-submit" style="width:100px;border-radius:4px" type="submit">Search</button>
+                            </div>
+                        </div>
+                    </form>
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover tables" >
+                        <table class="table table-striped table-bordered table-hover" >
                         <thead>
                             <tr>
                                 <th>Action</th>
@@ -77,7 +96,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($documents as $document)
+                            @foreach($documents_na as $document)
                                 <tr>
                                     <td><a href="{{url('view-document/'.$document->id)}}" target="_blank" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a></td>
                                     <td>{{$document->control_code}}</td>
@@ -94,6 +113,7 @@
                             @endforeach
                         </tbody>
                         </table>
+                        {{ $documents_na->appends(['search' => $search ,'department' => $dep])->links() }}
                     </div>
 
                 </div>
