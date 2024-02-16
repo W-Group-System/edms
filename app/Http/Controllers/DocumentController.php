@@ -38,19 +38,23 @@ class DocumentController extends Controller
        
         $documents = Document::get();
         $documents_filter = Document::query();
-        if($request->search != null)
-        {
-            $documents_filter->where('control_code','like','%'.$request->search.'%')->orWhere('title','like','%'.$request->search.'%');
-        }
+     
         if($request->department != null)
         {
-            $documents_filter->where('department_id',$request->department);
+            $documents_filter = $documents_filter->where('department_id',$request->department);
+            
         }
+        if($request->search != null)
+        {
+            $documents_filter = $documents_filter->where('control_code','like','%'.$request->search.'%')->orWhere('title','like','%'.$request->search.'%');
+           
+        }
+
         $obsoletes = Obsolete::get();
         if(auth()->user()->role == "Document Control Officer")
         { 
             $documents = Document::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->get();
-            $documents_filter->whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray());
+            $documents_filter = $documents_filter->whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray());
             $obsoletes = Obsolete::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->get();
             $departments = $departments->whereIn('id',(auth()->user()->dco)->pluck('department_id')->toArray());
                    
@@ -59,7 +63,7 @@ class DocumentController extends Controller
         { 
    
             $documents = Document::where('department_id',auth()->user()->department_id)->get();
-            $documents_filter->where('department_id',auth()->user()->department_id);
+            $documents_filter = $documents_filter->where('department_id',auth()->user()->department_id);
             $obsoletes = Obsolete::where('department_id',auth()->user()->department_id)->get();
             $departments = $departments->where('id',auth()->user()->department_id);
                    
@@ -68,22 +72,24 @@ class DocumentController extends Controller
         if((auth()->user()->role == "Department Head"))
         {
             $documents = Document::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->get();
-            $documents_filter->whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray());
+            $documents_filter = $documents_filter->whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray());
             $obsoletes = Obsolete::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->get();
             $departments = $departments->whereIn('id',(auth()->user()->department_head)->pluck('id')->toArray());
+           
           
         }
         if((auth()->user()->role == "User"))
         {
             $documents = Document::where('department_id',auth()->user()->department_id)->get();
-            $documents_filter->where('department_id',auth()->user()->department_id);
+            $documents_filter = $documents_filter->where('department_id',auth()->user()->department_id);
             $obsoletes = Obsolete::where('department_id',auth()->user()->department_id)->get();
             $departments = $departments->where('id',auth()->user()->department_id);
+       
         }
 
         $documents_na = $documents_filter->paginate(10);
         
-      
+ 
         return view('documents',
         array(
             'documents' => $documents,
@@ -272,14 +278,15 @@ class DocumentController extends Controller
        
         $documents = Document::get();
         $documents_filter = Document::query();
-        if($request->search != null)
-        {
-            $documents_filter->where('control_code','like','%'.$request->search.'%')->orWhere('title','like','%'.$request->search.'%');
-        }
         if($request->department != null)
         {
             $documents_filter->where('department_id',$request->department);
         }
+        if($request->search != null)
+        {
+            $documents_filter->where('control_code','like','%'.$request->search.'%')->orWhere('title','like','%'.$request->search.'%');
+        }
+        
         $obsoletes = Obsolete::get();
 
         $search = $request->search;
