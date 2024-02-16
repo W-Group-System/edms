@@ -262,16 +262,41 @@ class DocumentController extends Controller
       
     }
 
-    public function audit()
+    public function audit(Request $request)
     {
+        $departments = Department::get();
+        $companies = Company::get();
+        $document_types = DocumentType::orderBy('name','desc')->get();
+        $search = $request->search;
+        $department = $request->department;
+       
         $documents = Document::get();
+        $documents_filter = Document::query();
+        if($request->search != null)
+        {
+            $documents_filter->where('control_code','like','%'.$request->search.'%')->orWhere('title','like','%'.$request->search.'%');
+        }
+        if($request->department != null)
+        {
+            $documents_filter->where('department_id',$request->department);
+        }
         $obsoletes = Obsolete::get();
 
-        return view('documents',
-        array(
-            'documents' => $documents,
-            'obsoletes' => $obsoletes,
-            )
-        );
+        $search = $request->search;
+        $department = $request->department;
+            $documents_na = $documents_filter->paginate(10);
+        
+            return view('documents',
+            array(
+                'documents' => $documents,
+                'documents_na' => $documents_na,
+                'obsoletes' => $obsoletes,
+                'departments' => $departments,
+                'companies' => $companies,
+                'document_types' => $document_types,
+                'search' => $search,
+                'dep' => $department,
+                )
+            );
     }
 }
