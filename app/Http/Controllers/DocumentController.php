@@ -68,7 +68,7 @@ class DocumentController extends Controller
         if((auth()->user()->role == "Department Head"))
         {
             $documents = Document::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->get();
-            $document_filter->whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray());
+            $documents_filter->whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray());
             $obsoletes = Obsolete::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->get();
             $departments = $departments->whereIn('id',(auth()->user()->department_head)->pluck('id')->toArray());
           
