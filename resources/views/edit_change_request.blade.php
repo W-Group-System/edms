@@ -17,7 +17,7 @@
                     {{ csrf_field() }}
                     <div class='row'>
                         <div class='col-md-12' >
-                            OVERALL DESCRIPTION OF CHANGE:
+                            Reason/s for Change:
                             <textarea name='description' rows="5" cols="100" charswidth="23" class="form-control-sm form-control " required>{{$request->change_request}}</textarea>
                         </div>
                     </div>
