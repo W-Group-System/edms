@@ -77,8 +77,8 @@ class BPD extends Command
             }
         }
 
-        $users_approvers = User::where('status',null)->whereNotIn('role',['Document Control Officer','Business Process Manager','Management Representative'])->orderBy('email','asc')->get();
-        dd($users_approvers[0]);
+        $users_approvers = User::where('status',null)->whereNotIn('role',['Document Control Officer','Business Process Manager','Management Representative'])->get();
+        // dd($users_approvers[0]);
         foreach($users_approvers as $user)
         {
             $change_requests = ChangeRequest::whereHas('approvers',function($q) use($user){
