@@ -77,7 +77,7 @@ class BPD extends Command
             }
         }
 
-        $users_approvers = User::where('status',null)->orderBy('email','asc')->get();
+        $users_approvers = User::where('status',null)->whereNotIn('role',['Document Control Officer','Business Process Manager','Management Representative'])->orderBy('email','asc')->get();
         // dd($users_approvers);
         foreach($users_approvers as $user)
         {
