@@ -41,6 +41,7 @@ class BPD extends Command
     public function handle()
     {
         //
+        ini_set('memory_limit', '-1');
         info("START DCO");
         $users = User::where('status',null)->where('role','Document Control Officer')->get();
         foreach($users as $user)
@@ -98,17 +99,23 @@ class BPD extends Command
            
             {
                 $table .= "<tr><th colspan='3'>Copy Requests</th></tr>";
-                $table .= "<tr><td colspan='3'>".count($change_requests)."</td></tr>";
             }
-            
-            
+            $table .= "<tr><th>Date Requested</th><th>Code</th><th>Approver</th></tr>";
+            foreach($change_requests as $request)
+            {
+                $approver = ($request->approvers)->where('level',$request->level)->first();
+                $table .= "<tr><td>".date('Y-m-d',strtotime($request->created_at))."</td><td>DICR-".str_pad($request->id, 5, '0', STR_PAD_LEFT)."</td><td>".$approver->user->name."</td></tr>";
+            }
             if(count($copy_requests) > 0)
             {
 
             
                 $table .= "<tr><th colspan='3'>Copy Requests</th></tr>";
-                $table .= "<tr><td colspan='3'>".count($copy_requests)."</td></tr>";
-               
+                foreach($copy_requests as $request)
+                {
+                    $approver = ($request->approvers)->where('level',$request->level)->first();
+                    $table .= "<tr><td>".date('Y-m-d',strtotime($request->created_at))."</td><td>CR-".str_pad($request->id, 5, '0', STR_PAD_LEFT)."</td><td>".$approver->user->name."</td></tr>";
+                }
             }
             
             $table .= "</table>";
