@@ -5,6 +5,7 @@ use App\User;
 use App\Notifications\PendingRequest;
 use Illuminate\Console\Command;
 use App\ChangeRequest;
+use App\RequestApprover;
 use App\CopyRequest;
 class BPD extends Command
 {
@@ -76,9 +77,12 @@ class BPD extends Command
                 $user->notify(new PendingRequest($table));
             }
         }
-
-        $users_approvers = User::where('status',null)->whereNotIn('role',['Document Control Officer','Business Process Manager','Management Representative'])->get();
-        // dd($users_approvers[0]);
+        $appro = RequestApprover::where('status', 'Pending')
+        ->groupBy('user_id')
+        ->select('user_id')
+        ->get()->pluck('user_id')->toArray();
+        $users_approvers = User::where('status',null)->whereIn('id',$appro)->get();
+        // dd($users_approvers);
         foreach($users_approvers as $user)
         {
             $change_requests = ChangeRequest::whereHas('approvers',function($q) use($user){
