@@ -77,7 +77,7 @@ class BPD extends Command
             }
         }
 
-        $users_approvers = User::where('status',null)->get();
+        $users_approvers = User::where('status',null)->orderBy('email','asc')->get();
         foreach($users_approvers as $user)
         {
             $change_requests = ChangeRequest::whereHas('approvers',function($q) use($user){
