@@ -106,6 +106,10 @@
                         <a href="{{url('/documents')}}"><i class="fa fa-files-o"></i> <span
                                 class="nav-label">Documents </span></a>
                     </li>
+                    <li class="{{ Route::current()->getName() == 'acknowledgement' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Acknowledgement">
+                        <a href="{{url('/acknowledgement')}}"><i class="fa fa-vcard"></i> <span
+                                class="nav-label">Acknowledgement </span></a>
+                    </li>
                     {{-- @endif --}}
                     @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Document Control Officer') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (count(auth()->user()->accountable_persons) !=0 ))
                     <li class="{{ Route::current()->getName() == 'permits' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Permits & Licenses">

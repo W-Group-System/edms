@@ -86,4 +86,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('test-mail','RequestController@test');
 
+
+    Route::get('acknowledgement','AcknowledgementController@index')->name('acknowledgement');
+    Route::get('uploaded-acknowledgement','AcknowledgementController@uploaded')->name('acknowledgement');
+    Route::post('upload-acknowledgement/{id}','AcknowledgementController@store')->name('acknowledgement');
+
 });

@@ -68,7 +68,7 @@
                                     @if($request->request_type != "Revision")
                                         Descriptions/Remarks
                                     @else
-                                    Overall Description of Change
+                                    Reason/s for Change
                                     @endif
                                 </div>
                                 <div class="panel-body">
