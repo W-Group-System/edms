@@ -91,4 +91,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('uploaded-acknowledgement','AcknowledgementController@uploaded')->name('acknowledgement');
     Route::post('upload-acknowledgement/{id}','AcknowledgementController@store')->name('acknowledgement');
 
+    Route::post('change-public','DocumentController@changePublic');
+
 });

@@ -267,7 +267,22 @@ class DocumentController extends Controller
         
       
     }
+    public function changePublic(Request $request)
+    {
+        $document = Document::findOrfail($request->id);
+        if($request->value)
+        {
+            $document->public = 1;
+        }
+        else
+        {
+            $document->public = null;
+        }
+        $document->timestamps=false;
+        $document->save();
 
+        return "success";
+    }
     public function audit(Request $request)
     {
         $departments = Department::get();

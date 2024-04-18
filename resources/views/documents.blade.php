@@ -1,6 +1,8 @@
 @extends('layouts.header')
 @section('css')
 <link href="{{ asset('login_css/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+
+<link href="{{ asset('login_css/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
 @endsection
 @section('content')
 
@@ -83,7 +85,11 @@
                         <thead>
                             <tr>
                                 <th>Action</th>
+                               
                                 <th>Control Code</th>
+                                @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (auth()->user()->role == "Document Control Officer"))
+                                <th>Public</th>
+                                @endif
                                 <th>Revisions</th>
                                 <th>Company</th>
                                 <th>Department</th>
@@ -100,6 +106,9 @@
                                 <tr>
                                     <td><a href="{{url('view-document/'.$document->id)}}" target="_blank" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a></td>
                                     <td>{{$document->control_code}}</td>
+                                    @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (auth()->user()->role == "Document Control Officer"))
+                                        <td><input class='form-control form-control-sm' type='checkbox' name='public' onchange='public_info(this,{{$document->id}})' @if($document->public != null) checked @endif><i></i> </td>
+                                    @endif
                                     <td>{{$document->version}}</td>
                                     <td>{{$document->company->name}}</td>
                                     <td>{{$document->department->name}}</td>
@@ -127,7 +136,28 @@
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
+
+<script src="{{ asset('login_css/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
 <script>
+
+    function public_info(value,id)
+    {
+        console.log(value.checked);
+
+     
+                $.ajax({
+                    dataType: 'json',
+                    type:'POST',
+                    url:  '{{url("/change-public")}}',
+                    data:{id:id,value:value.checked},
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                }).done(function(data){
+                    console.log(data);
+                }).fail(function(data)
+                {
+                
+                });
+    }
     $(document).ready(function(){
         
 
