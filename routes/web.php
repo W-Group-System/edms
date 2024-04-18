@@ -28,6 +28,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/edit-title/{id}','RequestController@editTile');
 
     Route::get('/documents', 'DocumentController@index')->name('documents');
+    Route::post('/upload-file/{id}', 'DocumentController@upload')->name('documents');
     Route::post('view-document/edit-document/{id}','DocumentController@edit');
     Route::get('audits','DocumentController@audit')->name('audit');
     Route::post('upload-document','DocumentController@store')->name('documents');

@@ -284,6 +284,22 @@ class DocumentController extends Controller
 
         return "success";
     }
+
+    public function upload(Request $request,$id)
+    {
+        $file = $request->file('file');
+        $name = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path() . '/document_attachments/', $name);
+        $file_name = '/document_attachments/' . $name;
+
+        $doc_attachment = DocumentAttachment::findOrfail($id);
+        $doc_attachment->attachment = $file_name;
+        $doc_attachment->save();
+        
+    
+        Alert::success('Successfully Uploaded')->persistent('Dismiss');
+        return back();
+    }
     public function audit(Request $request)
     {
         $departments = Department::get();

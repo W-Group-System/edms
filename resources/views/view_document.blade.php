@@ -174,13 +174,22 @@
                                         @foreach($document->attachments as $attachment)
                                             @if($attachment->attachment != null)
                                                 @if(($attachment->type == "soft_copy") && (auth()->user()->audit_role == null))
-                                                <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-word-o"></i> Editable Copy</a></dd>
+                                                <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-word-o"></i> Editable Copy</a> 
+                                                    @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (auth()->user()->role == "Document Control Officer"))
+                                                    <a href='#' class='text-danger'  data-target="#edit{{$attachment->id}}"  data-toggle="modal" ><i class="fa fa-edit"></i> </a>
+                                                    @endif
+                                                </dd>
                                                 @elseif($attachment->type == "pdf_copy")
                                                     @if(($document->category == "FORM") || ($document->category == "TEMPLATE"))
-                                                    <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a></dd>
+                                                    <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a>    @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (auth()->user()->role == "Document Control Officer"))
+                                                        <a href='#' class='text-danger'  data-target="#edit{{$attachment->id}}" data-toggle="modal"  ><i class="fa fa-edit"></i> </a>
+                                                        @endif</dd>
                                                     @else
-                                                    <dd><a href='{{url('view-pdf/'.$attachment->id)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a></dd>
+                                                    <dd><a href='{{url('view-pdf/'.$attachment->id)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a>    @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (auth()->user()->role == "Document Control Officer"))
+                                                        <a href='#' class='text-danger' data-target="#edit{{$attachment->id}}" data-toggle="modal"   ><i class="fa fa-edit"></i> </a>
+                                                        @endif</dd>
                                                     @endif
+                                                    
                                                 @else
                                                 @if((auth()->user()->audit_role == null))
                                                
@@ -189,6 +198,7 @@
                                                 @endif
                                             
                                              @endif
+                                             @include('change_file')
                                         @endforeach
                                    
                                 </dl>
