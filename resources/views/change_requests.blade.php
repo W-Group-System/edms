@@ -6,7 +6,7 @@
 
 <div class="wrapper wrapper-content">
     <div class="row">
-    <div class="col-lg-3">
+    <div class="col-lg-2">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>Pending</h5>
@@ -16,7 +16,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3">
+    <div class="col-lg-2">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>Cancelled</h5>
@@ -26,7 +26,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3">
+    <div class="col-lg-2">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>Declined</h5>
@@ -36,13 +36,23 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3">
+    <div class="col-lg-2">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>Approved</h5>
             </div>
             <div class="ibox-content">
                 <h1 class="no-margins">{{count($requests->where('status','Approved'))}}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Delayed</h5>
+            </div>
+            <div class="ibox-content">
+                <h1 class="no-margins" id='delayed'>0</h1>
             </div>
         </div>
     </div>
@@ -81,7 +91,20 @@
                                 </tr>
                             </thead>
                         <tbody>
+                            @php
+                                $delayed = 0;
+                            @endphp
                             @foreach($requests as $request)
+                                  
+                            @if(($request->type_of_document == "FORM") || ($request->type_of_document == "ANNEX") ||($request->type_of_document == "TEMPLATE"))
+                            @php
+                                $target = date('Y-m-d', strtotime("+7 day", strtotime($request->created_at)));
+                            @endphp
+                           @else
+                           @php
+                               $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at)));
+                           @endphp
+                           @endif
                                     <tr>
                                         
                                         <td><a href="#"  data-target="#view_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a>
@@ -118,14 +141,29 @@
                                             </td>   
                                         <td>{{$request->user->name}}</td>
                                         <td> @if($request->status == "Pending")
-                                            <span class='label label-warning'>
+                                            @if($target < date('Y-m-d'))
+                                            @php
+                                                $delayed++;
+                                            @endphp
+                                            <span class='label label-danger'>
+                                                Delayed - 
+                                                @else
+                                                <span class='label label-success'>
+                                                @endif
+                                               
                                         @elseif($request->status ==  "Approved")
                                             <span class='label label-info'>    
                                         @elseif($request->status ==  "Declined")
-                                                <span class='label label-danger'>
+                                                <span class='label label-warning'>
                                         @else<span class='label label-success'>
                                             @endif
-                                            {{$request->status}}</span>  </td>
+                                            {{$request->status}} 
+                                     
+                                       
+                                    </span>  
+                                    
+                                        
+                                    </td>
                                     </tr>
                                     @include('view_change_request')
                                     @include('edit_change_request')
@@ -147,6 +185,8 @@
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
 <script>
+    var delayed = {!! json_encode($delayed) !!};
+    document.getElementById('delayed').innerText = delayed;
     $(document).ready(function(){
         
 
