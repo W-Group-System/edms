@@ -164,8 +164,14 @@
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
                         <li>
-                            <span class="m-r-sm text-muted welcome-message">Welcome to {{ config('app.name', 'Laravel') }}</span>
+                            <span class="m-r-sm text-muted welcome-message" title='For Approval'>Welcome to {{ config('app.name', 'Laravel') }}</span>
                         </li>
+                        <li>
+                            <a class=" count-info " href="{{url('/for-approval')}}" title='For Approval'>
+                                <i class="fa fa-bell"></i>  <span class="label label-warning">{{copy_approver_count()}}</span>
+                            </a>
+                        </li>
+                        
                         <li>
                             <a href="{{ route('logout') }}" onclick="logout(); show();">
                                 <i class="fa fa-sign-out"></i> Log out

@@ -31,24 +31,42 @@ class CopyController extends Controller
         $copy_request->department_id = auth()->user()->department_id;
         $copy_request->company_id = auth()->user()->company_id;
         $copy_request->status = "Pending";
+        
         $copy_request->level = 1;
+        if($request->immediate_head == auth()->user()->id)
+        {
+            $copy_request->level = 2; 
+        }
         $copy_request->save();
+        if($request->immediate_head != auth()->user()->id)
+        {
+            $copy_approver = new CopyApprover;
+            $copy_approver->copy_request_id = $copy_request->id;
+            $copy_approver->user_id = $request->immediate_head;
+            $copy_approver->status = "Pending";
+            $copy_approver->start_date = date('Y-m-d');
+            $copy_approver->level = 1;
+            $copy_approver->save();
+        }
+        if($request->immediate_head != auth()->user()->id)
+        {
 
-        $copy_approver = new CopyApprover;
-        $copy_approver->copy_request_id = $copy_request->id;
-        $copy_approver->user_id = $request->immediate_head;
-        $copy_approver->status = "Pending";
-        $copy_approver->start_date = date('Y-m-d');
-        $copy_approver->level = 1;
-        $copy_approver->save();
-
-        $first_notify = User::where('id',$request->immediate_head)->first();
+            $first_notify = User::where('id',$request->immediate_head)->first();
+        }
+        else
+        {
+            $first_notify = User::where('id',$request->drc)->first();
+        }
         $first_notify->notify(new ForApproval($copy_request,"CR-","Copy Request"));
 
         $copy_approver = new CopyApprover;
         $copy_approver->copy_request_id = $copy_request->id;
         $copy_approver->user_id = $request->drc;
         $copy_approver->status = "Waiting";
+        if($request->immediate_head == auth()->user()->id)
+        {
+        $copy_approver->status = "Pending";
+        }
         $copy_approver->level = 2;
         $copy_approver->save();
 
