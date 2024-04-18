@@ -269,8 +269,9 @@ class DocumentController extends Controller
     }
     public function changePublic(Request $request)
     {
+        // dd($request->all());
         $document = Document::findOrfail($request->id);
-        if($request->value == true)
+        if($request->value == "true")
         {
             $document->public = 1;
         }
