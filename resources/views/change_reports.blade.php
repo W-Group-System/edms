@@ -13,9 +13,12 @@
                         <div class='row'>
                             <div class="col-lg-3">
                                 <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label text-right text-white">Select Month</label>
-                                    <div class="col-sm-8">
-                                        <input class='form-control-sm form-control' name='yearmonth' value='{{$search}}' max='{{date('Y-m')}}' type='month' required>
+                                    <label class="col-sm-4 col-form-label text-right text-white">Select Date</label>
+                                    <div class="col-sm-4">
+                                        <input class='form-control-sm form-control' name='from' value='{{$from}}' max='{{date('Y-m-d')}}' type='date' required>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <input class='form-control-sm form-control' name='to' value='{{$from}}' max='{{date('Y-m-d')}}' type='date' required>
                                     </div>
                                 </div>
                             </div>

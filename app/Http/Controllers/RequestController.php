@@ -648,13 +648,12 @@ class RequestController extends Controller
     }
     public function changeReports(Request $request)
     {
-        $search = $request->yearmonth;
-        if($search)
+        $from = $request->from;
+        $to = $request->to;
+        if($from)
         {
-        $year = date('Y',strtotime($search."-01"));
-        $month = date('m',strtotime($search."-01"));
-        $requests = ChangeRequest::whereYear('created_at', '=', $year)
-        ->whereMonth('created_at', '=', $month)->orderBy('id','desc')->get();
+        $requests = ChangeRequest::where('created_at', '>=', $from)
+        ->where('created_at', '<=', $to )->orderBy('id','desc')->get();
         }
         else
         {
@@ -663,7 +662,8 @@ class RequestController extends Controller
         return view('change_reports',
         array(
             'requests' =>  $requests,
-            'search' =>  $search,
+            'from' =>  $from,
+            'to' =>  $to,
         ));
     }
     public function docReports(Request $request)
