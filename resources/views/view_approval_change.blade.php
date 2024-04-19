@@ -201,6 +201,7 @@
                                 <option value=""></option>
                                 <option value="Approved" >Approve</option>
                                 <option value="Declined" >Decline</option>
+                                <option value="Returned" >Return</option>
                             </select>
                         </div>
                         <div class='col-md-8'>

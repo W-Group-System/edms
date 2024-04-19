@@ -18,6 +18,7 @@ use App\Notifications\ForApproval;
 use App\Notifications\NewPolicy;
 use App\Notifications\ApprovedRequest;
 use App\Notifications\DeclineRequest;
+use App\Notifications\ReturnRequest;
 use App\Notifications\PendingRequest;
 
 
@@ -631,6 +632,31 @@ class RequestController extends Controller
                 $nextApproverNotif->notify(new ForApproval($copyRequest,"DICR-","Document Information Change Request"));
             }
             Alert::success('Successfully Approved')->persistent('Dismiss');
+            return back();
+        }
+        elseif($request->action == "Returned")
+        {
+            $copyRequest->status = "Pending";
+            $copyRequest->level =1;
+            $copyRequest->save(); 
+            $copyApproverPending = RequestApprover::where('change_request_id',$copyRequestApprover->change_request_id)->get();
+            foreach($copyApproverPending as $key => $app)
+            {
+                $appr = RequestApprover::findOrfail($app->id);
+                if($key == 0)
+                {
+                    $app->status = "Pending";
+                }
+                else
+                {
+                    $app->status = "Waiting";
+                }
+                $app->save();
+            }
+            $declinedRequestNotif = User::where('id',$copyRequest->user_id)->first();
+            $declinedRequestNotif->notify(new ReturnRequest($copyRequest,"DICR-","Document Information Change Request","change-requests"));
+
+            Alert::success('Successfully Returned')->persistent('Dismiss');
             return back();
         }
         else
