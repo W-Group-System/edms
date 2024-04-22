@@ -24,7 +24,7 @@
                         </div>
                         <div class='col-md-12'>
                             Expiration Date :
-                            <input type="date" class="form-control-sm form-control "  min='{{date('Y-m-d')}}'  name="expiration_date" required/>
+                            <input type="date" class="form-control-sm form-control "  min='{{date('Y-m-d')}}'  name="expiration_date" />
                         </div>
                     </div>
                 </div>
