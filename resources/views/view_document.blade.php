@@ -387,10 +387,15 @@
         </div>
     </div>
 </div>
-
+@include('obsolete_request_image')
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
+<script type="text/javascript">
+    $(window).on('load', function() {
+        $('#myModal').modal('show');
+    });
+</script>
 <script>
     $(document).ready(function(){
         

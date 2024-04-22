@@ -44,7 +44,12 @@
         textarea {
     resize: vertical;
     }
-
+    @media (min-width: 768px) {
+  .modal-xl {
+    width: 90%;
+   max-width:1200px;
+  }
+}
     </style>
     <!-- Fonts -->
     <!-- Styles -->
