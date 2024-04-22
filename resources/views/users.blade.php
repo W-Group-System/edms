@@ -58,7 +58,10 @@
                                 <th>Email</th>
                                 <th>Company</th>
                                 <th>Department</th>
+                                
+                                <th>Share Department</th>
                                 <th>Role</th>
+                                
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -70,6 +73,14 @@
                                 <td>{{$user->email}}</td>
                                 <td>{{$user->company->name}}</td>
                                 <td>{{$user->department->name}}</td>
+                                
+                                <td>
+                                    <small>
+                                    @foreach($user->departments as $department)
+                                    {{$department->dep->name}} <br>
+                                    @endforeach
+                                    </small>
+                                </td>
                                 <td>{{$user->role}}</td>
                                 <td  id='statususer{{$user->id}}'>@if($user->status) <small class="label label-danger">Inactive</small>  @else <small class="label label-primary">Active</small> @endif</td>
                                 <td data-id='{{$user->id}}' id='actionuser{{$user->id}}'>

@@ -75,6 +75,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('deactivate-user', 'UserController@deactivate_user')->name('settings');
     Route::post('activate-user', 'UserController@activate_user')->name('settings');
 
+
     //DCO
     Route::get('dco','DcoController@index')->name('settings');
     Route::post('edit-dco/{id}','DcoController@update')->name('settings');

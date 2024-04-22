@@ -27,6 +27,10 @@ class Department extends Model  implements Auditable
     {
         return $this->hasMany(DepartmentDco::class);
     }
+    public function departments()
+    {
+        return $this->hasMany(UserDepartment::class);
+    }
     public function documents()
     {
         return $this->hasMany(Document::class);

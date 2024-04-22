@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Company;
 use App\Department;
+use App\UserDepartment;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -87,6 +88,16 @@ class UserController extends Controller
         $account->department_id = $request->department;
         $account->role = $request->role;
         $account->save();
+
+        $share_department = UserDepartment::where('user_id',$id)->delete();
+        foreach($request->share_department as $d)
+        {
+            $department = new UserDepartment;
+            $department->user_id = $id;
+            $department->department_id = $d;
+            $department->created_by = auth()->user()->id;
+            $department->save();
+        }
 
         Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();

@@ -53,8 +53,8 @@ class DocumentController extends Controller
         $obsoletes = Obsolete::get();
         if(auth()->user()->role == "Document Control Officer")
         { 
-            $documents = Document::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->get();
-            $documents_filter = $documents_filter->whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray());
+            $documents = Document::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->orWhereIn('department_id',(auth()->user()->departments)->pluck('department_id')->toArray())->get();
+            $documents_filter = $documents_filter->whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->orWhereIn('department_id',(auth()->user()->departments)->pluck('department_id')->toArray());
             $obsoletes = Obsolete::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->get();
             $departments = $departments->whereIn('id',(auth()->user()->dco)->pluck('department_id')->toArray());
                    
@@ -62,8 +62,8 @@ class DocumentController extends Controller
         if(auth()->user()->role == "Documents and Records Controller")
         { 
    
-            $documents = Document::where('department_id',auth()->user()->department_id)->get();
-            $documents_filter = $documents_filter->where('department_id',auth()->user()->department_id);
+            $documents = Document::where('department_id',auth()->user()->department_id)->orWhereIn('department_id',(auth()->user()->departments)->pluck('department_id')->toArray())->get();
+            $documents_filter = $documents_filter->where('department_id',auth()->user()->department_id)->orWhereIn('department_id',(auth()->user()->departments)->pluck('department_id')->toArray());
             $obsoletes = Obsolete::where('department_id',auth()->user()->department_id)->get();
             $departments = $departments->where('id',auth()->user()->department_id);
                    
@@ -71,8 +71,8 @@ class DocumentController extends Controller
         
         if((auth()->user()->role == "Department Head"))
         {
-            $documents = Document::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->get();
-            $documents_filter = $documents_filter->whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray());
+            $documents = Document::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->orWhereIn('department_id',(auth()->user()->departments)->pluck('department_id')->toArray())->get();
+            $documents_filter = $documents_filter->whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->orWhereIn('department_id',(auth()->user()->departments)->pluck('department_id')->toArray());
             $obsoletes = Obsolete::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->get();
             $departments = $departments->whereIn('id',(auth()->user()->department_head)->pluck('id')->toArray());
            
@@ -80,8 +80,8 @@ class DocumentController extends Controller
         }
         if((auth()->user()->role == "User"))
         {
-            $documents = Document::where('department_id',auth()->user()->department_id)->get();
-            $documents_filter = $documents_filter->where('department_id',auth()->user()->department_id);
+            $documents = Document::where('department_id',auth()->user()->department_id)->orWhereIn('department_id',(auth()->user()->departments)->pluck('department_id')->toArray())->get();
+            $documents_filter = $documents_filter->where('department_id',auth()->user()->department_id)->orWhereIn('department_id',(auth()->user()->departments)->pluck('department_id')->toArray());
             $obsoletes = Obsolete::where('department_id',auth()->user()->department_id)->get();
             $departments = $departments->where('id',auth()->user()->department_id);
        

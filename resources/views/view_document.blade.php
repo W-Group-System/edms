@@ -140,6 +140,13 @@
                                 @endphp
                             @endif
                         @endforeach
+                        @foreach($document->department->departments as $depa)
+                            @if($depa->user_id == auth()->user()->id)
+                                @php
+                                        $allow = 1;
+                                @endphp
+                            @endif
+                        @endforeach
                         
                         @if((auth()->user()->role == "Administrator") || (auth()->user()->role == "Business Process Manager") || (auth()->user()->role == "Management Representative"))
                             @php

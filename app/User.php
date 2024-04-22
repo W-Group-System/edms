@@ -75,4 +75,8 @@ class User extends Authenticatable implements Auditable
     {
         return $this->hasMany(RequestApprover::class);
     }
+    public function departments()
+    {
+        return $this->hasMany(UserDepartment::class);
+    }
 }
