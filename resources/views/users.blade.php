@@ -77,7 +77,7 @@
                                 <td>
                                     <small>
                                     @foreach($user->departments as $department)
-                                    {{$department->dep->name}} <br>
+                                    {{$department->dep->name}}  <br>
                                     @endforeach
                                     </small>
                                 </td>
