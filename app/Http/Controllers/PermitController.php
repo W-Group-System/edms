@@ -172,7 +172,7 @@ class PermitController extends Controller
     {
         $this->validate($request, [
             'file' => 'required',
-            'expiration_date' => 'required',
+            // 'expiration_date' => 'required',
         ]);
 
 
