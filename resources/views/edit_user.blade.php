@@ -46,7 +46,7 @@
                         </div>
                         <div class='col-md-12'>
                             Share Department :
-                            <select name='share_department[]' class='form-control-sm form-control cat' multiple required>
+                            <select name='share_department[]' class='form-control-sm form-control cat' multiple >
                                 <option value=""></option>
                                 @foreach($departments->where('id','!=',$user->department_id) as $dep)
                                     <option value='{{$dep->id}}' @foreach($user->departments as $d ) @if($d->department_id == $dep->id) selected @endif @endforeach >{{$dep->code}} - {{$dep->name}}</option>
