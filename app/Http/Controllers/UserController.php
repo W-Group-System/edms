@@ -90,14 +90,18 @@ class UserController extends Controller
         $account->save();
 
         $share_department = UserDepartment::where('user_id',$id)->delete();
-        foreach($request->share_department as $d)
+        if($request->share_department)
         {
-            $department = new UserDepartment;
-            $department->user_id = $id;
-            $department->department_id = $d;
-            $department->created_by = auth()->user()->id;
-            $department->save();
+            foreach($request->share_department as $d)
+            {
+                $department = new UserDepartment;
+                $department->user_id = $id;
+                $department->department_id = $d;
+                $department->created_by = auth()->user()->id;
+                $department->save();
+            }
         }
+      
 
         Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
