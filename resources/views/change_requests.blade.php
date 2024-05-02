@@ -180,6 +180,7 @@
     </div>
 </div>
 @include('new_change_request_image')
+@include('new_change_request')
 @endsection
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
