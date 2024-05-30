@@ -248,7 +248,7 @@ class DocumentController extends Controller
                             $pdf->SetFont('Arial');
                             $pdf->SetTextColor(1, 0, 0);
                             $pdf->SetXY(160, 5);
-                            $pdf->SetFontSize(9);
+                            $pdf->SetFontSize(8);
                             if($pageNo == 1)
                             {
                                 $pdf->Write(1, "Effective Date: ".date("m/d/Y",strtotime($attachment->document->effective_date))); 
