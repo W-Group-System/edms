@@ -103,7 +103,14 @@
                                     @else
                                         <div class="panel panel-primary">
                                             <div class="panel-heading">
-                                                E-Copy Request, Expiration Date : {{date("M. d, Y",strtotime($request->expiration_date))}}
+                                                E-Copy Request, Expiration Date : {{date("M. d, Y",strtotime($request->expiration_date))}} 
+                                                @if($request->document_access->attachment != null)
+                                                    @if(($request->document->category == "FORM") || ($request->document->category == "TEMPLATE"))
+                                                        <a href="{{url($request->document_access->attachment->attachment)}}" target="_blank"><button type="button" class="btn btn-w-m btn-danger">Download</button></a>
+                                                    @else
+                                                        <a href="{{url('view-pdf/'.$request->document_access->attachment_id)}}" target="_blank"><button type="button" class="btn btn-w-m btn-danger">Download</button></a>
+                                                    @endif
+                                                @endif
                                             </div>
                                             <div class="panel-body">
                                                 @if($request->document_access->attachment != null)
