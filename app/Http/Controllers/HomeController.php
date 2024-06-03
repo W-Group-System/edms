@@ -103,7 +103,7 @@ class HomeController extends Controller
         $request_documents = Document::where('public','!=',null)->where('status',null)->get();
         if($request->search)
         {
-            $documents = Document::where('control_code','like','%' . $request->search. '%')->where('old_control_code','like','%' . $request->search. '%')->orWhere('title','like','%' . $request->search. '%')->where('status',null)->get();
+            $documents = Document::where('control_code','like','%' . $request->search. '%')->orWhere('old_control_code','like','%' . $request->search. '%')->orWhere('title','like','%' . $request->search. '%')->where('status',null)->get();
         }
        
         $departments = Department::with('documents','obsoletes')->whereHas('documents')->orWhereHas('obsoletes')->get();
