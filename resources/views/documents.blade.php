@@ -87,6 +87,7 @@
                                 <th>Action</th>
                                
                                 <th>Control Code</th>
+                                <th>Old Code</th>
                                 @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (auth()->user()->role == "Document Control Officer"))
                                 <th>Public</th>
                                 @endif
@@ -106,6 +107,7 @@
                                 <tr>
                                     <td><a href="{{url('view-document/'.$document->id)}}" target="_blank" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a></td>
                                     <td>{{$document->control_code}}</td>
+                                    <td>{{$document->old_control_code}}</td>
                                     @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (auth()->user()->role == "Document Control Officer"))
                                         <td><input class='form-control form-control-sm' type='checkbox' name='public' onchange='public_info(this,{{$document->id}})' @if($document->public != null) checked @endif><i></i> </td>
                                     @endif

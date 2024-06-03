@@ -14,7 +14,7 @@
                     <div class="search-form">
                         <form action="" method="get">
                             <div class="input-group">
-                                <input type="text" placeholder="Document TItle / Control Code" name="search" value="{{$search}}"  class="form-control input-lg" required>
+                                <input type="text" placeholder="Document TItle / Control Code / Old Code" name="search" value="{{$search}}"  class="form-control input-lg" required>
                                 <div class="input-group-btn">
                                     <button class="btn btn-lg btn-primary" type="submit">
                                         Search
@@ -26,7 +26,7 @@
                     <div class="hr-line-dashed"></div>
                     @foreach($documents as $document)
                     <div class="search-result">
-                        <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank">{{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
+                        <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
                         Title : {{$document->title}}<br>
                         Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif
                         <p>
