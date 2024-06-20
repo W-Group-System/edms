@@ -1,5 +1,9 @@
 @extends('layouts.header')
+@section('css')
+<link href="{{ asset('login_css/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
 
+<link href="{{ asset('login_css/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
+@endsection
 @section('content')
 
 <div class="wrapper wrapper-content ">
@@ -13,11 +17,32 @@
                 <div class="ibox-content stretch-card">
                     <div class="search-form">
                         <form action="" method="get">
-                            <div class="input-group">
-                                <input type="text" placeholder="Document TItle / Control Code / Old Code" name="search" value="{{$search}}"  class="form-control input-lg" required>
-                                <div class="input-group-btn">
+                            <div class='row'>
+                                <div class='col-md-3'>
+                                    Company :
+                                    <select name='company' class='form-control-sm form-control cat' >
+                                        <option value="">N/A</option>
+                                        @foreach($companies as $company)
+                                            <option value='{{$company->id}}' @if($comp == $company->id) selected @endif>{{$company->name}} - {{$company->code}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class='col-md-3'>
+                                    Department :
+                                    <select name='department' class='form-control-sm form-control cat' >
+                                        <option value="">N/A</option>
+                                        @foreach($departments as $dep)
+                                            <option value='{{$dep->id}}' @if($dept == $dep->id) selected @endif>{{$dep->code}} - {{$dep->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class='col-md-3'>
+                                   &nbsp;
+                                <input type="text" placeholder="Document TItle / Control Code / Old Code" name="search" value="{{$search}}"  class="form-control" >
+                                </div>
+                                <div class='col-md-3'>
                                     <button class="btn btn-lg btn-primary" type="submit">
-                                        Search
+                                        Filter
                                     </button>
                                 </div>
                             </div>
@@ -77,11 +102,13 @@
 
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
+
+<script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
 <script>
    
     $(document).ready(function(){
         
-
+        $('.cat').chosen({width: "100%"});
         $('.tables').DataTable({
             pageLength: 10,
             responsive: true,

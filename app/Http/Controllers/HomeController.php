@@ -8,6 +8,7 @@ use App\Document;
 use App\ChangeRequest;
 use App\CopyRequest;
 use App\DocumentType;
+use App\Company;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -100,10 +101,25 @@ class HomeController extends Controller
     public function search(Request $request)
     {
         $documents = [];
+        $comp=$request->company;
+        $dept=$request->department;
+        $companies = Company::get();
+        $departments = Department::get();
+        
         $request_documents = Document::where('public','!=',null)->where('status',null)->get();
+        $documents_filter = Document::query();
+        if($request->department)
+        {
+            $documents = $documents_filter->where('department_id',$request->department)->get();
+        }
+        if($request->company)
+        {
+            $documents = $documents_filter->where('company_id',$request->company)->get();
+        }
         if($request->search)
         {
-            $documents = Document::where('control_code','like','%' . $request->search. '%')->orWhere('old_control_code','like','%' . $request->search. '%')->orWhere('title','like','%' . $request->search. '%')->where('status',null)->get();
+            // dd($request->company);
+            $documents = $documents_filter->where('control_code','like','%' . $request->search. '%')->orWhere('old_control_code','like','%' . $request->search. '%')->orWhere('title','like','%' . $request->search. '%')->where('status',null)->get();
         }
        
         $departments = Department::with('documents','obsoletes')->whereHas('documents')->orWhereHas('obsoletes')->get();
@@ -112,6 +128,10 @@ class HomeController extends Controller
             'documents' => $documents,
             'search' => $request->search,
             'request_documents' => $request_documents,
+            'companies' => $companies,
+            'departments' => $departments,
+            'comp' => $comp,
+            'dept' => $dept,
         ));
     }
 }
