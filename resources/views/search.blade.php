@@ -84,7 +84,11 @@
                                     @php
                                         $attchment = ($req_doc->attachments)->where('type','pdf_copy')->first();
                                     @endphp
-                                    <td><a href="{{url($attchment->attachment)}}" target="_blank"><i class="fa fa-file"></i> {{$req_doc->title}}</a></td>
+                                    <td>
+                                        @if($attchment)
+                                        <a href="{{url($attchment->attachment)}}" target="_blank"><i class="fa fa-file"></i> {{$req_doc->title}}</a>
+                                        @endif
+                                    </td>
                                     <td>
                                         {{$req_doc->department->code}}
                                     </td>
