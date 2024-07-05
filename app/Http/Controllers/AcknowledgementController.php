@@ -12,22 +12,22 @@ class AcknowledgementController extends Controller
     //
     public function index()
     {
-        $requests = ChangeRequest::orderBy('id','desc')->where('request_type','!=','Obsolette')->where('status','Approved')->get();
+        $requests = ChangeRequest::orderBy('id','desc')->where('request_type','!=','Obsolete')->where('status','Approved')->get();
         if(auth()->user()->role == "User")
         {
-            $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->where('request_type','!=','Obsolette')->where('status','Approved')->get();
+            $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->where('request_type','!=','Obsolete')->where('status','Approved')->get();
         }
         else if(auth()->user()->role == "Document Control Officer")
         {
-            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->where('status','Approved')->where('request_type','!=','Obsolette')->orderBy('id','desc')->get();
+            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->where('status','Approved')->where('request_type','!=','Obsolete')->orderBy('id','desc')->get();
         }
         else if(auth()->user()->role == "Department Head")
         {
-            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->where('status','Approved')->where('request_type','!=','Obsolette')->orderBy('id','desc')->get();
+            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->where('status','Approved')->where('request_type','!=','Obsolete')->orderBy('id','desc')->get();
         }
         else if(auth()->user()->role == "Documents and Records Controller")
         {
-            $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->where('request_type','!=','Obsolette')->where('status','Approved')->get();
+            $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->where('request_type','!=','Obsolete')->where('status','Approved')->get();
         }
         return view('acknowledgements',
         
@@ -37,22 +37,22 @@ class AcknowledgementController extends Controller
     }
     public function uploaded()
     {
-        $requests = ChangeRequest::orderBy('id','desc')->where('request_type','!=','Obsolette')->where('status','Approved')->get();
+        $requests = ChangeRequest::orderBy('id','desc')->where('request_type','!=','Obsolete')->where('status','Approved')->get();
         if(auth()->user()->role == "User")
         {
-            $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->where('request_type','!=','Obsolette')->where('status','Approved')->get();
+            $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->where('request_type','!=','Obsolete')->where('status','Approved')->get();
         }
         else if(auth()->user()->role == "Document Control Officer")
         {
-            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->where('status','Approved')->where('request_type','!=','Obsolette')->orderBy('id','desc')->get();
+            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->where('status','Approved')->where('request_type','!=','Obsolete')->orderBy('id','desc')->get();
         }
         else if(auth()->user()->role == "Department Head")
         {
-            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->where('status','Approved')->where('request_type','!=','Obsolette')->orderBy('id','desc')->get();
+            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->where('status','Approved')->where('request_type','!=','Obsolete')->orderBy('id','desc')->get();
         }
         else if(auth()->user()->role == "Documents and Records Controller")
         {
-            $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->where('request_type','!=','Obsolette')->where('status','Approved')->get();
+            $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->where('request_type','!=','Obsolete')->where('status','Approved')->get();
         }
         return view('uploaded-acknowledgement',
         
