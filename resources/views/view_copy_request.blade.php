@@ -101,6 +101,7 @@
                                         </div>
                                     </div>
                                     @else
+                                    @if($request->document_access)
                                         <div class="panel panel-primary">
                                             <div class="panel-heading">
                                                 E-Copy Request, Expiration Date : {{date("M. d, Y",strtotime($request->expiration_date))}} 
@@ -123,7 +124,7 @@
                                                 <p></p>
                                             </div>
                                         </div>
-                                       
+                                       @endif
                                     @endif
                                 @else
                                     <div class="panel panel-danger">
