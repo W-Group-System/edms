@@ -49,18 +49,91 @@
                         </form>
                     </div>
                     <div class="hr-line-dashed"></div>
+                    @php
+                        if ($documents != null)
+                        {
+                            $docs = $documents->groupBy('category');
+                        }
+                    @endphp
+
+                    @if($documents != null)
+                        @if($docs['POLICY'])
+                            @foreach($docs['POLICY'] as $document)
+                                <div class="search-result">
+                                    <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
+                                    Title : {{$document->title}}<br>
+                                    Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif
+                                    <p>
+                                        Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
+                                        Company : {{$document->department->name}}
+                                        
+                                    </p>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                            @endforeach
+                        @endif
+
+                        @if($docs['FORM'])
+                            @foreach($docs['FORM'] as $document)
+                                <div class="search-result">
+                                    <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
+                                    Title : {{$document->title}}<br>
+                                    Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif
+                                    <p>
+                                        Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
+                                        Company : {{$document->department->name}}
+                                        
+                                    </p>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                            @endforeach
+                        @endif
+
+                        @if($docs['TEMPLATE'])
+                            @foreach($docs['TEMPLATE'] as $document)
+                                <div class="search-result">
+                                    <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
+                                    Title : {{$document->title}}<br>
+                                    Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif
+                                    <p>
+                                        Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
+                                        Company : {{$document->department->name}}
+                                        
+                                    </p>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                            @endforeach
+                        @endif
+
+                        @if($docs['ANNEX'])
+                            @foreach($docs['ANNEX'] as $document)
+                                <div class="search-result">
+                                    <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
+                                    Title : {{$document->title}}<br>
+                                    Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif
+                                    <p>
+                                        Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
+                                        Company : {{$document->department->name}}
+                                        
+                                    </p>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                            @endforeach
+                        @endif
+                    @endif
+
                     @foreach($documents as $document)
-                    <div class="search-result">
-                        <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
-                        Title : {{$document->title}}<br>
-                        Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif
-                        <p>
-                            Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
-                            Company : {{$document->department->name}}
-                            
-                        </p>
-                    </div>
-                    <div class="hr-line-dashed"></div>
+                        <div class="search-result">
+                            <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
+                            Title : {{$document->title}}<br>
+                            Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif
+                            <p>
+                                Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
+                                Company : {{$document->department->name}}
+                                
+                            </p>
+                        </div>
+                        <div class="hr-line-dashed"></div>
                     @endforeach
                 </div>
             </div>
