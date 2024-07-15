@@ -57,7 +57,7 @@
                     @endphp
 
                     @if($documents != null)
-                        @if($docs['POLICY'])
+                        @if(isset($docs['POLICY']))
                             @foreach($docs['POLICY'] as $document)
                                 <div class="search-result">
                                     <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
@@ -73,7 +73,7 @@
                             @endforeach
                         @endif
 
-                        @if($docs['FORM'])
+                        @if(isset($docs['FORM']))
                             @foreach($docs['FORM'] as $document)
                                 <div class="search-result">
                                     <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
@@ -89,7 +89,7 @@
                             @endforeach
                         @endif
 
-                        @if($docs['TEMPLATE'])
+                        @if(isset($docs['ANNEX']))
                             @foreach($docs['TEMPLATE'] as $document)
                                 <div class="search-result">
                                     <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
@@ -105,7 +105,7 @@
                             @endforeach
                         @endif
 
-                        @if($docs['ANNEX'])
+                        @if(isset($docs['ANNEX']))
                             @foreach($docs['ANNEX'] as $document)
                                 <div class="search-result">
                                     <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
