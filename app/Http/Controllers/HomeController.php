@@ -110,16 +110,22 @@ class HomeController extends Controller
         $documents_filter = Document::query();
         if($request->department)
         {
-            $documents = $documents_filter->where('department_id',$request->department)->get();
+            $documents = $documents_filter->where('department_id',$request->department)->orderBy('category')->orderBy('old_control_code', 'DESC')->get();
         }
         if($request->company)
         {
-            $documents = $documents_filter->where('company_id',$request->company)->get();
+            $documents = $documents_filter->where('company_id',$request->company)->orderBy('category')->orderBy('old_control_code', 'DESC')->get();
         }
         if($request->search)
         {
-            // dd($request->company);
-            $documents = $documents_filter->where('control_code','like','%' . $request->search. '%')->orWhere('old_control_code','like','%' . $request->search. '%')->orWhere('title','like','%' . $request->search. '%')->where('status',null)->get();
+            if($request->department)
+            {
+                $documents = $documents_filter->where('control_code','like','%' . $request->search. '%')->orWhere('old_control_code','like','%' . $request->search. '%')->orWhere('title','like','%' . $request->search. '%')->where('status',null)->where('department_id', $request->department)->get();
+            }
+            else 
+            {
+                $documents = $documents_filter->where('control_code','like','%' . $request->search. '%')->orWhere('old_control_code','like','%' . $request->search. '%')->orWhere('title','like','%' . $request->search. '%')->where('status',null)->get();
+            }
         }
        
         $departments = Department::with('documents','obsoletes')->whereHas('documents')->orWhereHas('obsoletes')->get();

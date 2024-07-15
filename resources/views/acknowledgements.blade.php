@@ -59,7 +59,9 @@
                                         
                                         <td>
                                             <a href="#"  data-target="#view_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a>
+                                            @if(auth()->user()->department_id != 8)
                                             <a href="#"  data-target="#upload{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-warning'><i class="fa fa-upload"></i></a>
+                                            @endif
                                         
                                         </td>
                                         <td>DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</td>
