@@ -21,6 +21,11 @@
                         <input type="hidden" class="form-control-sm form-control " name="control_code" value='{{$document->control_code}}'  />
                         <input type="hidden" class="form-control-sm form-control " name="title" value='{{$document->title}}'  />
                         <input type="hidden" class="form-control-sm form-control " name="revision" value='{{$document->version}}'  />
+                    @if(count($document->department->dco) > 0)
+                        @foreach ($document->department->dco as $dco)
+                            <input type="hidden" name="dco[]" value="{{$dco->user_id}}">
+                        @endforeach
+                    @endif
                     <div class='row '>
                         {{ csrf_field() }}
                         <div class='col-md-4 border'>

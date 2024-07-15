@@ -142,7 +142,10 @@
                                                 @if($approver->start_date != null){{$approver->start_date}}@endif &nbsp;
                                             </div>
                                             <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                                @if($approver->status != "Waiting"){{date('Y-m-d',strtotime($approver->updated_at))}}@endif &nbsp;
+                                                {{-- @if($approver->status != "Waiting"){{date('Y-m-d',strtotime($approver->updated_at))}}@endif &nbsp; --}}
+                                                @if($approver->status != "Waiting" && $approver->status != "Pending")
+                                                    {{date('Y-m-d',strtotime($approver->updated_at))}}
+                                                @endif
                                             </div>
                                             <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                                 {!! nl2br(e($approver->remarks))!!}&nbsp;

@@ -172,7 +172,7 @@
                         }
                         @endphp
                         @if($allow == 1)
-                        @if($document->status == null)
+                        {{-- @if($document->status == null) --}}
                         <div class="row">
                             <div class="col-lg-12">
                                 <dl class="dl-horizontal">
@@ -211,7 +211,7 @@
                                 </dl>
                             </div>
                         </div>
-                        @endif
+                        {{-- @endif --}}
                         @if((auth()->user()->audit_role == null))
                         <div class="row m-t-sm">
                             <div class="col-lg-12">

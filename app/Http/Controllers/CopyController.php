@@ -48,9 +48,9 @@ class CopyController extends Controller
             $copy_approver->level = 1;
             $copy_approver->save();
         }
+        
         if($request->immediate_head != auth()->user()->id)
         {
-
             $first_notify = User::where('id',$request->immediate_head)->first();
         }
         else
@@ -58,7 +58,12 @@ class CopyController extends Controller
             $first_notify = User::where('id',$request->drc)->first();
         }
         $first_notify->notify(new ForApproval($copy_request,"CR-","Copy Request"));
-
+        $dco = User::whereIn('id', $request->dco)->get();
+        foreach($dco as $d)
+        {
+            $d->notify(new ForApproval($copy_request,"CR-","Copy Request"));
+        }
+        
         $copy_approver = new CopyApprover;
         $copy_approver->copy_request_id = $copy_request->id;
         $copy_approver->user_id = $request->drc;
