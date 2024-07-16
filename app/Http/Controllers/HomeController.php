@@ -129,6 +129,9 @@ class HomeController extends Controller
         }
        
         $departments = Department::with('documents','obsoletes')->whereHas('documents')->orWhereHas('obsoletes')->get();
+
+        $getWHIDepartments = Department::where('code', 'LIKE', "%WHI%")->where('status', null)->where('id', $request->department)->first();
+        
         return view('search',
         array(
             'documents' => $documents,
@@ -138,6 +141,7 @@ class HomeController extends Controller
             'departments' => $departments,
             'comp' => $comp,
             'dept' => $dept,
+            'whiDept' => $getWHIDepartments
         ));
     }
 }
