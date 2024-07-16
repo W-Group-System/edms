@@ -16,6 +16,10 @@ class AcknowledgementController extends Controller
         if(auth()->user()->role == "User")
         {
             $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->where('request_type','!=','Obsolete')->where('status','Approved')->get();
+            if (auth()->user()->department_id == 8)
+            {
+                $requests = ChangeRequest::orderBy('id','desc')->where('request_type','!=','Obsolete')->where('status','Approved')->get();
+            }
         }
         else if(auth()->user()->role == "Document Control Officer")
         {

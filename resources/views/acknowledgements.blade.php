@@ -6,23 +6,29 @@
 
 <div class="wrapper wrapper-content">
     <div class="row">
+        @if(auth()->user()->department_id != 8)
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>For Upload</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins"><a href='{{url("acknowledgement")}}'>{{count($requests->where('acknowledgement',null))}}</a></h1>
+                    <h1 class="no-margins"><a
+                            href='{{url("acknowledgement")}}'>{{count($requests->where('acknowledgement',null))}}</a>
+                    </h1>
                 </div>
             </div>
         </div>
+        @endif
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Uploaded</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins"><a href='{{url("uploaded-acknowledgement")}}'>{{count($requests->where('acknowledgement','!=',null))}}</a></h1>
+                    <h1 class="no-margins"><a
+                            href='{{url("uploaded-acknowledgement")}}'>{{count($requests->where('acknowledgement','!=',null))}}</a>
+                    </h1>
                 </div>
             </div>
         </div>
@@ -32,15 +38,15 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>For Upload </h5>
-                  
+
                 </div>
                 <div class="ibox-content">
 
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover tables" >
+                        <table class="table table-striped table-bordered table-hover tables">
                             <thead>
                                 <tr>
-                                    
+
                                     <th>Actions</th>
                                     <th>Reference No.</th>
                                     <th>Request Type</th>
@@ -53,56 +59,111 @@
                                     <th>Status</th>
                                 </tr>
                             </thead>
-                        <tbody>
-                            @foreach($requests->where('acknowledgement',null) as $request)
+                            <tbody>
+                                @if(auth()->user()->department_id == 8)
+                                    @foreach($requests->where('acknowledgement', '!=', null) as $request)
                                     <tr>
-                                        
+
                                         <td>
-                                            <a href="#"  data-target="#view_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a>
+                                            <a href="#" data-target="#view_request{{$request->id}}" data-toggle="modal"
+                                                class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a>
                                             @if(auth()->user()->department_id != 8)
-                                            <a href="#"  data-target="#upload{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-warning'><i class="fa fa-upload"></i></a>
+                                            <a href="#" data-target="#upload{{$request->id}}" data-toggle="modal"
+                                                class='btn btn-sm btn-warning'><i class="fa fa-upload"></i></a>
                                             @endif
-                                        
+
                                         </td>
                                         <td>DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</td>
                                         <td>{{$request->request_type}}</td>
                                         <td>{{date('M d Y',strtotime($request->created_at))}}</td>
-                                     
-                                            @if($request->document_id != null)
-                                            <td>
-                                                {{$request->control_code}}
-                                            </td>   
-                                            <td>
-                                                {{$request->title}}
-                                            </td>   
-                                            <td>
-                                                {{date('Y-m-d',strtotime($request->updated_at))}}
-                                            </td>   
-                                           
-                                            @else
-                                            <td></td>
-                                            <td>{{$request->title}}</td>
-                                            <td></td>
-                                            @endif
-                                            <td>
-                                                {{$request->type_of_document}}
-                                            </td>   
+
+                                        @if($request->document_id != null)
+                                        <td>
+                                            {{$request->control_code}}
+                                        </td>
+                                        <td>
+                                            {{$request->title}}
+                                        </td>
+                                        <td>
+                                            {{date('Y-m-d',strtotime($request->updated_at))}}
+                                        </td>
+
+                                        @else
+                                        <td></td>
+                                        <td>{{$request->title}}</td>
+                                        <td></td>
+                                        @endif
+                                        <td>
+                                            {{$request->type_of_document}}
+                                        </td>
                                         <td>{{$request->user->name}}</td>
                                         <td> @if($request->status == "Pending")
                                             <span class='label label-warning'>
-                                        @elseif($request->status ==  "Approved")
-                                            <span class='label label-info'>    
-                                        @elseif($request->status ==  "Declined")
-                                                <span class='label label-danger'>
-                                        @else<span class='label label-success'>
-                                            @endif
-                                            {{$request->status}}</span>  </td>
+                                                @elseif($request->status == "Approved")
+                                                <span class='label label-info'>
+                                                    @elseif($request->status == "Declined")
+                                                    <span class='label label-danger'>
+                                                        @else<span class='label label-success'>
+                                                            @endif
+                                                            {{$request->status}}</span>
+                                        </td>
                                     </tr>
                                     @include('view_change_request')
                                     @include('upload')
-                                @endforeach
-                            
-                        </tbody>
+                                    @endforeach
+                                @else
+                                    @foreach($requests->where('acknowledgement',null) as $request)
+                                    <tr>
+
+                                        <td>
+                                            <a href="#" data-target="#view_request{{$request->id}}" data-toggle="modal"
+                                                class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a>
+                                            @if(auth()->user()->department_id != 8)
+                                            <a href="#" data-target="#upload{{$request->id}}" data-toggle="modal"
+                                                class='btn btn-sm btn-warning'><i class="fa fa-upload"></i></a>
+                                            @endif
+
+                                        </td>
+                                        <td>DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</td>
+                                        <td>{{$request->request_type}}</td>
+                                        <td>{{date('M d Y',strtotime($request->created_at))}}</td>
+
+                                        @if($request->document_id != null)
+                                        <td>
+                                            {{$request->control_code}}
+                                        </td>
+                                        <td>
+                                            {{$request->title}}
+                                        </td>
+                                        <td>
+                                            {{date('Y-m-d',strtotime($request->updated_at))}}
+                                        </td>
+
+                                        @else
+                                        <td></td>
+                                        <td>{{$request->title}}</td>
+                                        <td></td>
+                                        @endif
+                                        <td>
+                                            {{$request->type_of_document}}
+                                        </td>
+                                        <td>{{$request->user->name}}</td>
+                                        <td> @if($request->status == "Pending")
+                                            <span class='label label-warning'>
+                                                @elseif($request->status == "Approved")
+                                                <span class='label label-info'>
+                                                    @elseif($request->status == "Declined")
+                                                    <span class='label label-danger'>
+                                                        @else<span class='label label-success'>
+                                                            @endif
+                                                            {{$request->status}}</span>
+                                        </td>
+                                    </tr>
+                                    @include('view_change_request')
+                                    @include('upload')
+                                    @endforeach
+                                @endif
+                            </tbody>
                         </table>
                     </div>
 
