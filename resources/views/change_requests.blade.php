@@ -98,7 +98,7 @@
                                   
                             @if(($request->type_of_document == "FORM") || ($request->type_of_document == "ANNEX") ||($request->type_of_document == "TEMPLATE"))
                             @php
-                                $target = date('Y-m-d', strtotime("+5 weekdays", strtotime($request->created_at)));
+                                $target = date('Y-m-d', strtotime("+7 weekdays", strtotime($request->created_at)));
                             @endphp
                            @else
                            @php
