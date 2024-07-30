@@ -106,7 +106,7 @@ class HomeController extends Controller
         $companies = Company::get();
         $departments = Department::get();
         
-        $request_documents = Document::where('public','!=',null)->where('status',null)->get();
+        $request_documents = Document::where('public','!=',null)->where('status',null)->orderBy('control_code','asc')->get();
         $documents_filter = Document::query();
         if($request->department)
         {
