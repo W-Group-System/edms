@@ -36,8 +36,8 @@ class DocumentController extends Controller
         $search = $request->search;
         $department = $request->department;
        
-        $documents = Document::get();
-        $documents_filter = Document::query();
+        $documents = Document::orderBy('control_code','asc')->get();
+        $documents_filter = Document::orderBy('control_code','asc')->query();
      
         if($request->department != null)
         {
