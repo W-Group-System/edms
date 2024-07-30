@@ -95,4 +95,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('change-public','DocumentController@changePublic');
 
+    // Pre Assessment
+    Route::get('pre_assessment', 'PreAssessmentController@index')->name('pre_assessment');
+    Route::post('approve_pre_assessment/{id}', 'PreAssessmentController@approve');
+    // Route::get('test', 'PreAssessmentController@test');
 });

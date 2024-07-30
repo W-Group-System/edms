@@ -20,9 +20,7 @@ use App\Notifications\ApprovedRequest;
 use App\Notifications\DeclineRequest;
 use App\Notifications\ReturnRequest;
 use App\Notifications\PendingRequest;
-
-
-
+use App\PreAssessment;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
 
@@ -327,78 +325,98 @@ class RequestController extends Controller
     public function new_request(Request $request)
     {
         //
+        if (auth()->user()->role == "Document Control Officer" || auth()->user()->role == "Administrator")
+        {
+            $preAssessment = new PreAssessment;
+            $preAssessment->request_type = $request->request_type;
+            $preAssessment->effective_date = $request->effective_date;
+            $preAssessment->department_id = $request->department;
+            $preAssessment->user_id = auth()->user()->id;
+            $preAssessment->type_of_document = $request->category;
+            $preAssessment->reason_for_changes = $request->reason_for_new_request;
+            $preAssessment->change_request = $request->description;
+            $preAssessment->supporting_documents = $request->supporting_document;
+            $preAssessment->link_draft = $request->draft_link;
+            $preAssessment->title = $request->title;
+            $preAssessment->company_id = $request->company;
+            $preAssessment->status = "Pending";
 
-      
-        $changeRequest = new ChangeRequest;
-        $changeRequest->request_type = $request->request_type;
-        $changeRequest->effective_date = $request->effective_date;
-        $changeRequest->department_id = $request->department;
-        $changeRequest->company_id = $request->company;
-        $changeRequest->title = $request->title;
-        $changeRequest->user_id = auth()->user()->id;
-        $changeRequest->type_of_document = $request->category;
-        $changeRequest->change_request = $request->description;
-        $changeRequest->link_draft = $request->draft_link;
-        $changeRequest->status = "Pending";
-        $changeRequest->level = 1;
-        if($request->has('soft_copy'))
-        {
-            $attachment = $request->file('soft_copy');
-        
-            $name = time() . '_' . $attachment->getClientOriginalName();
-            $attachment->move(public_path() . '/document_attachments/', $name);
-            $file_name = '/document_attachments/' . $name;
-            $changeRequest->soft_copy = $file_name;
-        }
-        if($request->has('pdf_copy'))
-        {
-            $attachment = $request->file('pdf_copy');
-            $name = time() . '_' . $attachment->getClientOriginalName();
-            $attachment->move(public_path() . '/document_attachments/', $name);
-            $file_name = '/document_attachments/' . $name;
-            $changeRequest->pdf_copy = $file_name;
-        }
-        if($request->has('fillable_copy'))
-        {
-            $attachment = $request->file('fillable_copy');
-            $name = time() . '_' . $attachment->getClientOriginalName();
-            $attachment->move(public_path() . '/document_attachments/', $name);
-            $file_name = '/document_attachments/' . $name;
-            $changeRequest->fillable_copy = $file_name;
-        }
-        
-        $changeRequest->save();
-
-        
-    
-        $approvers = DepartmentApprover::where('department_id',auth()->user()->department_id)->orderBy('level','asc')->get();
-        // dd($approvers);
-        foreach($approvers as $approver)
-        {
-            $copy_approver = new RequestApprover;
-            $copy_approver->change_request_id = $changeRequest->id;
-            $copy_approver->user_id = $approver->user_id;
-           
-            if($approver->level == 1)
+            if($request->has('soft_copy'))
             {
-                $copy_approver->status = "Pending";
-                $copy_approver->start_date = date('Y-m-d');
-                $ApproverNotif= User::where('id',$copy_approver->user_id)->first();
-                $ApproverNotif->notify(new ForApproval($changeRequest,"DICR-","Document Information Change Request"));
+                $attachment = $request->file('soft_copy');
+            
+                $name = time() . '_' . $attachment->getClientOriginalName();
+                $attachment->move(public_path() . '/document_attachments/', $name);
+                $file_name = '/document_attachments/' . $name;
+                $preAssessment->soft_copy = $file_name;
             }
-            else
+            if($request->has('pdf_copy'))
             {
-                $copy_approver->status = "Waiting";
-               
+                $attachment = $request->file('pdf_copy');
+                $name = time() . '_' . $attachment->getClientOriginalName();
+                $attachment->move(public_path() . '/document_attachments/', $name);
+                $file_name = '/document_attachments/' . $name;
+                $preAssessment->pdf_copy = $file_name;
             }
-            $copy_approver->level = $approver->level;
-            $copy_approver->save();
+            if($request->has('fillable_copy'))
+            {
+                $attachment = $request->file('fillable_copy');
+                $name = time() . '_' . $attachment->getClientOriginalName();
+                $attachment->move(public_path() . '/document_attachments/', $name);
+                $file_name = '/document_attachments/' . $name;
+                $preAssessment->fillable_copy = $file_name;
+            }
+
+            $preAssessment->save();
+
+            Alert::success('Successfully Submitted')->persistent('Dismiss');
+            return redirect('/pre_assessment');
         }
+        else
+        {
+            $changeRequest = new ChangeRequest;
+            $changeRequest->request_type = $request->request_type;
+            $changeRequest->effective_date = $request->effective_date;
+            $changeRequest->department_id = $request->department;
+            $changeRequest->company_id = $request->company;
+            $changeRequest->title = $request->title;
+            $changeRequest->user_id = auth()->user()->id;
+            $changeRequest->type_of_document = $request->category;
+            $changeRequest->change_request = $request->description;
+            $changeRequest->link_draft = $request->draft_link;
+            $changeRequest->status = "Pending";
+            $changeRequest->level = 1;
+            if($request->has('soft_copy'))
+            {
+                $attachment = $request->file('soft_copy');
+            
+                $name = time() . '_' . $attachment->getClientOriginalName();
+                $attachment->move(public_path() . '/document_attachments/', $name);
+                $file_name = '/document_attachments/' . $name;
+                $changeRequest->soft_copy = $file_name;
+            }
+            if($request->has('pdf_copy'))
+            {
+                $attachment = $request->file('pdf_copy');
+                $name = time() . '_' . $attachment->getClientOriginalName();
+                $attachment->move(public_path() . '/document_attachments/', $name);
+                $file_name = '/document_attachments/' . $name;
+                $changeRequest->pdf_copy = $file_name;
+            }
+            if($request->has('fillable_copy'))
+            {
+                $attachment = $request->file('fillable_copy');
+                $name = time() . '_' . $attachment->getClientOriginalName();
+                $attachment->move(public_path() . '/document_attachments/', $name);
+                $file_name = '/document_attachments/' . $name;
+                $changeRequest->fillable_copy = $file_name;
+            }
+            
+            $changeRequest->save();
 
-        Alert::success('Successfully Submitted')->persistent('Dismiss');
-        return redirect('/change-requests');
-
-
+            Alert::success('Successfully Submitted')->persistent('Dismiss');
+            return redirect('/change-requests');
+        }
     }
 
     /**

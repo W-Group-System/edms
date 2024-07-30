@@ -94,12 +94,18 @@
                         <a href="{{url('/request')}}"><i class="fa fa-paper-plane"></i> <span
                                 class="nav-label">Copy Requests </span></a>
                     </li>
-                    @if((auth()->user()->role != "User"))
+                    @if((auth()->user()->role == "Administrator") || (auth()->user()->role == "Document Control Officer"))
+                    <li class="{{ Route::current()->getName() == 'pre_assessment' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Pre-Assessment">
+                        <a href="{{url('/pre_assessment')}}"><i class="fa fa-file"></i> <span
+                                class="nav-label">Pre-assessment </span></a>
+                    </li>
+                    @endif
+                    {{-- @if((auth()->user()->role != "User")) --}}
                     <li class="{{ Route::current()->getName() == 'change-requests' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Change Requests">
                         <a href="{{url('/change-requests')}}"><i class="fa fa-edit"></i> <span
                                 class="nav-label">Change Requests </span></a>
                     </li>
-                    @endif
+                    {{-- @endif --}}
                     @if((count(auth()->user()->copy_approvers) != 0) || (count(auth()->user()->department_approvers) != 0) || (count(auth()->user()->change_approvers) != 0))
                     <li class="{{ Route::current()->getName() == 'for-approval' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="For Approval">
                         <a href="{{url('/for-approval')}}"><i class="fa fa-check-square-o"></i> <span

@@ -68,6 +68,9 @@
                         @if(auth()->user()->role == "Document Control Officer")
                         <button class="btn btn-success "  data-target="#newRequest" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New </button>
                         @endif
+                        @if(auth()->user()->role == "User")
+                        <button class="btn btn-success "  data-target="#newRequest" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New </button>
+                        @endif
                     </h5>
                   
                 </div>

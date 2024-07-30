@@ -1,6 +1,6 @@
 
 <div class="modal" id="changeRequest" tabindex="-1" role="dialog"  >
-    <div class="modal-dialog modal-lg " role="document">
+    <div class="modal-dialog modal-xl " role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <div class='col-md-10'>
@@ -53,14 +53,28 @@
                             Proposed Effective Date :
                             <input type="date" class="form-control-sm form-control " min='{{date('Y-m-d')}}' name="effective_date" required/>
                         </div>
-                        <div class='col-md-8' >
+                        <div class='col-md-4' >
                             Draft Link <i>(Google Link)</i> :
                             <input type="name" class="form-control-sm form-control " min='{{date('Y-m-d')}}' name="draft_link" required/>
                         </div>
+                        <div class="col-md-4">
+                            Supporting Document <small><i>(PSF, Executive Summary, etc.)</i></small>
+                            <input type="text" name="supporting_document" class="form-control">
+                        </div>
                     </div>
                     <div class='row'>
+                        <div class='col-md-6' >
+                            Reason/s for Change :
+                            <select name="reason_for_change" class="form-control cat">
+                                <option value=""></option>
+                                <option value="Audit Findings">Audit Findings</option>
+                                <option value="Process Improvement">Process Improvement</option>
+                                <option value="Legal Compliance">Legal Compliance</option>
+                                <option value="Auditing Standard">Auditing Standard</option>
+                            </select>
+                        </div>
                         <div class='col-md-12' >
-                            Reason/s for Change:
+                            Description : 
                             <textarea name='description' rows="5" cols="100" charswidth="23" class="form-control-sm form-control " required></textarea>
                         </div>
                     </div>

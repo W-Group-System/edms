@@ -1,10 +1,10 @@
 
-<div class="modal" id="view_request_change{{$request->id}}" tabindex="-1" role="dialog"  >
+<div class="modal" id="view_pa_approval{{$pa_approval->id}}" tabindex="-1" role="dialog"  >
     <div class="modal-dialog modal-lg " role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <div class='col-md-10'>
-                    <h5 class="modal-title" id="exampleModalLabel">Change Request ({{$request->status}}) - <b class='label label-danger'>{{$request->request_type}}</b></h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Pre-assessment ({{$pa_approval->pre_assessment->status}}) - <b class='label label-danger'>{{$pa_approval->pre_assessment->request_type}}</b></h5>
                 </div>
                 <div class='col-md-2'>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
@@ -12,52 +12,42 @@
                     </button>
                 </div>
             </div>
-            <form method='post' action='{{url('change-request-action/'.$change_approval->id)}}' onsubmit='show();' class="form-horizontal"  enctype="multipart/form-data" >
+            <form method='post' action='{{url('approve_pre_assessment/'.$pa_approval->id)}}' onsubmit='show();' class="form-horizontal"  enctype="multipart/form-data" >
                 {{ csrf_field() }}
                 <div class="modal-body">
                     <div class='row '>
                         <div class='col-md-6'>
-                            Reference Number : <b>DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</b>
+                            Type of Document : {{$pa_approval->pre_assessment->type_of_document}}
                         </div>
                         <div class='col-md-6'>
-                            Type of Document : {{$request->type_of_document}}
+                            Effective Date : {{date('M d Y',strtotime($pa_approval->pre_assessment->effective_date))}}
                         </div>
                         <div class='col-md-6'>
-                            Effective Date : {{date('M d Y',strtotime($request->effective_date))}}
-                        </div>
-                        <div class='col-md-6'>
-                            <div class='col-md-6'>
-                                @if($request->request_type != "Obsolete")
-                               Draft Link : <a href='{{$request->link_draft}}' target="_blank">Draft Link</a> <br>
-                               
-                                @endif
-                               @if($request->original_attachment_pdf != null)
-                               Original PDF Link : <a href='{{url($request->original_attachment_pdf)}}' target="_blank">Link</a> <br>
-                               @endif
-                               {{-- @if($request->original_attachment_soft_copy != null)
-                               Original Soft Copy : <a href='{{url($request->original_attachment_soft_copy)}}' target="_blank">Link</a> <br>
-                               @endif --}}
-                            </div>
-                           
+                            @if($pa_approval->pre_assessment->request_type != "Obsolete")
+                                Draft Link : <a href='{{$pa_approval->pre_assessment->link_draft}}' target="_blank">Draft Link</a> <br>
+                            @endif
+                            @if($pa_approval->pre_assessment->original_attachment_pdf != null)
+                            Original PDF Link : <a href='{{url($pa_approval->pre_assessment->original_attachment_pdf)}}' target="_blank">Link</a> <br>
+                            @endif
                         </div>
                     </div>
                     <hr>
                     <div class='row '>
-                        @if($request->request_type != "New")
+                        @if($pa_approval->pre_assessment->request_type != "New")
                         <div class='col-md-6'>
-                            Control Code : {{$request->control_code}} Rev. {{$request->revision}}
+                            Control Code : {{$pa_approval->pre_assessment->control_code}} Rev. {{$pa_approval->pre_assessment->revision}}
                         </div>
                         @endif
                         <div class='col-md-6'>
-                            Title : {{$request->title}}
+                            Title : {{$pa_approval->pre_assessment->title}}
                         </div>
                     </div>
                     <div class='row '>
                         <div class='col-md-6'>
-                            Requested By : {{$request->user->name}} 
+                            Requested By : {{$pa_approval->pre_assessment->user->name}} 
                         </div>
                         <div class='col-md-6'>
-                            Date Requested : {{date('M d, Y',strtotime($request->created_at))}}
+                            Date Requested : {{date('M d, Y',strtotime($pa_approval->pre_assessment->created_at))}}
                         </div>
                     </div>
                     <hr>
@@ -65,21 +55,19 @@
                         <div class='col-md-12 '>
                             <div class="panel panel-primary">
                                 <div class="panel-heading">
-                                    @if($request->request_type != "Revision")
+                                    @if($pa_approval->pre_assessment->request_type != "Revision")
                                         Descriptions/Remarks
                                     @else
                                     Reason/s for Change
                                     @endif
                                 </div>
                                 <div class="panel-body">
-                                   {!!nl2br(e($request->change_request))!!}
+                                    {!!nl2br(e($pa_approval->pre_assessment->description))!!}
                                 </div>
                             </div>
-                            
-                            
                         </div>
                     </div>
-                    @if($request->request_type == "Revision")
+                    @if($pa_approval->pre_assessment->request_type == "Revision")
                     <div class='row '>
                         <div class='col-md-6 '>
                             <div class="panel panel-primary">
@@ -87,7 +75,7 @@
                                     From (Indicate clause)
                                 </div>
                                 <div class="panel-body">
-                                    {!! nl2br(e($request->indicate_clause)) !!}
+                                    {!! nl2br(e($pa_approval->pre_assessment->indicate_clause)) !!}
                                 </div>
                             </div>
                         </div>
@@ -97,11 +85,9 @@
                                     To (Indicate the changes)
                                 </div>
                                 <div class="panel-body">
-                                    {!! nl2br(e($request->indicate_changes)) !!}
+                                    {!! nl2br(e($pa_approval->pre_assessment->indicate_changes)) !!}
                                 </div>
                             </div>
-                           
-                            
                         </div>
                     </div>
                     @endif
@@ -122,55 +108,50 @@
                                     Start Date
                                 </div>
                                 <div class='col-md-2  border border-primary border-top-bottom border-left-right'>
-                                   Action Date
+                                    Action Date
                                 </div>
                                 <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                     Remarks
                                 </div>
                             </div>
-                            @foreach($request->approvers as $approver)
-                            
-                        
-                                        <div class='row'>
-                                            <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                                {{$approver->user->name}}
-                                            </div>
-                                            <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                                {{$approver->status}}
-                                            </div>
-                                            <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                                @if($approver->start_date != null){{$approver->start_date}}@endif &nbsp;
-                                            </div>
-                                            <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                                {{-- @if($approver->status != "Waiting"){{date('Y-m-d',strtotime($approver->updated_at))}}@endif &nbsp; --}}
-                                                @if($approver->status != "Waiting" && $approver->status != "Pending")
-                                                    {{date('Y-m-d',strtotime($approver->updated_at))}}
-                                                @endif
-                                            </div>
-                                            <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                                {!! nl2br(e($approver->remarks))!!}&nbsp;
-                                            </div>
-                                        </div>
-                            
-                            @endforeach
+                            <div class='row'>
+                                <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                    {{$pa_approval->user->name}}
+                                </div>
+                                <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                    {{$pa_approval->status}}
+                                </div>
+                                <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                    @if($pa_approval->start_date != null){{$pa_approval->start_date}}@endif &nbsp;
+                                </div>
+                                <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                    @if($pa_approval->status != "Waiting" && $pa_approval->status != "Pending")
+                                        {{date('Y-m-d',strtotime($pa_approval->updated_at))}}
+                                    @else
+                                        No action date
+                                    @endif
+                                </div>
+                                <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                    {!! nl2br(e($pa_approval->remarks))!!}&nbsp;
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <hr>
-                
                     <div class='row'>
-                        @if($request->soft_copy != null)
+                        @if($pa_approval->pre_assessment->soft_copy != null)
                         <div class='col-md-4'>
-                            SOFT Copy : <a href='{{url($request->soft_copy)}}' target="_blank" ><i class="fa fa-file-word-o"></i> Editable Copy</a>
+                            SOFT Copy : <a href='{{url($pa_approval->pre_assessment->soft_copy)}}' target="_blank" ><i class="fa fa-file-word-o"></i> Editable Copy</a>
                         </div>
                         @endif
-                        @if($request->pdf_copy != null)
+                        @if($pa_approval->pre_assessment->pdf_copy != null)
                         <div class='col-md-4'>
-                            PDF/Scanned Copy : <a href='{{url($request->pdf_copy)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a>
+                            PDF/Scanned Copy : <a href='{{url($pa_approval->pre_assessment->pdf_copy)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> PDF Copy</a>
                         </div>
                         @endif
-                        @if($request->fillable_copy != null)
+                        @if($pa_approval->pre_assessment->fillable_copy != null)
                         <div class='col-md-4'>
-                            FILLABLE Copy : <a href='{{url($request->fillable_copy)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> Fillable Copy</a>
+                            FILLABLE Copy : <a href='{{url($pa_approval->pre_assessment->fillable_copy)}}' target="_blank" ><i class="fa fa-file-pdf-o"></i> Fillable Copy</a>
                         </div>
                         @endif
                     </div>
@@ -190,20 +171,16 @@
                                 FILLABLE/SCANNED Copy <small><i>(.pdf,excel,word)</i></small>
                                 <input type="file" class="form-control-sm form-control " id='pdf_copy_{{$request->id}}'  name="pdf_copy" required/>
                             </div>
-                            {{-- <div class='col-md-4'>
-                                FILLABLE Copy <small><i>(.pdf)</i><small>
-                                <input type="file" class="form-control-sm form-control "  name="fillable_copy" />
-                            </div> --}}
                         </div>
                     @endif
-
+                    @if((auth()->user()->role == "Document Control Officer") && ($request->request_type != "Obsolete"))
                     <div class='row'>
                         <div class='col-md-4'>
                             Action :
                             <select name='action' class='form-control-sm form-control cat'  @if((auth()->user()->role == "Document Control Officer") && ($request->request_type != "Obsolete")) onchange='remove_required({{$request->id}},this.value)' @endif required>
                                 <option value=""></option>
                                 <option value="Approved" >Approve</option>
-                                {{-- <option value="Declined" >Decline</option> --}}
+                                <option value="Declined" >Decline</option>
                                 <option value="Returned" >Return</option>
                             </select>
                         </div>
@@ -212,9 +189,13 @@
                             <textarea name='remarks' class='form-control-sm form-control' required></textarea>
                         </div>
                     </div>
+                    @endif
                 </div>
                 <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                    @if(auth()->user()->role == "Document Control Officer")
                     <button type='submit'  class="btn btn-primary">Submit</button>
+                    @endif
                 </div>
             </form>
         </div>
