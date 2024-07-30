@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use App\ChangeRequest;
+use App\DepartmentApprover;
 use App\PreAssessment;
+use App\RequestApprover;
 use Illuminate\Console\Command;
 
 class AutoChangeRequest extends Command
@@ -75,6 +77,25 @@ class AutoChangeRequest extends Command
                 $changeRequest->fillable_copy = $pa->fillable_copy;
                 $changeRequest->supporting_documents = $pa->supporting_documents;
                 $changeRequest->save();
+
+                $departmentApprovers = DepartmentApprover::where('department_id', $pa->department_id)->orderBy('level', 'asc')->get();
+                foreach($departmentApprovers as $approver)
+                {
+                    $requestApprover = new RequestApprover;
+                    $requestApprover->change_request_id = $changeRequest->id;
+                    $requestApprover->user_id = $approver->user_id;
+                    if($approver->level == 1)
+                    {
+                        $requestApprover->status = "Pending";
+                        $requestApprover->start_date = date('Y-m-d');
+                    }
+                    else
+                    {
+                        $requestApprover->status = "Waiting";
+                    }
+                    $requestApprover->level = $approver->level;
+                    $requestApprover->save();
+                }
             }
 
         }

@@ -73,9 +73,11 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $delayed = 0;
+                                @endphp
                                 @foreach($pre_assessment as $pa)
                                     @php
-                                        $delayed = 0;
                                         $targetDate = date('Y-m-d', strtotime('+5 weekdays', strtotime($pa->created_at)));
                                     @endphp
                                     <tr>
