@@ -98,5 +98,5 @@ Route::group(['middleware' => 'auth'], function () {
     // Pre Assessment
     Route::get('pre_assessment', 'PreAssessmentController@index')->name('pre_assessment');
     Route::post('approve_pre_assessment/{id}', 'PreAssessmentController@approve');
-    // Route::get('test', 'PreAssessmentController@test');
+    Route::post('edit_upload', 'AcknowledgementController@editUpload');
 });

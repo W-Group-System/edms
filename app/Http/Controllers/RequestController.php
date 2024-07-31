@@ -160,21 +160,32 @@ class RequestController extends Controller
             'requests' =>  $requests,
         ));
     }
-    public function changeRequests()
+    public function changeRequests(Request $request)
     {
         //
+        // dd($request->all());
         $departments = Department::where('id',auth()->user()->department_id)->where('status',null)->get();
         $companies = Company::where('status',null)->get();
         $document_types = DocumentType::get();
         $approvers = DepartmentApprover::where('department_id',auth()->user()->department_id)->get();
-        $requests = ChangeRequest::orderBy('id','desc')->get();
+        $requests = ChangeRequest::orderBy('id','desc')
+            ->when($request->status, function($q)use($request) {
+                $q->where('status', $request->status);
+            })
+            ->where('status', 'Pending')
+            ->get();
         if(auth()->user()->role == "User")
         {
             $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->get();
         }
         else if(auth()->user()->role == "Document Control Officer")
         {
-            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->orderBy('id','desc')->get();
+            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->dco)
+                ->pluck('department_id')->toArray())
+                ->when($request->status, function($q)use($request) {
+                    $q->where('status', $request->status);
+                })
+                ->orderBy('id','desc')->get();
         }
         else if(auth()->user()->role == "Department Head")
         {

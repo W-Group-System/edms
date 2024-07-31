@@ -12,7 +12,12 @@
                 <h5>Pending</h5>
             </div>
             <div class="ibox-content">
-                <h1 class="no-margins">{{count($requests->where('status','Pending'))}}</h1>
+                <form method="GET">
+                    <h1 class="no-margins">
+                        <input type="hidden" name="status" value="Pending">
+                        <input type="submit" class="text-success" value="{{count($requests->where('status','Pending'))}}" style="background: none; border: none;">
+                    </h1>
+                </form>
             </div>
         </div>
     </div>
@@ -22,7 +27,12 @@
                 <h5>Cancelled</h5>
             </div>
             <div class="ibox-content">
-                <h1 class="no-margins">{{count($requests->where('status','Cancelled'))}}</h1>
+                <form action="" method="get">
+                    <h1 class="no-margins">
+                        <input type="hidden" name="status" value="Cancelled">
+                        <input type="submit" class="text-success" value="{{count($requests->where('status','Cancelled'))}}" style="background: none; border: none;">
+                    </h1>
+                </form>
             </div>
         </div>
     </div>
@@ -32,7 +42,12 @@
                 <h5>Declined</h5>
             </div>
             <div class="ibox-content">
-                <h1 class="no-margins">{{count($requests->where('status','Declined'))}}</h1>
+                <form method="get" action="">
+                    <h1 class="no-margins">
+                        <input type="hidden" name="status" value="Declined">
+                        <input type="submit" class="text-success" value="{{count($requests->where('status','Declined'))}}" style="background: none; border: none;">
+                    </h1>
+                </form>
             </div>
         </div>
     </div>
@@ -42,7 +57,12 @@
                 <h5>Approved</h5>
             </div>
             <div class="ibox-content">
-                <h1 class="no-margins">{{count($requests->where('status','Approved'))}}</h1>
+                <form action="" method="get">
+                    <input type="hidden" name="status" value="Approved">
+                    <h1 class="no-margins">
+                        <input type="submit" class="text-success" value="{{count($requests->where('status','Approved'))}}"  style="background: none; border: none;">
+                    </h1>
+                </form>
             </div>
         </div>
     </div>
@@ -52,7 +72,12 @@
                 <h5>Delayed</h5>
             </div>
             <div class="ibox-content">
-                <h1 class="no-margins" id='delayed'>0</h1>
+                <form action="" method="get">
+                    <input type="hidden" name="status" value="Pending">
+                    <h1 class="no-margins">
+                        <input type="submit" class="text-success" value="0" id='delayed' style="background: none; border: none;">
+                    </h1>
+                </form>
             </div>
         </div>
     </div>
@@ -101,7 +126,7 @@
                                   
                             @if(($request->type_of_document == "FORM") || ($request->type_of_document == "ANNEX") ||($request->type_of_document == "TEMPLATE"))
                             @php
-                                $target = date('Y-m-d', strtotime("+7 weekdays", strtotime($request->created_at)));
+                                $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at)));
                             @endphp
                            @else
                            @php
@@ -199,7 +224,8 @@
 </script>
 <script>
     var delayed = {!! json_encode($delayed) !!};
-    document.getElementById('delayed').innerText = delayed;
+    // document.getElementById('delayed').innerText = delayed;
+    document.getElementById('delayed').value = delayed;
     $(document).ready(function(){
         
 

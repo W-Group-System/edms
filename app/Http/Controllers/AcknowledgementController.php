@@ -80,5 +80,23 @@ class AcknowledgementController extends Controller
         return back();
 
     }
-   
+    public function editUpload(Request $request)
+    {
+        $acknowledgement = Acknowledgement::where('change_request_id', $request->change_request_id)->first();
+        
+        if ($request->has('acknowledgement_file'))
+        {
+            $attachment = $request->file('acknowledgement_file');
+            $name = time() . '_' . $attachment->getClientOriginalName();
+            $attachment->move(public_path() . '/acknowledgement-attachment/'. $name);
+
+            $file_name = '/acknowledgement-attachment/' . $name;
+
+            $acknowledgement->file = $file_name;
+            $acknowledgement->save();
+        }
+
+        Alert::success('Successfully Uploaded')->persistent('Dismiss');
+        return back();
+    }
 }

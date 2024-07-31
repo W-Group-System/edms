@@ -17,6 +17,7 @@
                     <div class='row '>
                         <div class='col-md-12'>
                            Attachment : <a href="{{url($request->acknowledgement->file)}}" target='_blank'><i class="fa fa-file-text-o"></i> </a>
+                           <a href="#" class="text-danger" data-target="#upload_acknowledgement{{$request->id}}" data-toggle="modal" data-dismiss="modal"><i class="fa fa-edit"></i></a>
                         </div>
                     </div>
                     <div class='row '>
@@ -37,3 +38,4 @@
         </div>
     </div>
 </div>
+@include('upload_acknowledgement')

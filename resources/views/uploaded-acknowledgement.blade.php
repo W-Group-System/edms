@@ -50,6 +50,7 @@
                                     <th>Date Cascade</th>
                                     <th>Type</th>
                                     <th>Requested By</th>
+                                    <th>Date Uploaded</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -85,6 +86,7 @@
                                                 {{$request->type_of_document}}
                                             </td>   
                                         <td>{{$request->user->name}}</td>
+                                        <td>{{date('M d Y', strtotime($request->acknowledgement->created_at))}}</td>
                                         <td> @if($request->status == "Pending")
                                             <span class='label label-warning'>
                                         @elseif($request->status ==  "Approved")
