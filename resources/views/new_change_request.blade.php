@@ -76,7 +76,7 @@
                         </div>
                         <div class='col-md-4' >
                             Supporting Document <small><i>(PSF,Executive Summary,Etc.)</i></small> :
-                            <input type="text" class="form-control-sm form-control " name="supporting_document" required/>
+                            <input type="file" class="form-control-sm form-control " accept="application/pdf" name="supporting_document" required/>
                         </div>
                     </div>
                     <div class='row'>

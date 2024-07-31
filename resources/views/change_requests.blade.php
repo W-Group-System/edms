@@ -119,7 +119,11 @@
                                             @endif
                                             @endif
                                         </td>
-                                        <td>DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</td>
+                                        <td>
+                                            @if($request->approvers->isNotEmpty())
+                                            DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}
+                                            @endif
+                                        </td>
                                         <td>{{$request->request_type}}</td>
                                         <td>{{date('M d Y',strtotime($request->created_at))}}</td>
                                      

@@ -106,28 +106,6 @@ class PreAssessmentController extends Controller
         //
     }
 
-    // public function test()
-    // {
-    //     info('START TEST');
-
-    //     $pre_assessment = PreAssessment::where('type_of_document', 'POLICY')->get();
-        
-    //     foreach($pre_assessment as $pa)
-    //     {
-    //         dd($pa);
-    //         $target_date = date('Y-m-d', strtotime('+5 weekdays', strtotime($pa->created_at)));
-    //         $dateToday = date('Y-m-d');
-
-    //         if ($target_date < $dateToday)
-    //         {
-    //             $pre_assessment = new ChangeRequest;
-    //         }
-    //     }
-
-
-    //     info('END TEST');
-    // }
-
     public function approve(Request $request, $id)
     {
         $preAssessment = PreAssessment::findOrFail($id);
@@ -136,30 +114,35 @@ class PreAssessmentController extends Controller
         {
             $preAssessment->status = $request->action;
             $preAssessment->save();
-            
-            $changeRequest = new ChangeRequest;
-            $changeRequest->request_type = $preAssessment->request_type;
-            $changeRequest->effective_date = $preAssessment->effective_date;
-            $changeRequest->department_id = $preAssessment->department_id;
-            $changeRequest->user_id = $preAssessment->user_id;
-            $changeRequest->type_of_document = $preAssessment->type_of_document;
-            $changeRequest->document_id = $preAssessment->document_id;
-            $changeRequest->change_request = $preAssessment->change_request;
-            $changeRequest->reason_for_changes = $preAssessment->reason_for_changes;
-            $changeRequest->link_draft = $preAssessment->link_draft;
-            $changeRequest->status = "Pending";
-            $changeRequest->level = 1;
-            $changeRequest->company_id = $preAssessment->company_id;
-            $changeRequest->control_code = $preAssessment->control_code;
-            $changeRequest->title = $preAssessment->title;
-            $changeRequest->revision = $preAssessment->revision;
-            $changeRequest->original_attachment_pdf = $preAssessment->original_attachment_pdf;
-            $changeRequest->original_attachment_soft_copy = $preAssessment->original_attachment_soft_copy;
-            $changeRequest->pdf_copy = $preAssessment->pdf_copy;
-            $changeRequest->soft_copy = $preAssessment->soft_copy;
-            $changeRequest->supporting_documents = $request->supporting_documents;
-            $changeRequest->save();
 
+            $changeRequest = ChangeRequest::where('title', $preAssessment->title)->where('request_type', $preAssessment->request_type)->where('type_of_document', $preAssessment->type_of_document)->first();
+
+            if ($changeRequest == null)
+            {
+                $changeRequest = new ChangeRequest;
+                $changeRequest->request_type = $preAssessment->request_type;
+                $changeRequest->effective_date = $preAssessment->effective_date;
+                $changeRequest->department_id = $preAssessment->department_id;
+                $changeRequest->user_id = $preAssessment->user_id;
+                $changeRequest->type_of_document = $preAssessment->type_of_document;
+                $changeRequest->document_id = $preAssessment->document_id;
+                $changeRequest->change_request = $preAssessment->change_request;
+                $changeRequest->reason_for_changes = $preAssessment->reason_for_changes;
+                $changeRequest->link_draft = $preAssessment->link_draft;
+                $changeRequest->status = "Pending";
+                $changeRequest->level = 1;
+                $changeRequest->company_id = $preAssessment->company_id;
+                $changeRequest->control_code = $preAssessment->control_code;
+                $changeRequest->title = $preAssessment->title;
+                $changeRequest->revision = $preAssessment->revision;
+                $changeRequest->original_attachment_pdf = $preAssessment->original_attachment_pdf;
+                $changeRequest->original_attachment_soft_copy = $preAssessment->original_attachment_soft_copy;
+                $changeRequest->pdf_copy = $preAssessment->pdf_copy;
+                $changeRequest->soft_copy = $preAssessment->soft_copy;
+                $changeRequest->supporting_documents = $request->supporting_documents;
+                $changeRequest->save();
+            }
+            
             $departmentApprover = DepartmentApprover::where('department_id', auth()->user()->department_id)->get();
             foreach($departmentApprover as $approver)
             {
@@ -167,6 +150,19 @@ class PreAssessmentController extends Controller
                 $requestApprover->change_request_id = $changeRequest->id;
                 $requestApprover->user_id = $approver->user_id;
                 $requestApprover->level = $approver->level;
+
+                if($approver->level == 1)
+                {
+                    $requestApprover->status = "Pending";
+                    $requestApprover->start_date = date('Y-m-d');
+                }
+                else
+                {
+                    $requestApprover->status = "Waiting";
+                
+                }
+                $requestApprover->level = $approver->level;
+
                 $requestApprover->save();
             }
         }

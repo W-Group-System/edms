@@ -56,24 +56,28 @@
                             </div>
                         </div>
                     </div>
-                    @if($pa->status == "Pending")
-                        <hr>
-                        <div class="row">
-                            <div class="col-lg-4">
-                                Action : 
-                                <select name="action" id="action" class="form-control cat" required>
-                                    <option value=""></option>
-                                    <option value="Approved">Approved</option>
-                                    <option value="Declined">Declined</option>
-                                </select>
+                    @if(auth()->user()->role == "Document Control Officer" && $pa->company_id == auth()->user()->company_id)
+                        @if($pa->status == "Pending")
+                            <hr>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    Action : 
+                                    <select name="action" id="action" class="form-control cat" required>
+                                        <option value=""></option>
+                                        <option value="Approved">Approved</option>
+                                        <option value="Declined">Declined</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
+                        @endif
                     @endif
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    @if($pa->status == "Pending")
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    @if(auth()->user()->role == "Document Control Officer")
+                        @if($pa->status == "Pending")
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        @endif
                     @endif
                 </div>
             </form>
