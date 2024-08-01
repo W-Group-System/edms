@@ -172,7 +172,6 @@ class RequestController extends Controller
             ->when($request->status, function($q)use($request) {
                 $q->where('status', $request->status);
             })
-            ->where('status', 'Pending')
             ->get();
         if(auth()->user()->role == "User")
         {
