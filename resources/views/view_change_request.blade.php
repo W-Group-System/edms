@@ -16,7 +16,7 @@
                 <div class="modal-body">
                     <div class='row '>
                         <div class='col-md-6'>
-                            Reference Number : <b>DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</b>
+                            Reference Number : @if($request->approvers->isNotEmpty())<b>DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</b>@endif
                         </div>
                         <div class='col-md-6'>
                             Type of Document : {{$request->type_of_document}}
@@ -36,6 +36,9 @@
                            {{-- @if($request->original_attachment_soft_copy != null)
                            Original Soft Copy : <a href='{{url($request->original_attachment_soft_copy)}}' target="_blank">Link</a> <br>
                            @endif --}}
+                            @if($request->supporting_documents != null)
+                            Supporting Documents : <a href="{{url($request->supporting_documents)}}" target="_blank">Link</a>
+                            @endif
                         </div>
                     </div>
                     <hr>

@@ -26,6 +26,11 @@
                         <div class="col-lg-6">
                             Draft Link : <a href="{{$pa->link_draft}}" target="_blank">Draft Link</a>
                         </div>
+                        @if($pa->supporting_documents != null)
+                        <div class="col-lg-6">
+                            Supporting Documents : <a href="{{url($pa->supporting_documents)}}" target="_blank">Link</a>
+                        </div>
+                        @endif
                     </div>
                     <hr>
                     <div class="row">
