@@ -203,7 +203,7 @@
                             <select name='action' class='form-control-sm form-control cat'  @if((auth()->user()->role == "Document Control Officer") && ($request->request_type != "Obsolete")) onchange='remove_required({{$request->id}},this.value)' @endif required>
                                 <option value=""></option>
                                 <option value="Approved" >Approve</option>
-                                {{-- <option value="Declined" >Decline</option> --}}
+                                <option value="Declined" >Decline</option>
                                 <option value="Returned" >Return</option>
                             </select>
                         </div>
