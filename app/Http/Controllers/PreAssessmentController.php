@@ -108,10 +108,16 @@ class PreAssessmentController extends Controller
 
     public function approve(Request $request, $id)
     {
+        // dd($request->all());
         $preAssessment = PreAssessment::findOrFail($id);
         
         if ($request->action == "Approved")
         {
+            $preAssessmentApprover = PreAssessmentApprover::where('pre_assessment_id', $id)->first();
+            $preAssessmentApprover->status = "Approved";
+            $preAssessmentApprover->remarks = $request->remarks;
+            $preAssessmentApprover->save();
+
             $preAssessment->status = $request->action;
             $preAssessment->save();
 
@@ -168,6 +174,11 @@ class PreAssessmentController extends Controller
         }
         elseif($request->action == "Declined")
         {
+            $preAssessmentApprover = PreAssessmentApprover::where('pre_assessment_id', $id)->first();
+            $preAssessmentApprover->status = "Declined";
+            $preAssessmentApprover->remarks = $request->remarks;
+            $preAssessmentApprover->save();
+
             $preAssessment->status = $request->action;
             $preAssessment->save();
 

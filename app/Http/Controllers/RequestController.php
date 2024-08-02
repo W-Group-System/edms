@@ -9,6 +9,7 @@ use App\CopyRequest;
 use App\ChangeRequest;
 use App\DocumentAttachment;
 use App\CopyApprover;
+use App\DepartmentDco;
 use App\RequestApprover;
 use App\ObsoleteAttachment;
 use App\Obsolete;
@@ -21,6 +22,7 @@ use App\Notifications\DeclineRequest;
 use App\Notifications\ReturnRequest;
 use App\Notifications\PendingRequest;
 use App\PreAssessment;
+use App\PreAssessmentApprover;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
 
@@ -365,6 +367,19 @@ class RequestController extends Controller
         }
 
         $changeRequest->save();
+
+        $user = User::where('role', 'Document Control Officer')->where('status', null)->pluck('id')->toArray();
+        $dco = DepartmentDco::where('department_id', auth()->user()->department_id)->whereIn('user_id', $user)->first();
+
+        if ($dco != null)
+        {
+            $preAssessmentApprover = new PreAssessmentApprover;
+            $preAssessmentApprover->pre_assessment_id = $preAssessment->id;
+            $preAssessmentApprover->user_id = $dco->user_id;
+            $preAssessmentApprover->status = "Pending";
+            $preAssessmentApprover->start_date = date('Y-m-d');
+            $preAssessmentApprover->save();
+        }
     
         // $approvers = DepartmentApprover::where('department_id',$document->department_id)->orderBy('level','asc')->get();
         // foreach($approvers as $approver)
@@ -478,6 +493,19 @@ class RequestController extends Controller
         }
         
         $changeRequest->save();
+
+        $user = User::where('role', 'Document Control Officer')->where('status', null)->pluck('id')->toArray();
+        $dco = DepartmentDco::where('department_id', auth()->user()->department_id)->whereIn('user_id', $user)->first();
+
+        if ($dco != null)
+        {
+            $preAssessmentApprover = new PreAssessmentApprover;
+            $preAssessmentApprover->pre_assessment_id = $preAssessment->id;
+            $preAssessmentApprover->user_id = $dco->user_id;
+            $preAssessmentApprover->status = "Pending";
+            $preAssessmentApprover->start_date = date('Y-m-d');
+            $preAssessmentApprover->save();
+        }
 
         Alert::success('Successfully Submitted')->persistent('Dismiss');
         return redirect('/change-requests');

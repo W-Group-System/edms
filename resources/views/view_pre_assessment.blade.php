@@ -53,25 +53,123 @@
                             Request Type : <strong>{{$pa->request_type}}</strong>
                             <div class="panel panel-primary">
                                 <div class="panel-heading">
-                                    Description/Remarks
+                                    @if($pa->request_type != "Revision")
+                                        Descriptions/Remarks
+                                    @else
+                                    Reason/s for Change
+                                    @endif
                                 </div>
                                 <div class="panel-body">
-                                    {!! nl2br(e($pa->change_request)) !!}
+                                    {!!nl2br(e($pa->change_request))!!}
                                 </div>
                             </div>
+                            @if($pa->request_type == "Revision")
+                            <div class='row '>
+                                <div class='col-md-6 '>
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading">
+                                            From (Indicate clause)
+                                        </div>
+                                        <div class="panel-body">
+                                            {!! nl2br(e($pa->indicate_clause)) !!}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-md-6'>
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading">
+                                            To (Indicate the changes)
+                                        </div>
+                                        <div class="panel-body">
+                                            {!! nl2br(e($pa->indicate_changes)) !!}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
-                    @if((auth()->user()->role == "Document Control Officer" && $pa->company_id == auth()->user()->company_id) || (auth()->user()->role == "Administrator"))
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            Approvers
+                        </div>
+                        <div class="panel-body">
+                            <div class='row'>
+                                <div class='col-md-3  border border-primary border-top-bottom border-left-right'>
+                                    Name
+                                </div>
+                                <div class='col-md-3  border border-primary border-top-bottom border-left-right'>
+                                    Status
+                                </div>
+                                <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                    Start Date
+                                </div>
+                                <div class='col-md-2  border border-primary border-top-bottom border-left-right'>
+                                    Action Date
+                                </div>
+                                <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                    Remarks
+                                </div>
+                            </div>
+                            @if($pa->approvers)
+                            <div class='row'>
+                                <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                    {{$pa->approvers->user->name}}
+                                </div>
+                                <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                    {{$pa->approvers->status}}
+                                </div>
+                                <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                    @if($pa->approvers->start_date != null){{$pa->approvers->start_date}}@endif &nbsp;
+                                </div>
+                                <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                    @if($pa->approvers->status != "Waiting" && $pa->approvers->status != "Pending")
+                                        {{date('Y-m-d',strtotime($pa->approvers->updated_at))}}
+                                    @endif
+                                </div>
+                                <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                    {!! nl2br(e($pa->approvers->remarks))!!}&nbsp;
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                    @if($pa->approvers)
+                        @if(auth()->user()->id == $pa->approvers->user_id)
+                            @if($pa->status == "Pending")
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        Action : 
+                                        <select name="action" id="action" class="form-control cat" required>
+                                            <option value=""></option>
+                                            <option value="Approved">Approved</option>
+                                            <option value="Declined">Declined</option>
+                                        </select>
+                                    </div>
+                                    <div class='col-md-8'>
+                                        Remarks :
+                                        <textarea name='remarks' class='form-control-sm form-control' required></textarea>
+                                    </div>
+                                </div>
+                            @endif
+                        @endif
+                    @endif
+                    @if(auth()->user()->role == "Administrator")
                         @if($pa->status == "Pending")
                             <hr>
                             <div class="row">
-                                <div class="col-lg-4">
+                                <div class="col-md-4">
                                     Action : 
                                     <select name="action" id="action" class="form-control cat" required>
                                         <option value=""></option>
                                         <option value="Approved">Approved</option>
                                         <option value="Declined">Declined</option>
                                     </select>
+                                </div>
+                                <div class='col-md-8'>
+                                    Remarks :
+                                    <textarea name='remarks' class='form-control-sm form-control' required></textarea>
                                 </div>
                             </div>
                         @endif

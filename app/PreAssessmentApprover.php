@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
-class PreAssessment extends Model implements Auditable
+class PreAssessmentApprover extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
@@ -13,9 +13,4 @@ class PreAssessment extends Model implements Auditable
     {
         return $this->belongsTo(User::class);
     }
-    public function approvers()
-    {
-        return $this->hasOne(PreAssessmentApprover::class);
-    }
-
 }
