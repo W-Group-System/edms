@@ -175,7 +175,12 @@ class RequestController extends Controller
             ->get();
         if(auth()->user()->role == "User")
         {
-            $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->get();
+            $requests = ChangeRequest::where('user_id',auth()->user()->id)
+                ->when($request->status, function($q)use($request) {
+                    $q->where('status', $request->status);
+                })
+                ->orderBy('id','desc')
+                ->get();
         }
         else if(auth()->user()->role == "Document Control Officer")
         {
@@ -188,11 +193,21 @@ class RequestController extends Controller
         }
         else if(auth()->user()->role == "Department Head")
         {
-            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->orderBy('id','desc')->get();
+            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())
+                ->when($request->status, function($q)use($request) {
+                    $q->where('status', $request->status);
+                })
+                ->orderBy('id','desc')
+                ->get();
         }
         else if(auth()->user()->role == "Documents and Records Controller")
         {
-            $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->get();
+            $requests = ChangeRequest::where('user_id',auth()->user()->id)
+                ->when($request->status, function($q)use($request) {
+                    $q->where('status', $request->status);
+                })
+                ->orderBy('id','desc')
+                ->get();
         }
         return view('change_requests',
         
@@ -382,147 +397,91 @@ class RequestController extends Controller
     public function new_request(Request $request)
     {
         //
-        if (auth()->user()->role == "Document Control Officer" || auth()->user()->role == "Administrator" || auth()->user()->role == "Documents and Records Controller")
+        $preAssessment = new PreAssessment;
+        $preAssessment->request_type = $request->request_type;
+        $preAssessment->effective_date = $request->effective_date;
+        $preAssessment->department_id = $request->department;
+        $preAssessment->user_id = auth()->user()->id;
+        $preAssessment->type_of_document = $request->category;
+        $preAssessment->reason_for_changes = $request->reason_for_new_request;
+        $preAssessment->change_request = $request->description;
+        $preAssessment->supporting_documents = $request->supporting_document;
+        $preAssessment->link_draft = $request->draft_link;
+        $preAssessment->title = $request->title;
+        $preAssessment->company_id = $request->company;
+        $preAssessment->status = "Pending";
+
+        if($request->has('soft_copy'))
         {
-            $preAssessment = new PreAssessment;
-            $preAssessment->request_type = $request->request_type;
-            $preAssessment->effective_date = $request->effective_date;
-            $preAssessment->department_id = $request->department;
-            $preAssessment->user_id = auth()->user()->id;
-            $preAssessment->type_of_document = $request->category;
-            $preAssessment->reason_for_changes = $request->reason_for_new_request;
-            $preAssessment->change_request = $request->description;
-            $preAssessment->supporting_documents = $request->supporting_document;
-            $preAssessment->link_draft = $request->draft_link;
-            $preAssessment->title = $request->title;
-            $preAssessment->company_id = $request->company;
-            $preAssessment->status = "Pending";
-
-            if($request->has('soft_copy'))
-            {
-                $attachment = $request->file('soft_copy');
-            
-                $name = time() . '_' . $attachment->getClientOriginalName();
-                $attachment->move(public_path() . '/pre_assessment_attachments/', $name);
-                $file_name = '/pre_assessment_attachments/' . $name;
-                $preAssessment->soft_copy = $file_name;
-            }
-            if($request->has('pdf_copy'))
-            {
-                $attachment = $request->file('pdf_copy');
-                $name = time() . '_' . $attachment->getClientOriginalName();
-                $attachment->move(public_path() . '/pre_assessment_attachments/', $name);
-                $file_name = '/pre_assessment_attachments/' . $name;
-                $preAssessment->pdf_copy = $file_name;
-            }
-            if($request->has('fillable_copy'))
-            {
-                $attachment = $request->file('fillable_copy');
-                $name = time() . '_' . $attachment->getClientOriginalName();
-                $attachment->move(public_path() . '/pre_assessment_attachments/', $name);
-                $file_name = '/pre_assessment_attachments/' . $name;
-                $preAssessment->fillable_copy = $file_name;
-            }
-            if($request->has('supporting_document'))
-            {
-                $attachment = $request->file('supporting_document');
-                $name = time() . '_' . $attachment->getClientOriginalName();
-                $attachment->move(public_path() . '/pre_assessment_attachments/', $name);
-                $file_name = '/pre_assessment_attachments/' . $name;
-                $preAssessment->supporting_documents = $file_name;
-            }
-
-            $preAssessment->save();
-
-            if (auth()->user()->role == "Documents and Records Controller")
-            {
-                $changeRequest = new ChangeRequest;
-                $changeRequest->request_type = $request->request_type;
-                $changeRequest->effective_date = $request->effective_date;
-                $changeRequest->department_id = $request->department;
-                $changeRequest->company_id = $request->company;
-                $changeRequest->title = $request->title;
-                $changeRequest->user_id = auth()->user()->id;
-                $changeRequest->type_of_document = $request->category;
-                $changeRequest->change_request = $request->description;
-                $changeRequest->link_draft = $request->draft_link;
-                $changeRequest->status = "Pending";
-                $changeRequest->level = 1;
-                $changeRequest->reason_for_changes = $request->reason_for_new_request;
-                if($request->has('soft_copy'))
-                {
-                    $changeRequest->soft_copy = $preAssessment->soft_copy;
-                }
-                if($request->has('pdf_copy'))
-                {
-                    $changeRequest->pdf_copy = $preAssessment->pdf_copy;
-                }
-                if($request->has('fillable_copy'))
-                {
-                    $changeRequest->fillable_copy = $preAssessment->fillable_copy;
-                }
-                if($request->has('supporting_document'))
-                {
-                    $changeRequest->supporting_documents = $preAssessment->supporting_documents ;
-                }
-                
-                $changeRequest->save();
-
-                Alert::success('Successfully Submitted')->persistent('Dismiss');
-                return back();
-            }
-            else
-            {
-                Alert::success('Successfully Submitted')->persistent('Dismiss');
-                return redirect('/pre_assessment');
-            }
-
+            $attachment = $request->file('soft_copy');
+        
+            $name = time() . '_' . $attachment->getClientOriginalName();
+            $attachment->move(public_path() . '/pre_assessment_attachments/', $name);
+            $file_name = '/pre_assessment_attachments/' . $name;
+            $preAssessment->soft_copy = $file_name;
         }
-        else
+        if($request->has('pdf_copy'))
         {
-            $changeRequest = new ChangeRequest;
-            $changeRequest->request_type = $request->request_type;
-            $changeRequest->effective_date = $request->effective_date;
-            $changeRequest->department_id = $request->department;
-            $changeRequest->company_id = $request->company;
-            $changeRequest->title = $request->title;
-            $changeRequest->user_id = auth()->user()->id;
-            $changeRequest->type_of_document = $request->category;
-            $changeRequest->change_request = $request->description;
-            $changeRequest->link_draft = $request->draft_link;
-            $changeRequest->status = "Pending";
-            $changeRequest->level = 1;
-            if($request->has('soft_copy'))
-            {
-                $attachment = $request->file('soft_copy');
-            
-                $name = time() . '_' . $attachment->getClientOriginalName();
-                $attachment->move(public_path() . '/document_attachments/', $name);
-                $file_name = '/document_attachments/' . $name;
-                $changeRequest->soft_copy = $file_name;
-            }
-            if($request->has('pdf_copy'))
-            {
-                $attachment = $request->file('pdf_copy');
-                $name = time() . '_' . $attachment->getClientOriginalName();
-                $attachment->move(public_path() . '/document_attachments/', $name);
-                $file_name = '/document_attachments/' . $name;
-                $changeRequest->pdf_copy = $file_name;
-            }
-            if($request->has('fillable_copy'))
-            {
-                $attachment = $request->file('fillable_copy');
-                $name = time() . '_' . $attachment->getClientOriginalName();
-                $attachment->move(public_path() . '/document_attachments/', $name);
-                $file_name = '/document_attachments/' . $name;
-                $changeRequest->fillable_copy = $file_name;
-            }
-            
-            $changeRequest->save();
-
-            Alert::success('Successfully Submitted')->persistent('Dismiss');
-            return redirect('/change-requests');
+            $attachment = $request->file('pdf_copy');
+            $name = time() . '_' . $attachment->getClientOriginalName();
+            $attachment->move(public_path() . '/pre_assessment_attachments/', $name);
+            $file_name = '/pre_assessment_attachments/' . $name;
+            $preAssessment->pdf_copy = $file_name;
         }
+        if($request->has('fillable_copy'))
+        {
+            $attachment = $request->file('fillable_copy');
+            $name = time() . '_' . $attachment->getClientOriginalName();
+            $attachment->move(public_path() . '/pre_assessment_attachments/', $name);
+            $file_name = '/pre_assessment_attachments/' . $name;
+            $preAssessment->fillable_copy = $file_name;
+        }
+        if($request->has('supporting_document'))
+        {
+            $attachment = $request->file('supporting_document');
+            $name = time() . '_' . $attachment->getClientOriginalName();
+            $attachment->move(public_path() . '/pre_assessment_attachments/', $name);
+            $file_name = '/pre_assessment_attachments/' . $name;
+            $preAssessment->supporting_documents = $file_name;
+        }
+
+        $preAssessment->save();
+
+        $changeRequest = new ChangeRequest;
+        $changeRequest->request_type = $request->request_type;
+        $changeRequest->effective_date = $request->effective_date;
+        $changeRequest->department_id = $request->department;
+        $changeRequest->company_id = $request->company;
+        $changeRequest->title = $request->title;
+        $changeRequest->user_id = auth()->user()->id;
+        $changeRequest->type_of_document = $request->category;
+        $changeRequest->change_request = $request->description;
+        $changeRequest->link_draft = $request->draft_link;
+        $changeRequest->status = "Pending";
+        $changeRequest->level = 1;
+        $changeRequest->reason_for_changes = $request->reason_for_new_request;
+        if($request->has('soft_copy'))
+        {
+            $changeRequest->soft_copy = $preAssessment->soft_copy;
+        }
+        if($request->has('pdf_copy'))
+        {
+            $changeRequest->pdf_copy = $preAssessment->pdf_copy;
+        }
+        if($request->has('fillable_copy'))
+        {
+            $changeRequest->fillable_copy = $preAssessment->fillable_copy;
+        }
+        if($request->has('supporting_document'))
+        {
+            $changeRequest->supporting_documents = $preAssessment->supporting_documents ;
+        }
+        
+        $changeRequest->save();
+
+        Alert::success('Successfully Submitted')->persistent('Dismiss');
+        return redirect('/change-requests');
+        
     }
 
     /**
@@ -837,5 +796,49 @@ class RequestController extends Controller
             'dco' =>  $dco,
         ));
         
+    }
+
+    public function delayedRequest(Request $request)
+    {
+        $departments = Department::where('id',auth()->user()->department_id)->where('status',null)->get();
+        $companies = Company::where('status',null)->get();
+        $document_types = DocumentType::get();
+        $approvers = DepartmentApprover::where('department_id',auth()->user()->department_id)->get();
+        $requests = ChangeRequest::orderBy('id','desc')
+            ->when($request->status, function($q)use($request) {
+                $q->where('status', $request->status);
+            })
+            ->get();
+        if(auth()->user()->role == "User")
+        {
+            $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->get();
+        }
+        else if(auth()->user()->role == "Document Control Officer")
+        {
+            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->dco)
+                ->pluck('department_id')->toArray())
+                ->when($request->status, function($q)use($request) {
+                    $q->where('status', $request->status);
+                })
+                ->orderBy('id','desc')->get();
+        }
+        else if(auth()->user()->role == "Department Head")
+        {
+            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->orderBy('id','desc')->get();
+        }
+        else if(auth()->user()->role == "Documents and Records Controller")
+        {
+            $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->get();
+        }
+        return view('delay_request',
+        
+        array(
+            'requests' =>  $requests,
+            
+            'companies' =>  $companies,
+            'departments' =>  $departments,
+            'approvers' =>  $approvers,
+            'document_types' =>  $document_types,
+        ));
     }
 }

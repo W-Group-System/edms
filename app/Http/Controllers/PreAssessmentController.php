@@ -170,6 +170,9 @@ class PreAssessmentController extends Controller
         {
             $preAssessment->status = $request->action;
             $preAssessment->save();
+
+            $changeRequest = ChangeRequest::where('title', $preAssessment->title)->where('request_type', $preAssessment->request_type)->where('type_of_document', $preAssessment->type_of_document)->first();
+            $changeRequest->delete();
         }
 
         Alert::success('Successfully Submitted')->persistent('Dismiss');

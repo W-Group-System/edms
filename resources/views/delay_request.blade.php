@@ -15,7 +15,7 @@
                 <form method="GET">
                     <h1 class="no-margins">
                         <input type="hidden" name="status" value="Pending">
-                        <input type="submit" class="text-success" value="{{count($requests->where('status','Pending'))}}" style="background: none; border: none;">
+                        <input type="submit" class="text-success" value="0" style="background: none; border: none;">
                     </h1>
                 </form>
             </div>
@@ -30,7 +30,7 @@
                 <form action="" method="get">
                     <h1 class="no-margins">
                         <input type="hidden" name="status" value="Cancelled">
-                        <input type="submit" class="text-success" value="{{count($requests->where('status','Cancelled'))}}" style="background: none; border: none;">
+                        <input type="submit" class="text-success" value="0" style="background: none; border: none;">
                     </h1>
                 </form>
             </div>
@@ -45,7 +45,7 @@
                 <form method="get" action="">
                     <h1 class="no-margins">
                         <input type="hidden" name="status" value="Declined">
-                        <input type="submit" class="text-success" value="{{count($requests->where('status','Declined'))}}" style="background: none; border: none;">
+                        <input type="submit" class="text-success" value="0" style="background: none; border: none;">
                     </h1>
                 </form>
             </div>
@@ -60,7 +60,7 @@
                 <form action="" method="get">
                     <input type="hidden" name="status" value="Approved">
                     <h1 class="no-margins">
-                        <input type="submit" class="text-success" value="{{count($requests->where('status','Approved'))}}"  style="background: none; border: none;">
+                        <input type="submit" class="text-success" value="0"  style="background: none; border: none;">
                     </h1>
                 </form>
             </div>
@@ -75,8 +75,7 @@
                 <form action="" method="get">
                     <input type="hidden" name="status" value="Pending">
                     <h1 class="no-margins">
-                        {{-- <input type="submit" class="text-success" value="0" id='delayed' style="background: none; border: none;"> --}}
-                        <a href="{{url('delayed_request')}}" id="delayed">0</a>
+                        <input type="submit" class="text-success" value="0" id='delayed' style="background: none; border: none;">
                     </h1>
                 </form>
             </div>
@@ -123,19 +122,18 @@
                             @php
                                 $delayed = 0;
                             @endphp
-                            @foreach($requests as $request)
-                                  
-                            @if(($request->type_of_document == "FORM") || ($request->type_of_document == "ANNEX") ||($request->type_of_document == "TEMPLATE"))
-                            @php
-                                $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at)));
-                            @endphp
-                           @else
-                           @php
-                               $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at)));
-                           @endphp
-                           @endif
+                            @foreach($requests->where('status', 'Pending') as $request)
+                                @if(($request->type_of_document == "FORM") || ($request->type_of_document == "ANNEX") ||($request->type_of_document == "TEMPLATE"))
+                                    @php
+                                        $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at)));
+                                    @endphp
+                                @else
+                                    @php
+                                        $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at)));
+                                    @endphp
+                                @endif
+                                    @if($target < date('Y-m-d'))
                                     <tr>
-                                        
                                         <td><a href="#"  data-target="#view_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a>
                                             @if((auth()->user()->role == "Document Control Officer") || (auth()->user()->role == "Administrator"))
                                             @if($request->status == "Pending")
@@ -152,26 +150,24 @@
                                         </td>
                                         <td>{{$request->request_type}}</td>
                                         <td>{{date('M d Y',strtotime($request->created_at))}}</td>
-                                     
-                                            @if($request->document_id != null)
-                                            <td>
-                                                {{$request->control_code}}
-                                            </td>   
-                                            <td>
-                                                {{$request->title}}
-                                            </td>   
-                                            <td>
-                                                {{$request->revision}}
-                                            </td>   
-                                           
-                                            @else
-                                            <td></td>
-                                            <td>{{$request->title}}</td>
-                                            <td></td>
-                                            @endif
-                                            <td>
-                                                {{$request->type_of_document}}
-                                            </td>   
+                                        @if($request->document_id != null)
+                                        <td>
+                                            {{$request->control_code}}
+                                        </td>   
+                                        <td>
+                                            {{$request->title}}
+                                        </td>   
+                                        <td>
+                                            {{$request->revision}}
+                                        </td>   
+                                        @else
+                                        <td></td>
+                                        <td>{{$request->title}}</td>
+                                        <td></td>
+                                        @endif
+                                        <td>
+                                            {{$request->type_of_document}}
+                                        </td>   
                                         <td>{{$request->user->name}}</td>
                                         <td> @if($request->status == "Pending")
                                             @if($target < date('Y-m-d'))
@@ -183,7 +179,6 @@
                                                 @else
                                                 <span class='label label-success'>
                                                 @endif
-                                               
                                         @elseif($request->status ==  "Approved")
                                             <span class='label label-info'>    
                                         @elseif($request->status ==  "Declined")
@@ -191,13 +186,10 @@
                                         @else<span class='label label-success'>
                                             @endif
                                             {{$request->status}} 
-                                     
-                                       
-                                    </span>  
-                                    
-                                        
-                                    </td>
+                                        </span>  
+                                        </td>
                                     </tr>
+                                    @endif
                                     @include('view_change_request')
                                     @include('edit_change_request')
                                 @endforeach
@@ -225,8 +217,8 @@
 </script>
 <script>
     var delayed = {!! json_encode($delayed) !!};
-    document.getElementById('delayed').innerText = delayed;
-    // document.getElementById('delayed').value = delayed;
+    // document.getElementById('delayed').innerText = delayed;
+    document.getElementById('delayed').value = delayed;
     $(document).ready(function(){
         
 
