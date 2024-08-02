@@ -61,7 +61,7 @@
                             </div>
                         </div>
                     </div>
-                    @if(auth()->user()->role == "Document Control Officer" && $pa->company_id == auth()->user()->company_id)
+                    @if((auth()->user()->role == "Document Control Officer" && $pa->company_id == auth()->user()->company_id) || (auth()->user()->role == "Administrator"))
                         @if($pa->status == "Pending")
                             <hr>
                             <div class="row">
@@ -79,7 +79,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    @if(auth()->user()->role == "Document Control Officer")
+                    @if((auth()->user()->role == "Document Control Officer") || (auth()->user()->role == "Administrator"))
                         @if($pa->status == "Pending")
                         <button type="submit" class="btn btn-primary">Submit</button>
                         @endif
