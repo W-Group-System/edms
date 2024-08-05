@@ -220,6 +220,7 @@ class RequestController extends Controller
             'departments' =>  $departments,
             'approvers' =>  $approvers,
             'document_types' =>  $document_types,
+            'status' => $request->status
         ));
     }
     public function removeApprover()

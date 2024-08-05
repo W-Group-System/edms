@@ -102,4 +102,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Delayed
     Route::get('/delayed_request', 'RequestController@delayedRequest');
+
+    // Archive Permits
+    Route::get('/archive_permits', 'PermitController@viewArchived');
 });

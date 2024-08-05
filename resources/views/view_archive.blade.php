@@ -24,12 +24,8 @@
                 </div>
                 <div class="ibox-content">
                     <form action="" method="get">
-                        {{-- <h1 class="no-margins">
-                            {{count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))))-count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d')))}}
-                        </h1> --}}
                         <h1 class="no-margins">
-                            <input type="hidden" name="renewal_filter" value="For Renewal">
-                            <input type="submit" class="text-success" value="{{count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))))-count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d')))}}" style="background: none; border: none;">
+                            <a href="{{url('permits?renewal_filter=For+Renewal')}}">{{count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))))-count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d')))}}</a>
                         </h1>
                     </form>
                 </div>
@@ -41,13 +37,7 @@
                     <h5>Overdue</h5>
                 </div>
                 <div class="ibox-content">
-                    {{-- <h1 class="no-margins">{{count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d')))}}</h1> --}}
-                    <form method="GET">
-                        <h1 class="no-margins">
-                            <input type="hidden" name="overdue_filter" value="Overdue">
-                            <input type="submit" class="text-success" value="{{count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d')))}}" style="background: none; border:none;">
-                        </h1>
-                    </form>
+                    <h1 class="no-margins"><a href="{{url('permits?overdue_filter=Overdue')}}">{{count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d')))}}</a></h1>
                 </div>
             </div>
         </div>
@@ -68,7 +58,8 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Permits & Licenses <button class="btn btn-success "  data-target="#new_permit" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New </button></h5>
+                    {{-- <h5>Permits & Licenses <button class="btn btn-success "  data-target="#new_permit" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New </button></h5> --}}
+                    <h5>Permits & Licenses</h5>
                   
                 </div>
                 <div class="ibox-content">
@@ -91,34 +82,42 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($permits as $permit)
+                                @foreach($archives as $archive)
                                 <tr>
-                                    <td>{{$permit->title}}</td>
-                                    <td>{{$permit->description}}</td>
-                                    <td>{{$permit->company->name}}</td>
-                                    <td>{{$permit->department->name}}</td>
-                                    <td><small>@foreach($permit->department->permit_accounts as $accountable)
-                                        {{$accountable->user->name}} <hr>
-                                    @endforeach</small></td>
-                                    <td>{{date('M d, Y',strtotime($permit->created_at))}}</td>
-                                    <td><a href='{{url($permit->file)}}' target='_blank'><i class='fa fa-file'></i></a></td>
-                                    <td>{{$permit->type}}</td>
-                                    <td>@if($permit->expiration_date != null){{date('M d Y',strtotime($permit->expiration_date))}}@endif</td>
-                                    <td>@if($permit->expiration_date != null)@if($permit->expiration_date < date("Y-m-d")) <small class="label label-danger">For Renewal (Overdue)</small> @elseif($permit->expiration_date < date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))) <small class="label label-warning">For Renewal</small> @else <small class="label label-primary">Active</small> @endif @endif</td>
+                                    <td>{{$archive->title}}</td>
+                                    <td>{{$archive->description}}</td>
                                     <td>
-                                        {{-- {{auth()->user()->role}} --}}
-                                        <button class="btn btn-sm btn-primary "  title="Upload " data-target="#upload{{$permit->id}}" data-toggle="modal"><i class="fa fa-upload"></i></button>
-                                       @if((auth()->user()->role != "User") && (auth()->user()->role != "Department Head") && (auth()->user()->role != "Documents and Records Controller") )
-                                       <button class="btn btn-sm btn-warning "  title="Transfer Department" data-target="#change{{$permit->id}}" data-toggle="modal"><i class="fa fa-users"></i></button>
-                                       <button class="btn btn-sm btn-info "  title="Change Types" data-target="#changeType{{$permit->id}}" data-toggle="modal"><i class="fa fa-edit"></i></button>
-                                       
-                                       @endif
-                                        {{-- <button class="btn btn-sm btn-warning "  title="View History "><i class="fa fa-eye"></i></button> --}}
+                                        {{$archive->company->name}}
+                                    </td>
+                                    <td>
+                                        {{$archive->department->name}}
+                                    </td>
+                                    <td>
+                                        <small>
+                                            @foreach($archive->department->permit_accounts as $accountable)
+                                                {{$accountable->user->name}} <hr>
+                                            @endforeach
+                                        </small>
+                                    </td>
+                                    <td>{{date('M d, Y',strtotime($archive->created_at))}}</td>
+                                    <td>
+                                        <a href='{{url($archive->file)}}' target='_blank'><i class='fa fa-file'></i></a>
+                                    </td>
+                                    <td>{{$archive->type}}</td>
+                                    <td>@if($archive->expiration_date != null){{date('M d Y',strtotime($archive->expiration_date))}}@endif</td>
+                                    <td>@if($archive->expiration_date != null)@if($archive->expiration_date < date("Y-m-d")) <small class="label label-danger">For Renewal (Overdue)</small> @elseif($archive->expiration_date < date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))) <small class="label label-warning">For Renewal</small> @else <small class="label label-primary">Active</small> @endif @endif</td>
+                                    <td>
+                                        {{-- <button class="btn btn-sm btn-primary "  title="Upload " data-target="#upload{{$archive->id}}" data-toggle="modal"><i class="fa fa-upload"></i></button>
+                                        @if((auth()->user()->role != "User") && (auth()->user()->role != "Department Head") && (auth()->user()->role != "Documents and Records Controller") )
+                                        <button class="btn btn-sm btn-warning "  title="Transfer Department" data-target="#change{{$archive->id}}" data-toggle="modal"><i class="fa fa-users"></i></button>
+                                        <button class="btn btn-sm btn-info "  title="Change Types" data-target="#changeType{{$archive->id}}" data-toggle="modal"><i class="fa fa-edit"></i></button>
+                                        
+                                        @endif --}}
                                     </td>
                                 </tr>
-                                @include('upload_permit')
+                                {{-- @include('upload_permit')
                                 @include('transfer_department')
-                                @include('edit_type')
+                                @include('edit_type') --}}
                                 @endforeach
                             </tbody>
                         </table>
@@ -130,7 +129,7 @@
 
     </div>
 </div>
-@include('new_permit')
+{{-- @include('new_permit') --}}
 @endsection
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
