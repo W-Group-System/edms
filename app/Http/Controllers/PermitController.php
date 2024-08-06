@@ -24,7 +24,14 @@ class PermitController extends Controller
         //
         $companies = Company::where('status', '=', null)->get();
         $departments = Department::whereHas('permit_accounts')->where('status', '=', null)->get();
-        $permits = Permit::with('company', 'department')->get();
+        $permits = Permit::with('company', 'department')
+            ->when($request->renewal_filter, function($q) {
+                $q->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('expiration_date', '>',  date('Y-m-d'));
+            })
+            ->when($request->overdue_filter, function($q) {
+                $q->where('expiration_date', '<', date('Y-m-d'));
+            })
+            ->get();
         if(auth()->user()->role == "Document Control Officer")
         { 
             $permits = Permit::with('company', 'department')
@@ -269,7 +276,14 @@ class PermitController extends Controller
     {
         $companies = Company::where('status', '=', null)->get();
         $departments = Department::whereHas('permit_accounts')->where('status', '=', null)->get();
-        $permits = Permit::with('company', 'department')->get();
+        $permits = Permit::with('company', 'department')
+            ->when($request->renewal_filter, function($q) {
+                $q->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('expiration_date', '>',  date('Y-m-d'));
+            })
+            ->when($request->overdue_filter, function($q) {
+                $q->where('expiration_date', '<', date('Y-m-d'));
+            })
+            ->get();
         if(auth()->user()->role == "Document Control Officer")
         { 
             $permits = Permit::with('company', 'department')

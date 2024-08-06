@@ -78,7 +78,7 @@
                                     <th>Type</th>
                                     <th>Expiration Date</th>
                                     <th>Status</th>
-                                    <th>Action</th>
+                                    {{-- <th>Action</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -105,15 +105,18 @@
                                     </td>
                                     <td>{{$archive->type}}</td>
                                     <td>@if($archive->expiration_date != null){{date('M d Y',strtotime($archive->expiration_date))}}@endif</td>
-                                    <td>@if($archive->expiration_date != null)@if($archive->expiration_date < date("Y-m-d")) <small class="label label-danger">For Renewal (Overdue)</small> @elseif($archive->expiration_date < date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))) <small class="label label-warning">For Renewal</small> @else <small class="label label-primary">Active</small> @endif @endif</td>
                                     <td>
-                                        {{-- <button class="btn btn-sm btn-primary "  title="Upload " data-target="#upload{{$archive->id}}" data-toggle="modal"><i class="fa fa-upload"></i></button>
+                                        {{-- @if($archive->expiration_date != null)@if($archive->expiration_date < date("Y-m-d")) <small class="label label-danger">For Renewal (Overdue)</small> @elseif($archive->expiration_date < date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))) <small class="label label-warning">For Renewal</small> @else <small class="label label-primary">Active</small> @endif @endif --}}
+                                        <div class="label label-danger">Obsolete</div>
+                                    </td>
+                                    {{-- <td>
+                                        <button class="btn btn-sm btn-primary "  title="Upload " data-target="#upload{{$archive->id}}" data-toggle="modal"><i class="fa fa-upload"></i></button>
                                         @if((auth()->user()->role != "User") && (auth()->user()->role != "Department Head") && (auth()->user()->role != "Documents and Records Controller") )
                                         <button class="btn btn-sm btn-warning "  title="Transfer Department" data-target="#change{{$archive->id}}" data-toggle="modal"><i class="fa fa-users"></i></button>
                                         <button class="btn btn-sm btn-info "  title="Change Types" data-target="#changeType{{$archive->id}}" data-toggle="modal"><i class="fa fa-edit"></i></button>
                                         
-                                        @endif --}}
-                                    </td>
+                                        @endif
+                                    </td> --}}
                                 </tr>
                                 {{-- @include('upload_permit')
                                 @include('transfer_department')
