@@ -106,7 +106,7 @@
                                     <dt>Last Updated:</dt> <dd>{{date('M, d Y',strtotime($document->created_at))}}</dd>
                                     <dt>Effective Date:</dt> <dd>{{date('M, d Y',strtotime($document->effective_date))}}</dd>
                                     {{-- <dt>Process Owner:</dt> <dd>@if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif</dd> --}}
-                                    <dt>Process Owner:</dt> <dd>@if($document->process_owner != null) <small class="label label-info">{{$document->processOwner->name}}</small> @else <small class="label label-danger">No Process Owner</small> @endif</dd>
+                                    <dt>Process Owner:</dt> <dd>@if($document->process_owner != null) <small class="label label-info">{{$document->processOwner->name}}</small> @else <small class="label label-info">{{$document->department->dep_head->name}}</small> @endif</dd>
                                     {{-- <dt>Access:</dt>
                                     <dd class="project-people">
                                         <a href=""><img alt="image" class="img-circle" src="{{asset('login_css/img/a3.jpg')}}"></a>

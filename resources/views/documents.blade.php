@@ -122,7 +122,8 @@
                                         @if($document->process_owner != null)
                                             <small class="label label-info">{{$document->processOwner->name}}</small>
                                         @else 
-                                            <small class="label label-danger">No Process Owner</small>
+                                            {{-- <small class="label label-danger">No Process Owner</small> --}}
+                                            <small class="label label-info">{{$document->department->dep_head->name}}</small>
                                         @endif
                                     </td>
                                     <td>{{$document->user->name}}</td>
