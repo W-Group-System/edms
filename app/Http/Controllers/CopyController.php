@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\CopyRequest;
 use App\CopyApprover;
+use App\Document;
 use App\User;
 use App\DocumentAccess;
 use App\DocumentAttachment;
@@ -17,7 +18,10 @@ class CopyController extends Controller
     //
     public function store(Request $request)
     {
-    
+        $document = Document::findOrFail($request->id);
+        $document->process_owner = auth()->user()->id;
+        $document->save();
+
         $copy_request = new CopyRequest;
         $copy_request->type_of_document = $request->type_of_document;
         $copy_request->purpose = $request->purpose;
@@ -63,24 +67,24 @@ class CopyController extends Controller
         {
             $d->notify(new ForApproval($copy_request,"CR-","Copy Request"));
         }
-        
-        $copy_approver = new CopyApprover;
-        $copy_approver->copy_request_id = $copy_request->id;
-        $copy_approver->user_id = $request->drc;
-        $copy_approver->status = "Waiting";
-        if($request->immediate_head == auth()->user()->id)
-        {
-        $copy_approver->status = "Pending";
-        }
-        $copy_approver->level = 2;
-        $copy_approver->save();
 
-        $copy_approver = new CopyApprover;
-        $copy_approver->copy_request_id = $copy_request->id;
-        $copy_approver->user_id = $request->drc_head;
-        $copy_approver->status = "Waiting";
-        $copy_approver->level = 3;
-        $copy_approver->save();
+        // $copy_approver = new CopyApprover;
+        // $copy_approver->copy_request_id = $copy_request->id;
+        // $copy_approver->user_id = $request->drc;
+        // $copy_approver->status = "Waiting";
+        // if($request->immediate_head == auth()->user()->id)
+        // {
+        // $copy_approver->status = "Pending";
+        // }
+        // $copy_approver->level = 2;
+        // $copy_approver->save();
+
+        // $copy_approver = new CopyApprover;
+        // $copy_approver->copy_request_id = $copy_request->id;
+        // $copy_approver->user_id = $request->drc_head;
+        // $copy_approver->status = "Waiting";
+        // $copy_approver->level = 3;
+        // $copy_approver->save();
         
         Alert::success('Successfully Requested')->persistent('Dismiss');
         return redirect('/request');

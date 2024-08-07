@@ -62,6 +62,7 @@
                                                 @if(auth()->user()->audit_role == null)
                                                     <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
                                                     <a href="#" data-target="#changeRequest" data-toggle="modal" class="btn btn-warning btn-sm ">Change Request </a>
+                                                    <a href="#"  data-target="#obsoleteRequest" data-toggle="modal"  class="btn btn-danger btn-sm ">Obsolete Request </a>
                                                 @endif
                                             @endif
                                         @endif
@@ -104,7 +105,8 @@
                                     <dt>Created:</dt> <dd> 	{{date('M, d Y',strtotime($document->updated_at))}} </dd>
                                     <dt>Last Updated:</dt> <dd>{{date('M, d Y',strtotime($document->created_at))}}</dd>
                                     <dt>Effective Date:</dt> <dd>{{date('M, d Y',strtotime($document->effective_date))}}</dd>
-                                    <dt>Process Owner:</dt> <dd>@if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif</dd>
+                                    {{-- <dt>Process Owner:</dt> <dd>@if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif</dd> --}}
+                                    <dt>Process Owner:</dt> <dd>@if($document->process_owner != null) <small class="label label-info">{{$document->processOwner->name}}</small> @else <small class="label label-danger">No Process Owner</small> @endif</dd>
                                     {{-- <dt>Access:</dt>
                                     <dd class="project-people">
                                         <a href=""><img alt="image" class="img-circle" src="{{asset('login_css/img/a3.jpg')}}"></a>

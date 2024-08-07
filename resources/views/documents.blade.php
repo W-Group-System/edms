@@ -117,7 +117,14 @@
                                     <td>{{$document->title}}</td>
                                     <td>{{$document->category}}</td>
                                     <td>{{date('M d, Y',strtotime($document->effective_date))}}</td>
-                                    <td>@if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> <br>@endforeach @else <small class="label label-danger">No Process Owner</small>  @endif</td>
+                                    {{-- <td>@if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> <br>@endforeach @else <small class="label label-danger">No Process Owner</small>  @endif</td> --}}
+                                    <td>
+                                        @if($document->process_owner != null)
+                                            <small class="label label-info">{{$document->processOwner->name}}</small>
+                                        @else 
+                                            <small class="label label-danger">No Process Owner</small>
+                                        @endif
+                                    </td>
                                     <td>{{$document->user->name}}</td>
                                     <td>@if($document->status == null)<span class="label label-primary">Active</span> @else<span class="label label-danger">Obsolete</span> @endif</td>
                                 </tr>

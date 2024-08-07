@@ -98,7 +98,7 @@
                             @endif
                         </div>
                     </div>
-                    <div class='row'>
+                    {{-- <div class='row'>
                         <div class='col-md-6'>
                             DRC : 
                             @if(count($document->department->drc) != 0) 
@@ -129,7 +129,7 @@
                                 <small class="label label-danger">No Process Owner</small>
                             @endif
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

@@ -292,6 +292,9 @@ class RequestController extends Controller
         //
         // dd($request->all());
         $document = Document::findOrfail($request->id);
+        $document->process_owner = auth()->user()->id;
+        $document->save();
+
         $original_pdf = DocumentAttachment::where('document_id',$request->id)->where('type','pdf_copy')->first();
         $original_soft_copy = DocumentAttachment::where('document_id',$request->id)->where('type','soft_copy')->first();
 

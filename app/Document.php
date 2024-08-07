@@ -36,4 +36,8 @@ class Document extends Model implements Auditable
     {
         return $this->hasMany(Obsolete::class);
     }
+    public function processOwner()
+    {
+        return $this->belongsTo(User::class,'process_owner');
+    }
 }
