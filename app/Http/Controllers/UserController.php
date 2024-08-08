@@ -110,7 +110,7 @@ class UserController extends Controller
     {
         $roles = [
             'User' => 'User',
-            'Documents and Records Controller' => 'Documents and Records Controller',
+            // 'Documents and Records Controller' => 'Documents and Records Controller',
             'Department Head' => 'Department Head',
             'Document Control Officer' => 'Document Control Officer',
             'Business Process Manager' => 'Business Process Manager',

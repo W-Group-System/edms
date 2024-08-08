@@ -88,7 +88,7 @@ class AcknowledgementController extends Controller
         {
             $attachment = $request->file('acknowledgement_file');
             $name = time() . '_' . $attachment->getClientOriginalName();
-            $attachment->move(public_path() . '/acknowledgement-attachment/'. $name);
+            $attachment->move(public_path() . '/acknowledgement-attachment/', $name);
 
             $file_name = '/acknowledgement-attachment/' . $name;
 
