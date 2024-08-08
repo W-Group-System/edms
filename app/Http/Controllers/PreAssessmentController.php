@@ -121,8 +121,8 @@ class PreAssessmentController extends Controller
             $preAssessment->status = $request->action;
             $preAssessment->save();
 
-            $changeRequest = ChangeRequest::where('title', $preAssessment->title)->where('request_type', $preAssessment->request_type)->where('type_of_document', $preAssessment->type_of_document)->first();
-
+            $changeRequest = ChangeRequest::where('title', $preAssessment->title)->where('request_type', $preAssessment->request_type)->where('type_of_document', $preAssessment->type_of_document)->orderBy('id', 'desc')->first();
+            
             if ($changeRequest == null)
             {
                 $changeRequest = new ChangeRequest;
@@ -148,7 +148,7 @@ class PreAssessmentController extends Controller
                 $changeRequest->supporting_documents = $request->supporting_documents;
                 $changeRequest->save();
             }
-            
+
             $departmentApprover = DepartmentApprover::where('department_id', auth()->user()->department_id)->get();
             foreach($departmentApprover as $approver)
             {

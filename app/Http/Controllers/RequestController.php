@@ -292,8 +292,8 @@ class RequestController extends Controller
         //
         // dd($request->all());
         $document = Document::findOrfail($request->id);
-        $document->process_owner = auth()->user()->id;
-        $document->save();
+        // $document->process_owner = auth()->user()->id;
+        // $document->save();
 
         $original_pdf = DocumentAttachment::where('document_id',$request->id)->where('type','pdf_copy')->first();
         $original_soft_copy = DocumentAttachment::where('document_id',$request->id)->where('type','soft_copy')->first();
@@ -746,6 +746,14 @@ class RequestController extends Controller
                 $nextApproverNotif = User::where('id',$copyApprover->user_id)->first();
                 $nextApproverNotif->notify(new ForApproval($copyRequest,"DICR-","Document Information Change Request"));
             }
+
+            if ($copyRequest->status == "Approved")
+            {   
+                $document = Document::findOrFail($copyRequest->document_id);
+                $document->process_owner = $copyRequest->user_id;
+                $document->save();
+            }
+
             Alert::success('Successfully Approved')->persistent('Dismiss');
             return back();
         }

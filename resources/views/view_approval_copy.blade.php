@@ -14,6 +14,8 @@
             </div>
             <form method='post' action='{{url('copy-request-action/'.$copy_approval->id)}}' onsubmit='show();' class="form-horizontal"  enctype="multipart/form-data" >
                 {{ csrf_field() }}
+                <input type="hidden" name="id" value="{{$copy_approval->copy_request->document_id}}">
+                <input type="hidden" name="user_id" value="{{$request->user->id}}">
                 <div class="modal-body">
                     <div class='row '>
                         <div class='col-md-6'>

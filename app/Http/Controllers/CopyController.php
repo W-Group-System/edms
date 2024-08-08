@@ -19,8 +19,8 @@ class CopyController extends Controller
     public function store(Request $request)
     {
         $document = Document::findOrFail($request->id);
-        $document->process_owner = auth()->user()->id;
-        $document->save();
+        // $document->process_owner = auth()->user()->id;
+        // $document->save();
 
         $copy_request = new CopyRequest;
         $copy_request->type_of_document = $request->type_of_document;
@@ -104,6 +104,10 @@ class CopyController extends Controller
 
         if($request->action == "Approved")
         {
+            $document = Document::findOrFail($request->id);
+            $document->process_owner = $request->user_id;
+            $document->save();
+
             if($copyApprover == null)
             {
                 
