@@ -123,33 +123,33 @@ class PreAssessmentController extends Controller
 
             $changeRequest = ChangeRequest::where('title', $preAssessment->title)->where('request_type', $preAssessment->request_type)->where('type_of_document', $preAssessment->type_of_document)->orderBy('id', 'desc')->first();
             
-            if ($changeRequest == null)
-            {
-                $changeRequest = new ChangeRequest;
-                $changeRequest->request_type = $preAssessment->request_type;
-                $changeRequest->effective_date = $preAssessment->effective_date;
-                $changeRequest->department_id = $preAssessment->department_id;
-                $changeRequest->user_id = $preAssessment->user_id;
-                $changeRequest->type_of_document = $preAssessment->type_of_document;
-                $changeRequest->document_id = $preAssessment->document_id;
-                $changeRequest->change_request = $preAssessment->change_request;
-                $changeRequest->reason_for_changes = $preAssessment->reason_for_changes;
-                $changeRequest->link_draft = $preAssessment->link_draft;
-                $changeRequest->status = "Pending";
-                $changeRequest->level = 1;
-                $changeRequest->company_id = $preAssessment->company_id;
-                $changeRequest->control_code = $preAssessment->control_code;
-                $changeRequest->title = $preAssessment->title;
-                $changeRequest->revision = $preAssessment->revision;
-                $changeRequest->original_attachment_pdf = $preAssessment->original_attachment_pdf;
-                $changeRequest->original_attachment_soft_copy = $preAssessment->original_attachment_soft_copy;
-                $changeRequest->pdf_copy = $preAssessment->pdf_copy;
-                $changeRequest->soft_copy = $preAssessment->soft_copy;
-                $changeRequest->supporting_documents = $request->supporting_documents;
-                $changeRequest->save();
-            }
+            // if ($changeRequest == null)
+            // {
+            //     $changeRequest = new ChangeRequest;
+            //     $changeRequest->request_type = $preAssessment->request_type;
+            //     $changeRequest->effective_date = $preAssessment->effective_date;
+            //     $changeRequest->department_id = $preAssessment->department_id;
+            //     $changeRequest->user_id = $preAssessment->user_id;
+            //     $changeRequest->type_of_document = $preAssessment->type_of_document;
+            //     $changeRequest->document_id = $preAssessment->document_id;
+            //     $changeRequest->change_request = $preAssessment->change_request;
+            //     $changeRequest->reason_for_changes = $preAssessment->reason_for_changes;
+            //     $changeRequest->link_draft = $preAssessment->link_draft;
+            //     $changeRequest->status = "Pending";
+            //     $changeRequest->level = 1;
+            //     $changeRequest->company_id = $preAssessment->company_id;
+            //     $changeRequest->control_code = $preAssessment->control_code;
+            //     $changeRequest->title = $preAssessment->title;
+            //     $changeRequest->revision = $preAssessment->revision;
+            //     $changeRequest->original_attachment_pdf = $preAssessment->original_attachment_pdf;
+            //     $changeRequest->original_attachment_soft_copy = $preAssessment->original_attachment_soft_copy;
+            //     $changeRequest->pdf_copy = $preAssessment->pdf_copy;
+            //     $changeRequest->soft_copy = $preAssessment->soft_copy;
+            //     $changeRequest->supporting_documents = $request->supporting_documents;
+            //     $changeRequest->save();
+            // }
 
-            $departmentApprover = DepartmentApprover::where('department_id', auth()->user()->department_id)->get();
+            $departmentApprover = DepartmentApprover::where('department_id', $preAssessment->department_id)->get();
             foreach($departmentApprover as $approver)
             {
                 $requestApprover = new RequestApprover;
