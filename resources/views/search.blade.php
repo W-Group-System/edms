@@ -55,7 +55,13 @@
                                 <div class="search-result">
                                     <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
                                     Title : {{$document->title}}<br>
-                                    Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif
+                                    Process Owner : 
+                                    {{-- @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif --}}
+                                    @if($document->process_owner != null)
+                                        <small class="label label-info">{{$document->processOwner->name}}</small>
+                                    @else 
+                                        <small class="label label-info">{{$document->department->dep_head->name}}</small>
+                                    @endif
                                     <p>
                                         Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
                                         Company : {{$document->department->name}}
@@ -71,7 +77,13 @@
                             <div class="search-result">
                                 <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
                                 Title : {{$document->title}}<br>
-                                Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif
+                                {{-- Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif --}}
+                                Process Owner : 
+                                @if($document->process_owner != null)
+                                    <small class="label label-info">{{$document->processOwner->name}}</small>
+                                @else 
+                                    <small class="label label-info">{{$document->department->dep_head->name}}</small>
+                                @endif
                                 <p>
                                     Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
                                     Company : {{$document->department->name}}
@@ -86,7 +98,13 @@
                             <div class="search-result">
                                 <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
                                 Title : {{$document->title}}<br>
-                                Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif
+                                {{-- Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif --}}
+                                Process Owner : 
+                                @if($document->process_owner != null)
+                                    <small class="label label-info">{{$document->processOwner->name}}</small>
+                                @else 
+                                    <small class="label label-info">{{$document->department->dep_head->name}}</small>
+                                @endif
                                 <p>
                                     Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
                                     Company : {{$document->department->name}}
@@ -101,7 +119,13 @@
                             <div class="search-result">
                                 <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
                                 Title : {{$document->title}}<br>
-                                Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif
+                                {{-- Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif --}}
+                                Process Owner : 
+                                @if($document->process_owner != null)
+                                    <small class="label label-info">{{$document->processOwner->name}}</small>
+                                @else 
+                                    <small class="label label-info">{{$document->department->dep_head->name}}</small>
+                                @endif
                                 <p>
                                     Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
                                     Company : {{$document->department->name}}
@@ -116,7 +140,13 @@
                             <div class="search-result">
                                 <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
                                 Title : {{$document->title}}<br>
-                                Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif
+                                {{-- Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif --}}
+                                Process Owner : 
+                                @if($document->process_owner != null)
+                                    <small class="label label-info">{{$document->processOwner->name}}</small>
+                                @else 
+                                    <small class="label label-info">{{$document->department->dep_head->name}}</small>
+                                @endif
                                 <p>
                                     Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
                                     Company : {{$document->department->name}}
@@ -134,7 +164,13 @@
                             <div class="search-result">
                                 <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
                                 Title : {{$document->title}}<br>
-                                Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif
+                                {{-- Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif --}}
+                                Process Owner : 
+                                @if($document->process_owner != null)
+                                    <small class="label label-info">{{$document->processOwner->name}}</small>
+                                @else 
+                                    <small class="label label-info">{{$document->department->dep_head->name}}</small>
+                                @endif
                                 <p>
                                     Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
                                     Company : {{$document->department->name}}
