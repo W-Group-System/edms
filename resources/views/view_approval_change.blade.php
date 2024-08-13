@@ -200,7 +200,7 @@
                     <div class='row'>
                         <div class='col-md-4'>
                             Action :
-                            <select name='action' class='form-control-sm form-control cat'  @if((auth()->user()->role == "Document Control Officer") && ($request->request_type != "Obsolete")) onchange='remove_required({{$request->id}},this.value)' @endif required>
+                            <select name='action' class='form-control-sm form-control cat'  @if(($request->request_type != "Obsolete"))   onchange='handleActionChange(this.value); remove_required({{ $request->id }}, this.value)' @endif required>
                                 <option value=""></option>
                                 <option value="Approved" >Approve</option>
                                 <option value="Declined" >Decline</option>
@@ -212,6 +212,20 @@
                             <textarea name='remarks' class='form-control-sm form-control' required></textarea>
                         </div>
                     </div>
+                    <div id="returnOptions" class='row' style="display: none;">
+                        <div class='col-md-4'>
+                            Return To :
+                            <select name='return_to' class='form-control-sm form-control cat'>
+                                @if (auth()->user()->role == "Department Head")
+                                @elseif (auth()->user()->role == 'Document Control Officer')
+                                    <option value="DepartmentHead">Return to Department Head</option>
+                                @else
+                                    <option value="DocumentControlOfficer">Return to DCO</option>
+                                    <option value="DepartmentHead">Return to Department Head</option>
+                                @endif
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type='submit'  class="btn btn-primary">Submit</button>
@@ -220,3 +234,14 @@
         </div>
     </div>
 </div>
+<script>
+     function handleActionChange(value) {
+        var returnOptionsDiv = document.getElementById('returnOptions');
+        
+        if (value === 'Returned') {
+            returnOptionsDiv.style.display = 'block';
+        } else {
+            returnOptionsDiv.style.display = 'none';
+        }
+    }
+</script>
