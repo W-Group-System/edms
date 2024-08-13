@@ -759,22 +759,43 @@ class RequestController extends Controller
         }
         elseif($request->action == "Returned")
         {
+            $returnTo = $request->input('return_to');
             $copyRequest->status = "Pending";
             $copyRequest->level =1;
             $copyRequest->save(); 
-            $copyApproverPending = RequestApprover::where('change_request_id',$copyRequestApprover->change_request_id)->get();
-            foreach($copyApproverPending as $key => $app)
-            {
-                $appr = RequestApprover::findOrfail($app->id);
-                if($key == 0)
-                {
-                    $app->status = "Pending";
+            $copyApprovers = RequestApprover::where('change_request_id', $copyRequestApprover->change_request_id)
+            ->orderBy('level', 'asc')
+            ->get();
+            // foreach($copyApproverPending as $key => $app)
+            // {
+                // $appr = RequestApprover::findOrfail($app->id);
+                // if($key == 0)
+                // {
+                //     $app->status = "Pending";
+                // }
+                // else
+                // {
+                //     $app->status = "Waiting";
+                // }
+                // $app->save();
+            // }
+            foreach ($copyApprovers as $approver) {
+                if ($returnTo == 'DepartmentHead') {
+                    if ($approver->level == 1) {
+                        $approver->status = 'Pending'; 
+                    } else {
+                        $approver->status = 'Waiting'; 
+                    }
+                } elseif ($returnTo == 'DocumentControlOfficer') {
+                    if ($approver->level == 1) {
+                        $approver->status = 'Approved'; 
+                    } elseif ($approver->level == 2) {
+                        $approver->status = 'Pending'; 
+                    } else {
+                        $approver->status = 'Waiting'; 
+                    }
                 }
-                else
-                {
-                    $app->status = "Waiting";
-                }
-                $app->save();
+                $approver->save(); 
             }
             $declinedRequestNotif = User::where('id',$copyRequest->user_id)->first();
             $declinedRequestNotif->notify(new ReturnRequest($copyRequest,"DICR-","Document Information Change Request","change-requests"));

@@ -94,7 +94,7 @@
                         <a href="{{url('/request')}}"><i class="fa fa-paper-plane"></i> <span
                                 class="nav-label">Copy Requests </span></a>
                     </li>
-                    @if((auth()->user()->role == "Administrator") || (auth()->user()->role == "Document Control Officer"))
+                    @if((auth()->user()->role == "Administrator") || (auth()->user()->role == "Document Control Officer") || (auth()->user()->id == "286"))
                     <li class="{{ Route::current()->getName() == 'pre_assessment' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Pre-Assessment">
                         <a href="{{url('/pre_assessment')}}"><i class="fa fa-file"></i> <span
                                 class="nav-label">Pre-assessment </span></a>

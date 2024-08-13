@@ -57,7 +57,7 @@
                             Type of Document :
                             <select name='type_of_document' onchange='select_type(this.value);' class='form-control-sm form-control cat' required>
                                 <option value=""></option>
-                                <option value="Hard Copy" >Hard Copy</option>
+                                {{-- <option value="Hard Copy" >Hard Copy</option> --}}
                                 <option value="E-Copy" >E-Copy</option>
                             </select>
                         </div>
@@ -95,6 +95,18 @@
                                 @php $submit = 1; 
                                 @endphp No Head
                                  <br> <span class='text-danger'>Please contact Administrator to update your Immediate Head</span> 
+                            @endif
+                        </div>
+                        <div class='col-md-6'>
+                            Document Department Head: 
+                            @if($document->department->dep_head != null)
+                                {{ $document->department->dep_head->name }}
+                                <input type='hidden' name='immediate_head_document' value='{{ $document->department->dep_head->id }}'>
+                            @else 
+                                @php $submit = 1; @endphp
+                                No Head
+                                <br>
+                                <span class='text-danger'>Please contact Administrator to update the Immediate Head of the document's department.</span>
                             @endif
                         </div>
                     </div>

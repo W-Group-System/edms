@@ -35,15 +35,10 @@ class CopyController extends Controller
         $copy_request->department_id = auth()->user()->department_id;
         $copy_request->company_id = auth()->user()->company_id;
         $copy_request->status = "Pending";
-        
         $copy_request->level = 1;
-        if($request->immediate_head == auth()->user()->id)
-        {
-            $copy_request->level = 2; 
-        }
         $copy_request->save();
-        if($request->immediate_head != auth()->user()->id)
-        {
+
+        if ($request->immediate_head != null) {
             $copy_approver = new CopyApprover;
             $copy_approver->copy_request_id = $copy_request->id;
             $copy_approver->user_id = $request->immediate_head;
@@ -52,6 +47,32 @@ class CopyController extends Controller
             $copy_approver->level = 1;
             $copy_approver->save();
         }
+    
+        if ($request->immediate_head_document != null) {
+            $copy_approver = new CopyApprover;
+            $copy_approver->copy_request_id = $copy_request->id;
+            $copy_approver->user_id = $request->immediate_head_document;
+            $copy_approver->status = "Waiting";
+            $copy_approver->level = 2;
+            $copy_approver->save();
+        }
+        // $copy_request->level = 1;
+        // if($request->immediate_head == auth()->user()->id)
+        // {
+        //     $copy_request->level = 2; 
+        // }
+        
+        // $copy_request->save();
+        // if($request->immediate_head != auth()->user()->id)
+        // {
+        //     $copy_approver = new CopyApprover;
+        //     $copy_approver->copy_request_id = $copy_request->id;
+        //     $copy_approver->user_id = $request->immediate_head;
+        //     $copy_approver->status = "Pending";
+        //     $copy_approver->start_date = date('Y-m-d');
+        //     $copy_approver->level = 1;
+        //     $copy_approver->save();
+        // }
         
         if($request->immediate_head != auth()->user()->id)
         {
@@ -92,7 +113,6 @@ class CopyController extends Controller
 
     public function action(Request $request,$id)
     {
-        // dd($request->all(),$id);
 
         $copyRequestApprover = CopyApprover::findOrfail($id);
         $copyRequestApprover->status = $request->action;
@@ -120,7 +140,6 @@ class CopyController extends Controller
                     $access = new DocumentAccess;
                     $access->attachment_id = $copyRequestDocument->id;
                     $access->user_id = $copyRequest->user_id;
-                    $access->expiration_date = date('Y-m-d',strtotime("+7 day"));
                     $access->expiration_date = date('Y-m-d',strtotime("+7 day"));
                     $access->copy_request_id = $copyRequest->id;
                     $access->save();
