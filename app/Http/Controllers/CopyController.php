@@ -48,7 +48,7 @@ class CopyController extends Controller
             $copy_approver->save();
         }
     
-        if ($request->immediate_head_document != null) {
+        if ($request->immediate_head_document != null && $request->immediate_head != $request->immediate_head_document) {
             $copy_approver = new CopyApprover;
             $copy_approver->copy_request_id = $copy_request->id;
             $copy_approver->user_id = $request->immediate_head_document;

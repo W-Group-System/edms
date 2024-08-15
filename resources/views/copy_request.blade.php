@@ -55,11 +55,12 @@
                     <div class='row'>
                         <div class='col-md-4'>
                             Type of Document :
-                            <select name='type_of_document' onchange='select_type(this.value);' class='form-control-sm form-control cat' required>
+                            <input type="text" class="form-control-sm form-control " name="type_of_document" value='E-Copy' readonly required/>
+                            {{-- <select name='type_of_document' onchange='select_type(this.value);' class='form-control-sm form-control cat' required>
                                 <option value=""></option>
-                                {{-- <option value="Hard Copy" >Hard Copy</option> --}}
+                                <option value="Hard Copy" >Hard Copy</option>
                                 <option value="E-Copy" >E-Copy</option>
-                            </select>
+                            </select> --}}
                         </div>
                         <div class='col-md-4' >
                             Number of Copy :
