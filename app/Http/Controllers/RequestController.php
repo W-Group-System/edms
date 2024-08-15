@@ -335,6 +335,7 @@ class RequestController extends Controller
         $preAssessment->save();
 
         $changeRequest = new ChangeRequest;
+        $changeRequest->pre_assessment_id = $preAssessment->id;
         $changeRequest->request_type = $request->request_type;
         $changeRequest->effective_date = $request->effective_date;
         $changeRequest->department_id = auth()->user()->department_id;
@@ -479,6 +480,7 @@ class RequestController extends Controller
         $changeRequest->status = "Pending";
         $changeRequest->level = 1;
         $changeRequest->reason_for_changes = $request->reason_for_new_request;
+        $changeRequest->pre_assessment_id = $preAssessment->id;
         if($request->has('soft_copy'))
         {
             $changeRequest->soft_copy = $preAssessment->soft_copy;
