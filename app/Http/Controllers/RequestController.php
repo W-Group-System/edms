@@ -291,6 +291,10 @@ class RequestController extends Controller
     {
         //
         // dd($request->all());
+        $request->validate([
+            'supporting_document' => 'mimes:pdf'
+        ]);
+        
         $document = Document::findOrfail($request->id);
         // $document->process_owner = auth()->user()->id;
         // $document->save();
@@ -417,6 +421,10 @@ class RequestController extends Controller
     public function new_request(Request $request)
     {
         //
+        $request->validate([
+            'supporting_document' => 'mimes:pdf'
+        ]);
+
         $preAssessment = new PreAssessment;
         $preAssessment->request_type = $request->request_type;
         $preAssessment->effective_date = $request->effective_date;

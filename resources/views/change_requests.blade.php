@@ -5,6 +5,8 @@
 @section('content')
 
 <div class="wrapper wrapper-content">
+    @include('error')
+
     <div class="row">
     <div class="col-lg-2">
         <div class="ibox float-e-margins">
