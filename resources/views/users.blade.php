@@ -35,7 +35,7 @@
                     <h5>Deactivated</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($users->where('status','Deactivated'))}}</h1>
+                    <h1 class="no-margins">{{count($users->where('status','1'))}}</h1>
                 </div>
             </div>
         </div>
