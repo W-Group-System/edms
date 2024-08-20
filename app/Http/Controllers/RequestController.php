@@ -789,24 +789,66 @@ class RequestController extends Controller
                 // }
                 // $app->save();
             // }
+            // foreach ($copyApprovers as $approver) {
+            //    if (auth()->user()->department_id == 2) {
+            //     if ($returnTo == 'DepartmentHead') {
+            //         if ($approver->level == 1) {
+            //             $approver->status = 'Pending'; 
+            //         } else {
+            //             $approver->status = 'Waiting'; 
+            //         }
+            //     } elseif ($returnTo == 'DocumentControlOfficer') {
+            //         if ($approver->level == 1) {
+            //             $approver->status = 'Approved'; 
+            //         } elseif ($approver->level == 2) {
+            //             $approver->status = 'Pending'; 
+            //         } else {
+            //             $approver->status = 'Waiting'; 
+            //         }
+            //     }
+            //     $approver->save(); 
+            //    } else {
+            //     if ($returnTo == 'DepartmentHead') {
+            //         if ($approver->level == 1) {
+            //             $approver->status = 'Pending'; 
+            //         } else {
+            //             $approver->status = 'Waiting'; 
+            //         }
+            //     } elseif ($returnTo == 'DocumentControlOfficer') {
+            //         if ($approver->level == 1) {
+            //             $approver->status = 'Approved'; 
+            //         } elseif ($approver->level == 2) {
+            //             $approver->status = 'Pending'; 
+            //         } else {
+            //             $approver->status = 'Waiting'; 
+            //         }
+            //     }
+            //     $approver->save(); 
+            //    }
+            // }
+            $approver = $copyApprovers->pluck('user_id')->toArray();
+            $userHead = User::wherein('id', $approver)->where('role', 'Department Head')->where('department_id', $copyRequest->department_id)->first();
+            $dco = User::wherein('id', $approver)->where('role', 'Document Control Officer')->first();
+            // dd($dco);
             foreach ($copyApprovers as $approver) {
                 if ($returnTo == 'DepartmentHead') {
-                    if ($approver->level == 1) {
+                    if ($approver->user_id == $userHead->id) {
                         $approver->status = 'Pending'; 
                     } else {
                         $approver->status = 'Waiting'; 
                     }
-                } elseif ($returnTo == 'DocumentControlOfficer') {
-                    if ($approver->level == 1) {
+                }
+                elseif ($returnTo == 'DocumentControlOfficer') {
+                    if ($approver->user_id == $userHead->id) {
                         $approver->status = 'Approved'; 
-                    } elseif ($approver->level == 2) {
+                    } elseif ($approver->user_id == $dco->id) {
                         $approver->status = 'Pending'; 
                     } else {
                         $approver->status = 'Waiting'; 
                     }
                 }
                 $approver->save(); 
-            }
+                }
             $declinedRequestNotif = User::where('id',$copyRequest->user_id)->first();
             $declinedRequestNotif->notify(new ReturnRequest($copyRequest,"DICR-","Document Information Change Request","change-requests"));
 
