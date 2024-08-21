@@ -177,10 +177,16 @@ class RequestController extends Controller
             ->get();
         if(auth()->user()->role == "User")
         {
+            $departmentHeadRole = 'Department Head';
             $requests = ChangeRequest::where('user_id',auth()->user()->id)
                 ->when($request->status, function($q)use($request) {
                     $q->where('status', $request->status);
                 })
+                ->with(['requestApprovers' => function($query) use ($departmentHeadRole) {
+                    $query->whereHas('user', function($query) use ($departmentHeadRole) {
+                        $query->where('role', $departmentHeadRole);
+                    });
+                }])
                 ->orderBy('id','desc')
                 ->get();
         }
@@ -827,7 +833,8 @@ class RequestController extends Controller
             //    }
             // }
             $approver = $copyApprovers->pluck('user_id')->toArray();
-            $userHead = User::wherein('id', $approver)->where('role', 'Department Head')->where('department_id', $copyRequest->department_id)->first();
+            $userHead = User::wherein('id', $approver)->where('role', 'Business Process Manager')->orWhere('role', 'Department Head')->where('department_id', $copyRequest->department_id)->first();
+            // dd($userHead);
             $dco = User::wherein('id', $approver)->where('role', 'Document Control Officer')->first();
             // dd($dco);
             foreach ($copyApprovers as $approver) {
@@ -839,9 +846,7 @@ class RequestController extends Controller
                     }
                 }
                 elseif ($returnTo == 'DocumentControlOfficer') {
-                    if ($approver->user_id == $userHead->id) {
-                        $approver->status = 'Approved'; 
-                    } elseif ($approver->user_id == $dco->id) {
+                    if ($approver->user_id == $dco->id) {
                         $approver->status = 'Pending'; 
                     } else {
                         $approver->status = 'Waiting'; 

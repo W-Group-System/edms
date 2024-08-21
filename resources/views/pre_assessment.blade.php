@@ -78,7 +78,7 @@
                                 @endphp
                                 @foreach($pre_assessment as $pa)
                                     @php
-                                        $targetDate = date('Y-m-d', strtotime('+5 weekdays', strtotime($pa->created_at)));
+                                        $targetDate = date('Y-m-d', strtotime('+10 days', strtotime($pa->created_at)));
                                     @endphp
                                     <tr>
                                         

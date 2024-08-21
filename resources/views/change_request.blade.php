@@ -65,13 +65,14 @@
                     <div class='row'>
                         <div class='col-md-6' >
                             Reason/s for Change :
-                            <select name="reason_for_change" class="form-control cat">
+                            <select name="reason_for_new_request" class="form-control cat" id="reason-for-new-request">
                                 <option value=""></option>
-                                <option value="Audit Findings">Audit Findings</option>
-                                <option value="Process Improvement">Process Improvement</option>
-                                <option value="Legal Compliance">Legal Compliance</option>
-                                <option value="Auditing Standard">Auditing Standard</option>
-                            </select>
+                                <option value="Updated Regulations or Standards">Updated Regulations or Standards (Legal Compliance and ISO standards)</option>
+                                <option value="Process Improvement">Process Improvement (Technological Advancements & Operational Processes)</option>
+                                <option value="Nonconformities">Nonconformities (External and Internal Findings)</option>
+                                <option value="Document Modification">Document Modification (error correction, change in scope and objective, revision and new forms, minimal modifications such as adding columns, changes in formats, etc.)</option>
+                                <option value="Top Management Directive">Top Management Directive</option>
+                            </select>    
                         </div>
                         <div class='col-md-12' >
                             Description : 

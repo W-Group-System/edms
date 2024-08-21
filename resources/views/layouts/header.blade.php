@@ -19,6 +19,10 @@
     <link href="{{ asset('login_css/css/style.css') }}" rel="stylesheet">
     @yield('css')
     <style>
+      
+        .bold-text {
+            font-weight: bold;
+        }
         .shownext { display: none; }
         li:hover + .shownext { display: block; }
         .loader {
@@ -225,6 +229,20 @@
             document.getElementById('logout-form').submit();
         }
 
+    document.addEventListener('DOMContentLoaded', function() {
+        const select = document.getElementById('reason-for-new-request');
+        const options = select.querySelectorAll('option');
+    
+        options.forEach(option => {
+            const text = option.textContent;
+            const parts = text.split('(');
+            if (parts.length > 1) {
+                option.innerHTML = `<span class="bold-text">${parts[0]}</span>(${parts[1]}`;
+            } else {
+                option.innerHTML = `<span class="bold-text">${text}</span>`;
+            }
+        });
+    });
     </script>
 
 </body>

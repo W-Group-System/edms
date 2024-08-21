@@ -29,5 +29,9 @@ class ChangeRequest extends Model  implements Auditable
     {
         return $this->hasOne(Acknowledgement::class);
     }
+    public function requestApprovers()
+    {
+        return $this->hasMany(RequestApprover::class, 'change_request_id', 'id');
+    }
   
 }

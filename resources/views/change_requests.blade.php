@@ -129,11 +129,13 @@
                                   
                             @if(($request->type_of_document == "FORM") || ($request->type_of_document == "ANNEX") ||($request->type_of_document == "TEMPLATE"))
                             @php
-                                $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at)));
+                                $departmentHeadApproval = $request->requestApprovers->first();
+                                $target = date('Y-m-d', strtotime("+7 days", strtotime($departmentHeadApproval ? $departmentHeadApproval->updated_at : null)));
                             @endphp
                            @else
                            @php
-                               $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at)));
+                               $departmentHeadApproval = $request->requestApprovers->first();
+                               $target = date('Y-m-d', strtotime("+1 month", strtotime($departmentHeadApproval ? $departmentHeadApproval->updated_at : null)));
                            @endphp
                            @endif
                                     <tr>
