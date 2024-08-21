@@ -126,16 +126,26 @@
                                 $delayed = 0;
                             @endphp
                             @foreach($requests as $request)
-                                  
+                            @foreach ( $request->requestApprovers as $approver )
+                                
+                            
                             @if(($request->type_of_document == "FORM") || ($request->type_of_document == "ANNEX") ||($request->type_of_document == "TEMPLATE"))
                             @php
-                                $departmentHeadApproval = $request->requestApprovers->first();
-                                $target = date('Y-m-d', strtotime("+7 days", strtotime($departmentHeadApproval ? $departmentHeadApproval->updated_at : null)));
+                                $departmentHeadApproval = $approver->updated_at;
+                                if ($departmentHeadApproval) {
+                                    $target = date('Y-m-d', strtotime("+7 days", strtotime($departmentHeadApproval)));
+                                } else {
+                                    $target = date('Y-m-d', strtotime("+7 days")); 
+                                }
                             @endphp
                            @else
                            @php
-                               $departmentHeadApproval = $request->requestApprovers->first();
-                               $target = date('Y-m-d', strtotime("+1 month", strtotime($departmentHeadApproval ? $departmentHeadApproval->updated_at : null)));
+                               $departmentHeadApproval = $approver->updated_at;
+                               if ($departmentHeadApproval) {
+                                    $target = date('Y-m-d', strtotime("+1 month", strtotime($departmentHeadApproval)));
+                                } else {
+                                    $target = date('Y-m-d', strtotime("+1 month")); 
+                                }
                            @endphp
                            @endif
                                     <tr>
@@ -204,6 +214,7 @@
                                     </tr>
                                     @include('view_change_request')
                                     @include('edit_change_request')
+                                    @endforeach
                                 @endforeach
                             
                         </tbody>

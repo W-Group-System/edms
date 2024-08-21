@@ -177,18 +177,21 @@ class RequestController extends Controller
             ->get();
         if(auth()->user()->role == "User")
         {
-            $departmentHeadRole = 'Department Head';
+            $departmentHeadRoles = 'Department Head';
+            $approvedStatus = 'Approved';
             $requests = ChangeRequest::where('user_id',auth()->user()->id)
                 ->when($request->status, function($q)use($request) {
                     $q->where('status', $request->status);
                 })
-                ->with(['requestApprovers' => function($query) use ($departmentHeadRole) {
-                    $query->whereHas('user', function($query) use ($departmentHeadRole) {
-                        $query->where('role', $departmentHeadRole);
-                    });
+                ->with(['requestApprovers' => function($query) use ($departmentHeadRoles, $approvedStatus) {
+                    $query->whereHas('user', function($query) use ($departmentHeadRoles, $approvedStatus) {
+                        $query->where('role', $departmentHeadRoles);
+                       
+                    })->where('status', $approvedStatus);;
                 }])
                 ->orderBy('id','desc')
                 ->get();
+                // dd($requests);
         }
         else if(auth()->user()->role == "Document Control Officer")
         {
