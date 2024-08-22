@@ -126,12 +126,10 @@
                                 $delayed = 0;
                             @endphp
                             @foreach($requests as $request)
-                            @foreach ( $request->requestApprovers as $approver )
-                                
                             
                             @if(($request->type_of_document == "FORM") || ($request->type_of_document == "ANNEX") ||($request->type_of_document == "TEMPLATE"))
                             @php
-                                $departmentHeadApproval = $approver->updated_at;
+                                $departmentHeadApproval = $request->requestApprovers->first()->department_head_approved ?? null;
                                 if ($departmentHeadApproval) {
                                     $target = date('Y-m-d', strtotime("+7 days", strtotime($departmentHeadApproval)));
                                 } else {
@@ -140,7 +138,7 @@
                             @endphp
                            @else
                            @php
-                               $departmentHeadApproval = $approver->updated_at;
+                               $departmentHeadApproval = $request->requestApprovers->first()->department_head_approved ?? null;
                                if ($departmentHeadApproval) {
                                     $target = date('Y-m-d', strtotime("+1 month", strtotime($departmentHeadApproval)));
                                 } else {
@@ -214,7 +212,6 @@
                                     </tr>
                                     @include('view_change_request')
                                     @include('edit_change_request')
-                                    @endforeach
                                 @endforeach
                             
                         </tbody>

@@ -23,6 +23,7 @@ use App\Notifications\ReturnRequest;
 use App\Notifications\PendingRequest;
 use App\PreAssessment;
 use App\PreAssessmentApprover;
+use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
 
@@ -177,17 +178,12 @@ class RequestController extends Controller
             ->get();
         if(auth()->user()->role == "User")
         {
-            $departmentHeadRoles = 'Department Head';
-            $approvedStatus = 'Approved';
             $requests = ChangeRequest::where('user_id',auth()->user()->id)
                 ->when($request->status, function($q)use($request) {
                     $q->where('status', $request->status);
                 })
-                ->with(['requestApprovers' => function($query) use ($departmentHeadRoles, $approvedStatus) {
-                    $query->whereHas('user', function($query) use ($departmentHeadRoles, $approvedStatus) {
-                        $query->where('role', $departmentHeadRoles);
-                       
-                    })->where('status', $approvedStatus);;
+                ->with(['requestApprovers' => function($query) {
+                    $query->whereNotNull('department_head_approved');
                 }])
                 ->orderBy('id','desc')
                 ->get();
@@ -200,6 +196,9 @@ class RequestController extends Controller
                 ->when($request->status, function($q)use($request) {
                     $q->where('status', $request->status);
                 })
+                ->with(['requestApprovers' => function($query) {
+                    $query->whereNotNull('department_head_approved');
+                }])
                 ->orderBy('id','desc')->get();
         }
         else if(auth()->user()->role == "Department Head")
@@ -208,6 +207,9 @@ class RequestController extends Controller
                 ->when($request->status, function($q)use($request) {
                     $q->where('status', $request->status);
                 })
+                ->with(['requestApprovers' => function($query) {
+                    $query->whereNotNull('department_head_approved');
+                }])
                 ->orderBy('id','desc')
                 ->get();
         }
@@ -217,6 +219,9 @@ class RequestController extends Controller
                 ->when($request->status, function($q)use($request) {
                     $q->where('status', $request->status);
                 })
+                ->with(['requestApprovers' => function($query) {
+                    $query->whereNotNull('department_head_approved');
+                }])
                 ->orderBy('id','desc')
                 ->get();
         }
@@ -584,6 +589,12 @@ class RequestController extends Controller
         $copyRequestApprover = RequestApprover::findOrfail($id);
         $copyRequestApprover->status = $request->action;
         $copyRequestApprover->remarks = $request->remarks;
+
+        $user = User::find($copyRequestApprover->user_id);
+        if ($user && $user->role === 'Department Head') {
+            $copyRequestApprover->department_head_approved = Carbon::now();
+        }
+
         $copyRequestApprover->save();
 
         $copyApprover = RequestApprover::where('change_request_id',$copyRequestApprover->change_request_id)->where('status','Waiting')->orderBy('level','asc')->first();
