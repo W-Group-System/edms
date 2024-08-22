@@ -165,8 +165,6 @@ class RequestController extends Controller
     }
     public function changeRequests(Request $request)
     {
-        //
-        // dd($request->all());
         $departments = Department::where('id',auth()->user()->department_id)->where('status',null)->get();
         $companies = Company::where('status',null)->get();
         $document_types = DocumentType::get();
@@ -182,9 +180,7 @@ class RequestController extends Controller
                 ->when($request->status, function($q)use($request) {
                     $q->where('status', $request->status);
                 })
-                ->with(['requestApprovers' => function($query) {
-                    $query->whereNotNull('department_head_approved');
-                }])
+                
                 ->orderBy('id','desc')
                 ->get();
                 // dd($requests);
@@ -196,9 +192,7 @@ class RequestController extends Controller
                 ->when($request->status, function($q)use($request) {
                     $q->where('status', $request->status);
                 })
-                ->with(['requestApprovers' => function($query) {
-                    $query->whereNotNull('department_head_approved');
-                }])
+                
                 ->orderBy('id','desc')->get();
         }
         else if(auth()->user()->role == "Department Head")
@@ -207,9 +201,7 @@ class RequestController extends Controller
                 ->when($request->status, function($q)use($request) {
                     $q->where('status', $request->status);
                 })
-                ->with(['requestApprovers' => function($query) {
-                    $query->whereNotNull('department_head_approved');
-                }])
+                
                 ->orderBy('id','desc')
                 ->get();
         }
@@ -219,9 +211,7 @@ class RequestController extends Controller
                 ->when($request->status, function($q)use($request) {
                     $q->where('status', $request->status);
                 })
-                ->with(['requestApprovers' => function($query) {
-                    $query->whereNotNull('department_head_approved');
-                }])
+                
                 ->orderBy('id','desc')
                 ->get();
         }
@@ -589,12 +579,6 @@ class RequestController extends Controller
         $copyRequestApprover = RequestApprover::findOrfail($id);
         $copyRequestApprover->status = $request->action;
         $copyRequestApprover->remarks = $request->remarks;
-
-        $user = User::find($copyRequestApprover->user_id);
-        if ($user && $user->role === 'Department Head') {
-            $copyRequestApprover->department_head_approved = Carbon::now();
-        }
-
         $copyRequestApprover->save();
 
         $copyApprover = RequestApprover::where('change_request_id',$copyRequestApprover->change_request_id)->where('status','Waiting')->orderBy('level','asc')->first();
@@ -634,6 +618,11 @@ class RequestController extends Controller
                     $copyRequest->save();
                 }
                 
+            }
+            elseif((auth()->user()->role == "Department Head") || auth()->user()->role == "Business Process Manager")
+            {
+                    $copyRequest->department_head_approved = Carbon::now();
+                    $copyRequest->save();            
             }
             if($copyApprover == null)
             {
