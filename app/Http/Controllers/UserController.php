@@ -133,6 +133,7 @@ class UserController extends Controller
             $users->password = $request->password;
             $users->department_id = $request->department_id;
             $users->company_id = $request->company_id;
+            $users->role = $request->role;
             $users->save();
 
             return response()->json(['message' => 'Successfully Saved']);
