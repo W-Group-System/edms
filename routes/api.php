@@ -18,3 +18,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('get-public-documents','DocumentController@api');
+Route::post('add_users_from_wpro', 'UserController@addUserFromWpro');

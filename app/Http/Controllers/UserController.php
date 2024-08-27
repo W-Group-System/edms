@@ -120,4 +120,27 @@ class UserController extends Controller
 
         return $roles;
     }
+
+    public function addUserFromWpro(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        
+        if ($user == null)
+        {
+            $users = new User;
+            $users->name = $request->name;
+            $users->email = $request->email;
+            $users->password = $request->password;
+            $users->department_id = $request->department_id;
+            $users->company_id = $request->company_id;
+            $users->save();
+
+            return response()->json(['message' => 'Successfully Saved']);
+        }
+        else
+        {
+            return response()->json(['message' => 'Error! The email is existing in our system']);
+        }
+        
+    }
 }
