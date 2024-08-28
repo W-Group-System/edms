@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('command:due')->dailyAt('08:00');
         $schedule->command('command:for_renewal')->weeklyOn(1, '08:00');
         $schedule->command('command:dco')->dailyAt('08:00');
-        $schedule->command('command:autocr')->everySecond();
+        $schedule->command('command:autocr')->everyMinute();
     }
 
     /**
