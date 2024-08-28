@@ -133,7 +133,7 @@
                                 if ($departmentHeadApproval) {
                                     $target = date('Y-m-d', strtotime("+7 days", strtotime($departmentHeadApproval)));
                                 } else {
-                                    $target = date('Y-m-d', strtotime("+7 days")); 
+                                    $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at))); 
                                 }
                             @endphp
                            @else
@@ -142,7 +142,7 @@
                                if ($departmentHeadApproval) {
                                     $target = date('Y-m-d', strtotime("+1 month", strtotime($departmentHeadApproval)));
                                 } else {
-                                    $target = date('Y-m-d', strtotime("+1 month")); 
+                                    $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at))); 
                                 }
                            @endphp
                            @endif
