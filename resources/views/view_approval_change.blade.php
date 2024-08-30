@@ -23,22 +23,25 @@
                             Type of Document : {{$request->type_of_document}}
                         </div>
                         <div class='col-md-6'>
-                            Effective Date : {{date('M d Y',strtotime($request->effective_date))}}
+                            {{-- Effective Date : {{date('M d Y',strtotime($request->effective_date))}} --}}
                         </div>
+                        {{-- <div class='col-md-6'>
+                        </div> --}}
                         <div class='col-md-6'>
-                            <div class='col-md-6'>
-                                @if($request->request_type != "Obsolete")
-                               Draft Link : <a href='{{$request->link_draft}}' target="_blank">Draft Link</a> <br>
-                               
-                                @endif
-                               @if($request->original_attachment_pdf != null)
-                               Original PDF Link : <a href='{{url($request->original_attachment_pdf)}}' target="_blank">Link</a> <br>
-                               @endif
-                               {{-- @if($request->original_attachment_soft_copy != null)
-                               Original Soft Copy : <a href='{{url($request->original_attachment_soft_copy)}}' target="_blank">Link</a> <br>
-                               @endif --}}
-                            </div>
-                           
+                            @if($request->request_type != "Obsolete")
+                            Draft Link : <a href='{{$request->link_draft}}' target="_blank">Draft Link</a> <br>
+                            @endif
+                            @if($request->original_attachment_pdf != null)
+                            Original PDF Link : <a href='{{url($request->original_attachment_pdf)}}' target="_blank">Link</a> <br>
+                            @endif
+                            {{-- @if($request->original_attachment_soft_copy != null)
+                            Original Soft Copy : <a href='{{url($request->original_attachment_soft_copy)}}' target="_blank">Link</a> <br>
+                            @endif --}}
+                            {{-- {{dd($request->supporting_documents)}} --}}
+                            @if($request->supporting_documents != null)
+                            Supporting Documents : <a href="{{url($request->supporting_documents)}}" target="_blank">Link</a> <br>
+                            @endif
+
                         </div>
                     </div>
                     <hr>
@@ -58,6 +61,11 @@
                         </div>
                         <div class='col-md-6'>
                             Date Requested : {{date('M d, Y',strtotime($request->created_at))}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            Reason for changes : <b>{{$request->reason_for_changes}}</b>
                         </div>
                     </div>
                     <hr>

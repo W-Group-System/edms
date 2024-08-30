@@ -169,6 +169,7 @@ class RequestController extends Controller
         $companies = Company::where('status',null)->get();
         $document_types = DocumentType::get();
         $approvers = DepartmentApprover::where('department_id',auth()->user()->department_id)->get();
+        $pre_assessment_approvers = DepartmentDco::where('department_id',auth()->user()->department_id)->get();
         $requests = ChangeRequest::orderBy('id','desc')
             ->when($request->status, function($q)use($request) {
                 $q->where('status', $request->status);
@@ -224,7 +225,8 @@ class RequestController extends Controller
             'departments' =>  $departments,
             'approvers' =>  $approvers,
             'document_types' =>  $document_types,
-            'status' => $request->status
+            'status' => $request->status,
+            'pre_assessment_approvers' => $pre_assessment_approvers
         ));
     }
     public function removeApprover()
@@ -930,6 +932,7 @@ class RequestController extends Controller
                 $q->where('status', $request->status);
             })
             ->get();
+        $pre_assessment_approvers = DepartmentDco::where('department_id',auth()->user()->department_id)->get();
         if(auth()->user()->role == "User")
         {
             $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->get();
@@ -955,7 +958,7 @@ class RequestController extends Controller
         
         array(
             'requests' =>  $requests,
-            
+            'pre_assessment_approvers' => $pre_assessment_approvers,
             'companies' =>  $companies,
             'departments' =>  $departments,
             'approvers' =>  $approvers,

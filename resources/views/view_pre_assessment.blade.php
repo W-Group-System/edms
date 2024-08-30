@@ -18,7 +18,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-lg-6">
-                            Effective Date : {{$pa->effective_date}}
+                            {{-- Effective Date : {{$pa->effective_date}} --}}
                         </div>
                         <div class="col-lg-6">
                             Type of Document : {{$pa->type_of_document}}
@@ -50,7 +50,8 @@
                     <hr>
                     <div class="row">
                         <div class="col-lg-12">
-                            Request Type : <strong>{{$pa->request_type}}</strong>
+                            Request Type : <strong>{{$pa->request_type}}</strong> <br>
+                            Reason for changes : <strong>{{$pa->reason_for_changes}}</strong>
                             <div class="panel panel-primary">
                                 <div class="panel-heading">
                                     @if($pa->request_type != "Revision")

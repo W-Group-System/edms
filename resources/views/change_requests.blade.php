@@ -132,8 +132,9 @@
                                 $departmentHeadApproval = $request->department_head_approved ?? null;
                                 if ($departmentHeadApproval) {
                                     $target = date('Y-m-d', strtotime("+7 days", strtotime($departmentHeadApproval)));
-                                } else {
-                                    $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at))); 
+                                } 
+                                else {
+                                    $target = date('Y-m-d', strtotime("+7 days")); 
                                 }
                             @endphp
                            @else
@@ -141,8 +142,9 @@
                                $departmentHeadApproval = $request->department_head_approved ?? null;
                                if ($departmentHeadApproval) {
                                     $target = date('Y-m-d', strtotime("+1 month", strtotime($departmentHeadApproval)));
-                                } else {
-                                    $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at))); 
+                                } 
+                                else {
+                                    $target = date('Y-m-d', strtotime("+1 month")); 
                                 }
                            @endphp
                            @endif
@@ -158,7 +160,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if($request->approvers->isNotEmpty())
+                                            @if(optional($request->preAssessment)->status != "Pending")
                                             DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}
                                             @endif
                                         </td>
@@ -185,30 +187,32 @@
                                                 {{$request->type_of_document}}
                                             </td>   
                                         <td>{{$request->user->name}}</td>
-                                        <td> @if($request->status == "Pending")
-                                            @if($target < date('Y-m-d'))
-                                            @php
-                                                $delayed++;
-                                            @endphp
-                                            <span class='label label-danger'>
-                                                Delayed - 
-                                                @else
-                                                <span class='label label-success'>
+                                        <td> 
+                                            @if(optional($request->preAssessment)->status == "Pending")
+                                                <span class="label label-success"> Pre-Assessment
+                                            @else
+                                                @if($request->status == "Pending")
+                                                @if($target < date('Y-m-d'))
+                                                @php
+                                                    $delayed++;
+                                                @endphp
+                                                <span class='label label-danger'>
+                                                    Delayed - 
+                                                    @else
+                                                    <span class='label label-success'>
+                                                    @endif
+                                                
+                                            @elseif($request->status ==  "Approved")
+                                                <span class='label label-info'>    
+                                            @elseif($request->status ==  "Declined")
+                                                    <span class='label label-warning'>
+                                            @else<span class='label label-success'>
                                                 @endif
-                                               
-                                        @elseif($request->status ==  "Approved")
-                                            <span class='label label-info'>    
-                                        @elseif($request->status ==  "Declined")
-                                                <span class='label label-warning'>
-                                        @else<span class='label label-success'>
+                                                {{$request->status}} 
                                             @endif
-                                            {{$request->status}} 
-                                     
-                                       
-                                    </span>  
-                                    
-                                        
-                                    </td>
+
+                                            </span>  
+                                        </td>
                                     </tr>
                                     @include('view_change_request')
                                     @include('edit_change_request')

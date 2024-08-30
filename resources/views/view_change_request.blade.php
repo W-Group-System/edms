@@ -4,7 +4,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class='col-md-10'>
-                    <h5 class="modal-title" id="exampleModalLabel">Change Request ({{$request->status}})</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Change Request 
+                        @if(optional($request->preAssessment)->status == "Pending") 
+                            (Pre-Assessment) 
+                        @else 
+                            ({{$request->status}})
+                        @endif
+                    </h5>
                 </div>
                 <div class='col-md-2'>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
@@ -16,13 +22,13 @@
                 <div class="modal-body">
                     <div class='row '>
                         <div class='col-md-6'>
-                            Reference Number : @if($request->approvers->isNotEmpty())<b>DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</b>@endif
+                            Reference Number : @if(optional($request->preAssessment)->status != "Pending")<b>DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}</b>@endif
                         </div>
                         <div class='col-md-6'>
                             Type of Document : {{$request->type_of_document}}
                         </div>
                         <div class='col-md-6'>
-                            Effective Date : {{date('M d Y',strtotime($request->effective_date))}}
+                            {{-- Effective Date : {{date('M d Y',strtotime($request->effective_date))}} --}}
                         </div>
                        
                         <div class='col-md-6'>
@@ -64,6 +70,11 @@
                     <div class='row '>
                         <div class='col-md-12'>
                             Request Type: <b>{{$request->request_type}}</b>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            Reason for changes : <b>{{$request->reason_for_changes}}</b>
                         </div>
                     </div>
                     <div class='row'>
@@ -112,6 +123,7 @@
                     </div>
                     @endif
                     <hr>
+                    Action : @if(optional($request->preAssessment)->status == "Pending") <b>Pre-Assessment</b> @else <b>Change Request</b> @endif
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             Approvers
@@ -134,31 +146,57 @@
                                     Remarks
                                 </div>
                             </div>
-                            @foreach($request->approvers as $approver)
+                            @if(optional($request->preAssessment)->status == "Pending")
+                                <div class='row'>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                        {{optional($request->preAssessment->approvers->user)->name }}
+                                    </div>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                        {{optional($request->preAssessment->approvers)->status}}
+                                    </div>
+                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                        {{-- @if($approver->start_date != null){{$approver->start_date}}@endif &nbsp; --}}
+                                        @if(optional($request->preAssessment->approvers)->start_date != null) {{optional($request->preAssessment->approvers)->start_date}} @endif &nbsp;
+                                    </div>
+                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                        {{-- @if($approver->status != "Waiting" && $approver->status != "Pending")
+                                            {{date('Y-m-d',strtotime($approver->updated_at))}}
+                                        @endif --}}
+                                        &nbsp;
+                                    </div>
+                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                        {{-- {!! nl2br(e($approver->remarks))!!}&nbsp; --}}
+                                        &nbsp;
+                                    </div>
+                                </div>
+                            @else 
+                                @foreach($request->approvers as $approver)
+                                
                             
-                        
-                                        <div class='row'>
-                                            <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                                {{$approver->user->name}}
+                                            <div class='row'>
+                                                <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                                    {{$approver->user->name}}
+                                                </div>
+                                                <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                                    {{$approver->status}}
+                                                </div>
+                                                <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                                    @if($approver->start_date != null){{$approver->start_date}}@endif &nbsp;
+                                                </div>
+                                                <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                                    {{-- @if($approver->status != "Waiting"){{date('Y-m-d',strtotime($approver->updated_at))}}@endif &nbsp; --}}
+                                                    @if($approver->status != "Waiting" && $approver->status != "Pending")
+                                                        {{date('Y-m-d',strtotime($approver->updated_at))}}
+                                                    @endif
+                                                </div>
+                                                <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                                    {!! nl2br(e($approver->remarks))!!}&nbsp;
+                                                </div>
                                             </div>
-                                            <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                                {{$approver->status}}
-                                            </div>
-                                            <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                                @if($approver->start_date != null){{$approver->start_date}}@endif &nbsp;
-                                            </div>
-                                            <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                                {{-- @if($approver->status != "Waiting"){{date('Y-m-d',strtotime($approver->updated_at))}}@endif &nbsp; --}}
-                                                @if($approver->status != "Waiting" && $approver->status != "Pending")
-                                                    {{date('Y-m-d',strtotime($approver->updated_at))}}
-                                                @endif
-                                            </div>
-                                            <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                                {!! nl2br(e($approver->remarks))!!}&nbsp;
-                                            </div>
-                                        </div>
+                                
+                                @endforeach
+                            @endif
                             
-                            @endforeach
                         </div>
                     </div>
                 </div>
