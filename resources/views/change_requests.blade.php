@@ -128,26 +128,36 @@
                             @foreach($requests as $request)
                             
                             @if(($request->type_of_document == "FORM") || ($request->type_of_document == "ANNEX") ||($request->type_of_document == "TEMPLATE"))
-                            @php
-                                $departmentHeadApproval = $request->department_head_approved ?? null;
-                                if ($departmentHeadApproval) {
-                                    $target = date('Y-m-d', strtotime("+7 days", strtotime($departmentHeadApproval)));
-                                } 
-                                else {
-                                    $target = date('Y-m-d', strtotime("+7 days")); 
-                                }
-                            @endphp
-                           @else
-                           @php
-                               $departmentHeadApproval = $request->department_head_approved ?? null;
-                               if ($departmentHeadApproval) {
-                                    $target = date('Y-m-d', strtotime("+1 month", strtotime($departmentHeadApproval)));
-                                } 
-                                else {
-                                    $target = date('Y-m-d', strtotime("+1 month")); 
-                                }
-                           @endphp
-                           @endif
+                                @php
+                                    $date_push = '2024-08-22';
+                                    if ($date_push < date('Y-m-d', strtotime($request->created_at)))
+                                    {
+                                        $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at))); 
+                                    }
+                                    else
+                                    {
+                                        $departmentHeadApproval = date('Y-m-d', strtotime($request->department_head_approved));
+                                        if ($departmentHeadApproval !=  null) {
+                                            $target = date('Y-m-d', strtotime("+7 days", strtotime($departmentHeadApproval)));
+                                        } 
+                                    }
+                                @endphp
+                            @else
+                                @php
+                                    $date_push = '2024-08-22';
+                                    if ($date_push < date('Y-m-d', strtotime($request->created_at)))
+                                    {
+                                        $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at))); 
+                                    }
+                                    else
+                                    {
+                                        $departmentHeadApproval = date('Y-m-d', strtotime($request->department_head_approved));
+                                        if ($departmentHeadApproval != null) {
+                                            $target = date('Y-m-d', strtotime("+1 month", strtotime($departmentHeadApproval)));
+                                        } 
+                                    } 
+                                @endphp
+                            @endif
                                     <tr>
                                         
                                         <td><a href="#"  data-target="#view_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a>
