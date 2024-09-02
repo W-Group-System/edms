@@ -129,32 +129,56 @@
                             
                             @if(($request->type_of_document == "FORM") || ($request->type_of_document == "ANNEX") ||($request->type_of_document == "TEMPLATE"))
                                 @php
-                                    $date_push = '2024-08-22';
-                                    if ($date_push < date('Y-m-d', strtotime($request->created_at)))
+                                    $date_push = date('Y-m-d', strtotime('2024-08-22'));
+                                    if ($date_push > date('Y-m-d', strtotime($request->created_at)))
                                     {
                                         $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at))); 
                                     }
                                     else
                                     {
-                                        $departmentHeadApproval = date('Y-m-d', strtotime($request->department_head_approved));
-                                        if ($departmentHeadApproval !=  null) {
+                                        // $departmentHeadApproval = date('Y-m-d', strtotime($request->department_head_approved));
+                                        // if ($departmentHeadApproval !=  null) {
+                                        //     $target = date('Y-m-d', strtotime("+7 days", strtotime($departmentHeadApproval)));
+                                        // }
+                                        // else
+                                        // {
+                                        //     $target = date('Y-m-d');
+                                        // }
+                                        if ($request->department_head_approved != null)
+                                        {
                                             $target = date('Y-m-d', strtotime("+7 days", strtotime($departmentHeadApproval)));
-                                        } 
+                                        }
+                                        else
+                                        {
+                                            $target = date('Y-m-d');
+                                        }
                                     }
                                 @endphp
                             @else
                                 @php
                                     $date_push = '2024-08-22';
-                                    if ($date_push < date('Y-m-d', strtotime($request->created_at)))
+                                    if ($date_push > date('Y-m-d', strtotime($request->created_at)))
                                     {
                                         $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at))); 
                                     }
                                     else
                                     {
-                                        $departmentHeadApproval = date('Y-m-d', strtotime($request->department_head_approved));
-                                        if ($departmentHeadApproval != null) {
-                                            $target = date('Y-m-d', strtotime("+1 month", strtotime($departmentHeadApproval)));
-                                        } 
+                                        // $departmentHeadApproval = date('Y-m-d', strtotime($request->department_head_approved));
+                                        // if ($departmentHeadApproval != null) {
+                                        //     $target = date('Y-m-d', strtotime("+1 month", strtotime($departmentHeadApproval)));
+                                        // }
+                                        // else
+                                        // {
+                                        //     $target = date('Y-m-d');
+                                        // }
+                                        if ($request->department_head_approved != null)
+                                        {
+                                            $target = date('Y-m-d', strtotime($request->department_head_approved));
+                                        }
+                                        else
+                                        {
+                                            $target = date('Y-m-d');
+                                        }
                                     } 
                                 @endphp
                             @endif
@@ -202,16 +226,15 @@
                                                 <span class="label label-success"> Pre-Assessment
                                             @else
                                                 @if($request->status == "Pending")
-                                                @if($target < date('Y-m-d'))
-                                                @php
-                                                    $delayed++;
-                                                @endphp
-                                                <span class='label label-danger'>
-                                                    Delayed - 
+                                                    @if($target < date('Y-m-d'))
+                                                    @php
+                                                        $delayed++;
+                                                    @endphp
+                                                    <span class='label label-danger'>
+                                                        Delayed - 
                                                     @else
                                                     <span class='label label-success'>
-                                                    @endif
-                                                
+                                                @endif
                                             @elseif($request->status ==  "Approved")
                                                 <span class='label label-info'>    
                                             @elseif($request->status ==  "Declined")
