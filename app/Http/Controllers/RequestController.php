@@ -169,7 +169,11 @@ class RequestController extends Controller
         $companies = Company::where('status',null)->get();
         $document_types = DocumentType::get();
         $approvers = DepartmentApprover::where('department_id',auth()->user()->department_id)->get();
-        $pre_assessment_approvers = DepartmentDco::where('department_id',auth()->user()->department_id)->get();
+        $pre_assessment_approvers = DepartmentDco::where('department_id',auth()->user()->department_id)
+            ->whereHas('user', function($query)use($request) {
+                $query->where('status', null);
+            })
+            ->get();
         $requests = ChangeRequest::orderBy('id','desc')
             ->when($request->status, function($q)use($request) {
                 $q->where('status', $request->status);
