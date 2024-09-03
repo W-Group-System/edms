@@ -936,7 +936,12 @@ class RequestController extends Controller
                 $q->where('status', $request->status);
             })
             ->get();
-        $pre_assessment_approvers = DepartmentDco::where('department_id',auth()->user()->department_id)->get();
+        // $pre_assessment_approvers = DepartmentDco::where('department_id',auth()->user()->department_id)->get();
+        $pre_assessment_approvers = DepartmentDco::where('department_id',auth()->user()->department_id)
+            ->whereHas('user', function($query)use($request) {
+                $query->where('status', null);
+            })
+            ->get();
         if(auth()->user()->role == "User")
         {
             $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->get();
