@@ -146,7 +146,7 @@
                                         // }
                                         if ($request->department_head_approved != null)
                                         {
-                                            $target = date('Y-m-d', strtotime("+7 days", strtotime($departmentHeadApproval)));
+                                            $target = date('Y-m-d', strtotime("+7 days", strtotime($request->department_head_approved)));
                                         }
                                         else
                                         {
