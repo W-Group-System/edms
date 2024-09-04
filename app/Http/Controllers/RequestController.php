@@ -845,7 +845,9 @@ class RequestController extends Controller
             $userHead = User::wherein('id', $approver)->where('role', 'Business Process Manager')->orWhere('role', 'Department Head')->where('department_id', $copyRequest->department_id)->first();
             // dd($userHead);
             $dco = User::wherein('id', $approver)->where('role', 'Document Control Officer')->first();
-            // dd($dco);
+            
+            $dcoLevel = $copyApprovers->where('user_id', $dco->id)->first()->level;
+
             foreach ($copyApprovers as $approver) {
                 if ($returnTo == 'DepartmentHead') {
                     if ($approver->user_id == $userHead->id) {
@@ -855,10 +857,10 @@ class RequestController extends Controller
                     }
                 }
                 elseif ($returnTo == 'DocumentControlOfficer') {
-                    if ($approver->user_id == $dco->id) {
-                        $approver->status = 'Pending'; 
-                    } else {
-                        $approver->status = 'Waiting'; 
+                     if ($approver->level > $dcoLevel) {
+                        $approver->status = 'Waiting';
+                    } elseif ($approver->user_id == $dco->id) {
+                        $approver->status = 'Pending';
                     }
                 }
                 $approver->save(); 
