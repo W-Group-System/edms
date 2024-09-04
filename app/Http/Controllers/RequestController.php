@@ -847,13 +847,14 @@ class RequestController extends Controller
             $dco = User::wherein('id', $approver)->where('role', 'Document Control Officer')->first();
             
             $dcoLevel = $copyApprovers->where('user_id', $dco->id)->first()->level;
+            $deptHeadLevel = $copyApprovers->where('user_id', $userHead->id)->first()->level;
 
             foreach ($copyApprovers as $approver) {
                 if ($returnTo == 'DepartmentHead') {
-                    if ($approver->user_id == $userHead->id) {
-                        $approver->status = 'Pending'; 
-                    } else {
-                        $approver->status = 'Waiting'; 
+                    if ($approver->level > $deptHeadLevel) {
+                        $approver->status = 'Waiting';
+                    } elseif ($approver->user_id == $userHead->id) {
+                        $approver->status = 'Pending';
                     }
                 }
                 elseif ($returnTo == 'DocumentControlOfficer') {
