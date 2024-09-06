@@ -223,7 +223,8 @@
                                         <td>{{$request->user->name}}</td>
                                         <td> 
                                             @if(optional($request->preAssessment)->status == "Pending")
-                                                <span class="label label-success"> Pre-Assessment
+                                                <span style="background-color: #b9ff66" class="label"> Pre-Assessment
+                                                {{-- <span class="label label-primary"> Pre-Assessment --}}
                                             @else
                                                 @if($request->status == "Pending")
                                                     @if($target < date('Y-m-d'))
