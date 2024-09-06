@@ -223,7 +223,7 @@
                                         <td>{{$request->user->name}}</td>
                                         <td> 
                                             @if(optional($request->preAssessment)->status == "Pending")
-                                                <span style="background-color: #b9ff66" class="label"> Pre-Assessment
+                                                <span style="background-color: #b9ff66; font-weight: bold;" class="label"> Pre-Assessment
                                                 {{-- <span class="label label-primary"> Pre-Assessment --}}
                                             @else
                                                 @if($request->status == "Pending")
