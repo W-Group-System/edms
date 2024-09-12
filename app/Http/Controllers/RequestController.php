@@ -176,39 +176,79 @@ class RequestController extends Controller
             ->get();
         $requests = ChangeRequest::orderBy('id','desc')
             ->when($request->status, function($q)use($request) {
-                $q->where('status', $request->status);
+                $q->where('status', $request->status)
+                    ->where(function($q){
+                        $q->whereHas('preAssessment', function($q){
+                            $q->where('status', 'Approved');
+                        })
+                        ->orWhereDoesntHave('preAssessment');
+                    });
             })
             ->get();
+
+        $pre_assessment_count = $requests->filter(function($value, $key) {
+            return optional($value->preAssessment)->status == "Pending";
+        })->count();
+        
         if(auth()->user()->role == "User")
         {
             $requests = ChangeRequest::where('user_id',auth()->user()->id)
                 ->when($request->status, function($q)use($request) {
-                    $q->where('status', $request->status);
+                    $q->where('status', $request->status)
+                        ->where(function($q){
+                            $q->whereHas('preAssessment', function($q){
+                                $q->where('status', 'Approved');
+                            })
+                            ->orWhereDoesntHave('preAssessment');
+                        });
                 })
-                
                 ->orderBy('id','desc')
                 ->get();
                 // dd($requests);
+
+            $pre_assessment_count = $requests->filter(function($value, $key) {
+                return optional($value->preAssessment)->status == "Pending";
+            })->count();
         }
         else if(auth()->user()->role == "Document Control Officer")
         {
             $requests = ChangeRequest::whereIn('department_id',(auth()->user()->dco)
                 ->pluck('department_id')->toArray())
                 ->when($request->status, function($q)use($request) {
-                    $q->where('status', $request->status);
+                    $q->where('status', $request->status)
+                        ->where(function($q){
+                            $q->whereHas('preAssessment', function($q){
+                                $q->where('status', 'Approved');
+                            })
+                            ->orWhereDoesntHave('preAssessment');
+                        });
                 })
                 
                 ->orderBy('id','desc')->get();
+
+            $pre_assessment_count = $requests->filter(function($value, $key) {
+                return optional($value->preAssessment)->status == "Pending";
+            })->count();
         }
         else if(auth()->user()->role == "Department Head")
         {
             $requests = ChangeRequest::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())
                 ->when($request->status, function($q)use($request) {
-                    $q->where('status', $request->status);
+                    $q->where('status', $request->status)
+                        ->where(function($q){
+                            $q->whereHas('preAssessment', function($q){
+                                $q->where('status', 'Approved');
+                            })
+                            ->orWhereDoesntHave('preAssessment');
+                        });
                 })
                 
                 ->orderBy('id','desc')
                 ->get();
+
+            $pre_assessment_count = $requests->filter(function($value, $key) {
+                return optional($value->preAssessment)->status == "Pending";
+            })->count();
         }
         else if(auth()->user()->role == "Documents and Records Controller")
         {
@@ -224,7 +264,7 @@ class RequestController extends Controller
         
         array(
             'requests' =>  $requests,
-            
+            'pre_assessment_count' => $pre_assessment_count,
             'companies' =>  $companies,
             'departments' =>  $departments,
             'approvers' =>  $approvers,

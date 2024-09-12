@@ -17,13 +17,13 @@
                 <form method="GET">
                     <h1 class="no-margins">
                         <input type="hidden" name="status" value="Pending">
-                        <input type="submit" class="text-success" value="{{count($requests->where('status','Pending'))}}" style="background: none; border: none;">
+                        <input type="submit" class="text-success" value="{{count($requests->where('status','Pending')) - $pre_assessment_count}}" style="background: none; border: none;">
                     </h1>
                 </form>
             </div>
         </div>
     </div>
-    <div class="col-lg-2">
+    {{-- <div class="col-lg-2">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>Cancelled</h5>
@@ -37,7 +37,7 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> --}}
     <div class="col-lg-2">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
