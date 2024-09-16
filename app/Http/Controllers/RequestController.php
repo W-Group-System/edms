@@ -169,41 +169,86 @@ class RequestController extends Controller
         $companies = Company::where('status',null)->get();
         $document_types = DocumentType::get();
         $approvers = DepartmentApprover::where('department_id',auth()->user()->department_id)->get();
-        $requests = ChangeRequest::orderBy('id','desc')
-            ->when($request->status, function($q)use($request) {
-                $q->where('status', $request->status);
+        $pre_assessment_approvers = DepartmentDco::where('department_id',auth()->user()->department_id)
+            ->whereHas('user', function($query)use($request) {
+                $query->where('status', null);
             })
             ->get();
+        $requests = ChangeRequest::orderBy('id','desc')
+            ->when($request->status, function($q)use($request) {
+                $q->where('status', $request->status)
+                    ->where(function($q){
+                        $q->whereHas('preAssessment', function($q){
+                            $q->where('status', 'Approved');
+                        })
+                        ->orWhereDoesntHave('preAssessment');
+                    });
+            })
+            ->get();
+
+        $pre_assessment_count = $requests->filter(function($value, $key) {
+            return optional($value->preAssessment)->status == "Pending";
+        })->count();
+        
         if(auth()->user()->role == "User")
         {
             $requests = ChangeRequest::where('user_id',auth()->user()->id)
                 ->when($request->status, function($q)use($request) {
-                    $q->where('status', $request->status);
+                    $q->where('status', $request->status)
+                        ->where(function($q){
+                            $q->whereHas('preAssessment', function($q){
+                                $q->where('status', 'Approved');
+                            })
+                            ->orWhereDoesntHave('preAssessment');
+                        });
                 })
-                
                 ->orderBy('id','desc')
                 ->get();
                 // dd($requests);
+
+            $pre_assessment_count = $requests->filter(function($value, $key) {
+                return optional($value->preAssessment)->status == "Pending";
+            })->count();
         }
         else if(auth()->user()->role == "Document Control Officer")
         {
             $requests = ChangeRequest::whereIn('department_id',(auth()->user()->dco)
                 ->pluck('department_id')->toArray())
                 ->when($request->status, function($q)use($request) {
-                    $q->where('status', $request->status);
+                    $q->where('status', $request->status)
+                        ->where(function($q){
+                            $q->whereHas('preAssessment', function($q){
+                                $q->where('status', 'Approved');
+                            })
+                            ->orWhereDoesntHave('preAssessment');
+                        });
                 })
                 
                 ->orderBy('id','desc')->get();
+
+            $pre_assessment_count = $requests->filter(function($value, $key) {
+                return optional($value->preAssessment)->status == "Pending";
+            })->count();
         }
         else if(auth()->user()->role == "Department Head")
         {
             $requests = ChangeRequest::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())
                 ->when($request->status, function($q)use($request) {
-                    $q->where('status', $request->status);
+                    $q->where('status', $request->status)
+                        ->where(function($q){
+                            $q->whereHas('preAssessment', function($q){
+                                $q->where('status', 'Approved');
+                            })
+                            ->orWhereDoesntHave('preAssessment');
+                        });
                 })
                 
                 ->orderBy('id','desc')
                 ->get();
+
+            $pre_assessment_count = $requests->filter(function($value, $key) {
+                return optional($value->preAssessment)->status == "Pending";
+            })->count();
         }
         else if(auth()->user()->role == "Documents and Records Controller")
         {
@@ -219,12 +264,13 @@ class RequestController extends Controller
         
         array(
             'requests' =>  $requests,
-            
+            'pre_assessment_count' => $pre_assessment_count,
             'companies' =>  $companies,
             'departments' =>  $departments,
             'approvers' =>  $approvers,
             'document_types' =>  $document_types,
-            'status' => $request->status
+            'status' => $request->status,
+            'pre_assessment_approvers' => $pre_assessment_approvers
         ));
     }
     public function removeApprover()
@@ -839,20 +885,23 @@ class RequestController extends Controller
             $userHead = User::wherein('id', $approver)->where('role', 'Business Process Manager')->orWhere('role', 'Department Head')->where('department_id', $copyRequest->department_id)->first();
             // dd($userHead);
             $dco = User::wherein('id', $approver)->where('role', 'Document Control Officer')->first();
-            // dd($dco);
+            
+            $dcoLevel = $copyApprovers->where('user_id', $dco->id)->first()->level;
+            $deptHeadLevel = $copyApprovers->where('user_id', $userHead->id)->first()->level;
+
             foreach ($copyApprovers as $approver) {
                 if ($returnTo == 'DepartmentHead') {
-                    if ($approver->user_id == $userHead->id) {
-                        $approver->status = 'Pending'; 
-                    } else {
-                        $approver->status = 'Waiting'; 
+                    if ($approver->level > $deptHeadLevel) {
+                        $approver->status = 'Waiting';
+                    } elseif ($approver->user_id == $userHead->id) {
+                        $approver->status = 'Pending';
                     }
                 }
                 elseif ($returnTo == 'DocumentControlOfficer') {
-                    if ($approver->user_id == $dco->id) {
-                        $approver->status = 'Pending'; 
-                    } else {
-                        $approver->status = 'Waiting'; 
+                     if ($approver->level > $dcoLevel) {
+                        $approver->status = 'Waiting';
+                    } elseif ($approver->user_id == $dco->id) {
+                        $approver->status = 'Pending';
                     }
                 }
                 $approver->save(); 
@@ -930,6 +979,12 @@ class RequestController extends Controller
                 $q->where('status', $request->status);
             })
             ->get();
+        // $pre_assessment_approvers = DepartmentDco::where('department_id',auth()->user()->department_id)->get();
+        $pre_assessment_approvers = DepartmentDco::where('department_id',auth()->user()->department_id)
+            ->whereHas('user', function($query)use($request) {
+                $query->where('status', null);
+            })
+            ->get();
         if(auth()->user()->role == "User")
         {
             $requests = ChangeRequest::where('user_id',auth()->user()->id)->orderBy('id','desc')->get();
@@ -955,7 +1010,7 @@ class RequestController extends Controller
         
         array(
             'requests' =>  $requests,
-            
+            'pre_assessment_approvers' => $pre_assessment_approvers,
             'companies' =>  $companies,
             'departments' =>  $departments,
             'approvers' =>  $approvers,

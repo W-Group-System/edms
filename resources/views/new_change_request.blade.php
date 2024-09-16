@@ -123,12 +123,24 @@
                         </div>
                     </div>
                     <hr>
+                    Action : <b>Pre-Assessment</b>
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             Approvers
                         </div>
                         <div class="panel-body">
-                            @foreach($approvers as $approver)
+                            @foreach ($pre_assessment_approvers as $key=>$approver)
+                                <div class='row'>
+                                    <div class='col-md-1 text-right border border-primary border-top-bottom border-left-right'>
+                                        {{-- {{$approver->level}} --}}
+                                        {{$key+1}}
+                                    </div>
+                                    <div class='col-md-11 border border-primary border-top-bottom border-left-right'>
+                                        {{$approver->user->name}}
+                                    </div>
+                                </div>
+                            @endforeach
+                            {{-- @foreach($approvers as $approver)
                                 <div class='row'>
                                     <div class='col-md-1 text-right border border-primary border-top-bottom border-left-right'>
                                         {{$approver->level}}
@@ -137,7 +149,7 @@
                                         {{$approver->user->name}}
                                     </div>
                                 </div>
-                            @endforeach
+                            @endforeach --}}
                         </div>
                     </div>
                 </div>

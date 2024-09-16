@@ -127,7 +127,7 @@
                                 $delayed = 0;
                             @endphp
                             @foreach($requests->where('status', 'Pending') as $request)
-                                @if(($request->type_of_document == "FORM") || ($request->type_of_document == "ANNEX") ||($request->type_of_document == "TEMPLATE"))
+                                {{-- @if(($request->type_of_document == "FORM") || ($request->type_of_document == "ANNEX") ||($request->type_of_document == "TEMPLATE"))
                                     @php
                                         $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at)));
                                     @endphp
@@ -135,7 +135,38 @@
                                     @php
                                         $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at)));
                                     @endphp
-                                @endif
+                                @endif --}}
+                                    @if(($request->type_of_document == "FORM") || ($request->type_of_document == "ANNEX") ||($request->type_of_document == "TEMPLATE"))
+                                        @php
+                                            $date_push = '2024-08-22';
+                                            if ($date_push < date('Y-m-d', strtotime($request->created_at)))
+                                            {
+                                                $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at))); 
+                                            }
+                                            else
+                                            {
+                                                $departmentHeadApproval = date('Y-m-d', strtotime($request->department_head_approved));
+                                                if ($departmentHeadApproval !=  null) {
+                                                    $target = date('Y-m-d', strtotime("+7 days", strtotime($departmentHeadApproval)));
+                                                } 
+                                            }
+                                        @endphp
+                                    @else
+                                        @php
+                                            $date_push = '2024-08-22';
+                                            if ($date_push < date('Y-m-d', strtotime($request->created_at)))
+                                            {
+                                                $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at))); 
+                                            }
+                                            else
+                                            {
+                                                $departmentHeadApproval = date('Y-m-d', strtotime($request->department_head_approved));
+                                                if ($departmentHeadApproval != null) {
+                                                    $target = date('Y-m-d', strtotime("+1 month", strtotime($departmentHeadApproval)));
+                                                } 
+                                            } 
+                                        @endphp
+                                    @endif
                                     @if($target < date('Y-m-d'))
                                     <tr>
                                         <td><a href="#"  data-target="#view_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a>

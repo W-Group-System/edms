@@ -8,6 +8,7 @@ use App\Department;
 use App\DepartmentApprover;
 use App\DepartmentDco;
 use App\DocumentType;
+use App\Notifications\DeclinePreAssessmentNotification;
 use App\PreAssessment;
 use App\PreAssessmentApprover;
 use App\RequestApprover;
@@ -158,6 +159,9 @@ class PreAssessmentController extends Controller
             
             $changeRequest = ChangeRequest::where('pre_assessment_id', $preAssessment->id)->first();
             $changeRequest->delete();
+            
+            $user = User::where('id', $preAssessment->user_id)->first();
+            $user->notify(new DeclinePreAssessmentNotification($preAssessment->title, $preAssessment->request_type, $preAssessmentApprover->remarks));
         }
 
         Alert::success('Successfully Submitted')->persistent('Dismiss');

@@ -124,9 +124,9 @@ class CopyController extends Controller
 
         if($request->action == "Approved")
         {
-            $document = Document::findOrFail($request->id);
-            $document->process_owner = $request->user_id;
-            $document->save();
+            // $document = Document::findOrFail($request->id);
+            // $document->process_owner = $request->user_id;
+            // $document->save();
 
             if($copyApprover == null)
             {

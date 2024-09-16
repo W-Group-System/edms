@@ -61,8 +61,10 @@
                                             @else
                                                 @if(auth()->user()->audit_role == null)
                                                     <a href="#" data-target="#copyRequest" data-toggle="modal"  class="btn btn-success btn-sm ">Copy Request </a>
+                                                    @if($document->department_id == auth()->user()->department_id)
                                                     <a href="#" data-target="#changeRequest" data-toggle="modal" class="btn btn-warning btn-sm ">Change Request </a>
                                                     <a href="#"  data-target="#obsoleteRequest" data-toggle="modal"  class="btn btn-danger btn-sm ">Obsolete Request </a>
+                                                    @endif
                                                 @endif
                                             @endif
                                         @endif

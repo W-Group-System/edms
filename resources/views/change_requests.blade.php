@@ -17,13 +17,13 @@
                 <form method="GET">
                     <h1 class="no-margins">
                         <input type="hidden" name="status" value="Pending">
-                        <input type="submit" class="text-success" value="{{count($requests->where('status','Pending'))}}" style="background: none; border: none;">
+                        <input type="submit" class="text-success" value="{{count($requests->where('status','Pending')) - $pre_assessment_count}}" style="background: none; border: none;">
                     </h1>
                 </form>
             </div>
         </div>
     </div>
-    <div class="col-lg-2">
+    {{-- <div class="col-lg-2">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>Cancelled</h5>
@@ -37,7 +37,7 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> --}}
     <div class="col-lg-2">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
@@ -128,24 +128,60 @@
                             @foreach($requests as $request)
                             
                             @if(($request->type_of_document == "FORM") || ($request->type_of_document == "ANNEX") ||($request->type_of_document == "TEMPLATE"))
-                            @php
-                                $departmentHeadApproval = $request->department_head_approved ?? null;
-                                if ($departmentHeadApproval) {
-                                    $target = date('Y-m-d', strtotime("+7 days", strtotime($departmentHeadApproval)));
-                                } else {
-                                    $target = date('Y-m-d', strtotime("+7 days")); 
-                                }
-                            @endphp
-                           @else
-                           @php
-                               $departmentHeadApproval = $request->department_head_approved ?? null;
-                               if ($departmentHeadApproval) {
-                                    $target = date('Y-m-d', strtotime("+1 month", strtotime($departmentHeadApproval)));
-                                } else {
-                                    $target = date('Y-m-d', strtotime("+1 month")); 
-                                }
-                           @endphp
-                           @endif
+                                @php
+                                    $date_push = date('Y-m-d', strtotime('2024-08-22'));
+                                    if ($date_push > date('Y-m-d', strtotime($request->created_at)))
+                                    {
+                                        $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at))); 
+                                    }
+                                    else
+                                    {
+                                        // $departmentHeadApproval = date('Y-m-d', strtotime($request->department_head_approved));
+                                        // if ($departmentHeadApproval !=  null) {
+                                        //     $target = date('Y-m-d', strtotime("+7 days", strtotime($departmentHeadApproval)));
+                                        // }
+                                        // else
+                                        // {
+                                        //     $target = date('Y-m-d');
+                                        // }
+                                        if ($request->department_head_approved != null)
+                                        {
+                                            $target = date('Y-m-d', strtotime("+7 days", strtotime($request->department_head_approved)));
+                                        }
+                                        else
+                                        {
+                                            $target = date('Y-m-d');
+                                        }
+                                    }
+                                @endphp
+                            @else
+                                @php
+                                    $date_push = '2024-08-22';
+                                    if ($date_push > date('Y-m-d', strtotime($request->created_at)))
+                                    {
+                                        $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at))); 
+                                    }
+                                    else
+                                    {
+                                        // $departmentHeadApproval = date('Y-m-d', strtotime($request->department_head_approved));
+                                        // if ($departmentHeadApproval != null) {
+                                        //     $target = date('Y-m-d', strtotime("+1 month", strtotime($departmentHeadApproval)));
+                                        // }
+                                        // else
+                                        // {
+                                        //     $target = date('Y-m-d');
+                                        // }
+                                        if ($request->department_head_approved != null)
+                                        {
+                                            $target = date('Y-m-d', strtotime($request->department_head_approved));
+                                        }
+                                        else
+                                        {
+                                            $target = date('Y-m-d');
+                                        }
+                                    } 
+                                @endphp
+                            @endif
                                     <tr>
                                         
                                         <td><a href="#"  data-target="#view_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a>
@@ -158,7 +194,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if($request->approvers->isNotEmpty())
+                                            @if(optional($request->preAssessment)->status != "Pending")
                                             DICR-{{str_pad($request->id, 5, '0', STR_PAD_LEFT)}}
                                             @endif
                                         </td>
@@ -185,30 +221,32 @@
                                                 {{$request->type_of_document}}
                                             </td>   
                                         <td>{{$request->user->name}}</td>
-                                        <td> @if($request->status == "Pending")
-                                            @if($target < date('Y-m-d'))
-                                            @php
-                                                $delayed++;
-                                            @endphp
-                                            <span class='label label-danger'>
-                                                Delayed - 
-                                                @else
-                                                <span class='label label-success'>
+                                        <td> 
+                                            @if(optional($request->preAssessment)->status == "Pending")
+                                                <span style="background-color: #b9ff66; font-weight: bold;" class="label"> Pre-Assessment
+                                                {{-- <span class="label label-primary"> Pre-Assessment --}}
+                                            @else
+                                                @if($request->status == "Pending")
+                                                    @if($target < date('Y-m-d'))
+                                                    @php
+                                                        $delayed++;
+                                                    @endphp
+                                                    <span class='label label-danger'>
+                                                        Delayed - 
+                                                    @else
+                                                    <span class='label label-success'>
                                                 @endif
-                                               
-                                        @elseif($request->status ==  "Approved")
-                                            <span class='label label-info'>    
-                                        @elseif($request->status ==  "Declined")
-                                                <span class='label label-warning'>
-                                        @else<span class='label label-success'>
+                                            @elseif($request->status ==  "Approved")
+                                                <span class='label label-info'>    
+                                            @elseif($request->status ==  "Declined")
+                                                    <span class='label label-warning'>
+                                            @else<span class='label label-success'>
+                                                @endif
+                                                {{$request->status}} 
                                             @endif
-                                            {{$request->status}} 
-                                     
-                                       
-                                    </span>  
-                                    
-                                        
-                                    </td>
+
+                                            </span>  
+                                        </td>
                                     </tr>
                                     @include('view_change_request')
                                     @include('edit_change_request')
