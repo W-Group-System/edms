@@ -227,7 +227,7 @@
                                                 {{-- <span class="label label-primary"> Pre-Assessment --}}
                                             @else
                                                 @if($request->status == "Pending")
-                                                    @if($target < date('Y-m-d'))
+                                                    @if($target <= date('Y-m-d'))
                                                     @php
                                                         $delayed++;
                                                     @endphp
