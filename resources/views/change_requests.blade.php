@@ -173,7 +173,7 @@
                                         // }
                                         if ($request->department_head_approved != null)
                                         {
-                                            $target = date('Y-m-d', strtotime($request->department_head_approved));
+                                            $target = date('Y-m-d', strtotime("+1 month", strtotime($request->department_head_approved))); 
                                         }
                                         else
                                         {
@@ -227,7 +227,7 @@
                                                 {{-- <span class="label label-primary"> Pre-Assessment --}}
                                             @else
                                                 @if($request->status == "Pending")
-                                                    @if($target <= date('Y-m-d'))
+                                                    @if($target < date('Y-m-d'))
                                                     @php
                                                         $delayed++;
                                                     @endphp
