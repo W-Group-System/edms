@@ -118,6 +118,7 @@
                                     <th>Revision</th>
                                     <th>Type</th>
                                     <th>Requested By</th>
+                                    <th>Target Date</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -221,6 +222,7 @@
                                                 {{$request->type_of_document}}
                                             </td>   
                                         <td>{{$request->user->name}}</td>
+                                        <td>{{$target}}</td>
                                         <td> 
                                             @if(optional($request->preAssessment)->status == "Pending")
                                                 <span style="background-color: #b9ff66; font-weight: bold;" class="label"> Pre-Assessment
