@@ -184,10 +184,13 @@ class DocumentController extends Controller
     {
         //
 
-        $document = Document::findOrfail($id);
+        $document = Document::findOrFail($id);
         $document->title = $request->title;
         $document->version = $request->revision;
-        $document->save(['timestamps' => FALSE]);
+        
+        // Temporarily disable timestamps
+        $document->timestamps = false;
+        $document->save();
 
         Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
