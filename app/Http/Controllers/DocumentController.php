@@ -251,7 +251,7 @@ class DocumentController extends Controller
                             $pdf->SetFontSize(8);
                             if($pageNo == 1)
                             {
-                                $pdf->Write(1, "Effective Date: ".date("m/d/Y",strtotime($attachment->document->effective_date))); 
+                                $pdf->Write(1, "Effective Date: ".date("m/d/Y",strtotime($attachment->document->updated_at))); 
                             }
                            
                             $pdf->Image('images/uncontrolled.png', 15, 100, 200, '', '', '', '', false, 300);
