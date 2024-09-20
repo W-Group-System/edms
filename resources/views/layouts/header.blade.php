@@ -190,7 +190,11 @@
                                 <i class="fa fa-bell"></i>  <span class="label label-warning">{{copy_approver_count()}}</span>
                             </a>
                         </li>
-                        
+                        <li>
+                            <a class=" count-info " href="{{url('/pre_assessment')}}" title='For Approval'>
+                                <i class="fa fa-bell-o"></i>  <span class="label label-warning">{{pre_assessment_count()}}</span>
+                            </a>
+                        </li>
                         <li>
                             <a href="{{ route('logout') }}" onclick="logout(); show();">
                                 <i class="fa fa-sign-out"></i> Log out

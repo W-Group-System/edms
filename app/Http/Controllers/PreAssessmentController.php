@@ -23,14 +23,41 @@ class PreAssessmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $departments = Department::where('id',auth()->user()->department_id)->where('status',null)->get();
         $companies = Company::where('status',null)->get();
         $document_types = DocumentType::get();
         $approver = DepartmentDco::where('department_id',auth()->user()->department_id)->first();
-        $pre_assessment = PreAssessment::orderBy('id','desc')->get();
-        
+        $loggedInUserId = auth()->user()->id;
+        if (auth()->user()->role == "Document Control Officer") {
+            $pre_assessment = PreAssessment::whereHas('approvers', function ($query) use ($loggedInUserId) {
+                $query->where('user_id', $loggedInUserId);
+            })
+            ->when($request->status, function($query) use ($request) {
+                if ($request->status == 'Delayed') {
+                    $query->where('status', 'Pending')
+                          ->whereRaw("DATE_ADD(created_at, INTERVAL 10 DAY) < CURDATE()");
+                } else {
+                    $query->where('status', $request->status);
+                }
+            })
+            // ->when($request->status, function($query) use ($request) {
+            //     $query->where('status', $request->status);
+            // })
+            ->orderBy('id', 'desc')->get();
+        } elseif (auth()->user()->role == "Administrator") {
+            $pre_assessment = PreAssessment::when($request->status, function($query) use ($request) {
+                if ($request->status == 'Delayed') {
+                    $query->where('status', 'Pending')
+                          ->whereRaw("DATE_ADD(created_at, INTERVAL 10 DAY) < CURDATE()");
+                } else {
+                    $query->where('status', $request->status);
+                }
+            })->orderBy('id','desc')->get();
+        } else {
+            $pre_assessment = collect();
+        }
         return view('pre_assessment',
             array(
                 'departments' => $departments,

@@ -13,7 +13,12 @@
                     <h5>Pending</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($pre_assessment->where('status', 'Pending'))}}</h1>
+                    <form method="GET">
+                        <h1 class="no-margins">
+                            <input type="hidden" name="status" value="Pending">
+                            <input type="submit" class="text-success" value="{{count($pre_assessment->where('status', 'Pending'))}}" style="background: none; border: none;">
+                        </h1>
+                    </form>
                 </div>
             </div>
         </div>
@@ -23,7 +28,12 @@
                     <h5>Declined</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($pre_assessment->where('status', 'Declined'))}}</h1>
+                    <form method="GET">
+                        <h1 class="no-margins">
+                            <input type="hidden" name="status" value="Declined">
+                            <input type="submit" class="text-success" value="{{count($pre_assessment->where('status', 'Declined'))}}" style="background: none; border: none;">
+                        </h1>
+                    </form>
                 </div>
             </div>
         </div>
@@ -33,7 +43,12 @@
                     <h5>Approved</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($pre_assessment->where('status', 'Approved'))}}</h1>
+                    <form method="GET">
+                        <h1 class="no-margins">
+                            <input type="hidden" name="status" value="Approved">
+                            <input type="submit" class="text-success" value="{{count($pre_assessment->where('status', 'Approved'))}}" style="background: none; border: none;">
+                        </h1>
+                    </form>
                 </div>
             </div>
         </div>
@@ -43,7 +58,21 @@
                     <h5>Delayed</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins" id='delayed'>0</h1>
+                    <form method="GET">
+                        <h1 class="no-margins">
+                            @php
+                                $delayedCount = 0;
+                                foreach($pre_assessment as $pa) {
+                                    $targetDate = date('Y-m-d', strtotime('+10 days', strtotime($pa->created_at)));
+                                    if ($pa->status == "Pending" && $targetDate < date('Y-m-d')) {
+                                        $delayedCount++;
+                                    }
+                                }
+                            @endphp
+                            <input type="hidden" name="status" value="Delayed">
+                            <input type="submit" class="text-success" value="{{ $delayedCount }}" style="background: none; border: none;">
+                        </h1>
+                    </form>
                 </div>
             </div>
         </div>

@@ -35,6 +35,7 @@
                             <th>Reference Number</th>
                             <th>Date Requested</th>
                             <th>Document</th>
+                            <th>Document Type</th>
                             <th>Requested By</th>
                             <th>Request Type</th>
                         </tr>
@@ -54,6 +55,7 @@
                                     {{$request->title}} <br>
                                     {{$request->type_of_document}}
                                 </small></td>
+                                <td>{{$request->type_of_document}}</td>
                                 <td>{{$request->user->name}}</td>
                                 <td>{{$request->request_type}}</td>
                             </tr>

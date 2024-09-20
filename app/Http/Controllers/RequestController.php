@@ -10,6 +10,7 @@ use App\ChangeRequest;
 use App\DocumentAttachment;
 use App\CopyApprover;
 use App\DepartmentDco;
+use App\Notifications\NewPreAssessment;
 use App\RequestApprover;
 use App\ObsoleteAttachment;
 use App\Obsolete;
@@ -438,6 +439,10 @@ class RequestController extends Controller
             $preAssessmentApprover->status = "Pending";
             $preAssessmentApprover->start_date = date('Y-m-d');
             $preAssessmentApprover->save();
+
+            $approvedRequestsNotif = User::where('id',$dco->user_id)->first();
+            
+            $approvedRequestsNotif->notify(new NewPreAssessment($preAssessment, "Pre-Assessment Approval"));
         }
     
         // $approvers = DepartmentApprover::where('department_id',$document->department_id)->orderBy('level','asc')->get();
@@ -569,6 +574,10 @@ class RequestController extends Controller
             $preAssessmentApprover->status = "Pending";
             $preAssessmentApprover->start_date = date('Y-m-d');
             $preAssessmentApprover->save();
+
+            $approvedRequestsNotif = User::where('id',$dco->user_id)->first();
+
+            $approvedRequestsNotif->notify(new NewPreAssessment($preAssessment, "Pre-Assessment Approval"));
         }
 
         Alert::success('Successfully Submitted')->persistent('Dismiss');
