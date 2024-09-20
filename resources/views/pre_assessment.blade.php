@@ -12,11 +12,28 @@
                 <div class="ibox-title">
                     <h5>Pending</h5>
                 </div>
-                <div class="ibox-content">
+                {{-- <div class="ibox-content">
                     <form method="GET">
                         <h1 class="no-margins">
                             <input type="hidden" name="status" value="Pending">
                             <input type="submit" class="text-success" value="{{count($pre_assessment->where('status', 'Pending'))}}" style="background: none; border: none;">
+                        </h1>
+                    </form>
+                </div> --}}
+                <div class="ibox-content">
+                    <form method="GET">
+                        <h1 class="no-margins">
+                            @php
+                                $notDelayedCount = 0;
+                                foreach($pre_assessment as $pa) {
+                                    $targetDate = date('Y-m-d', strtotime('+10 days', strtotime($pa->created_at)));
+                                    if ($pa->status == "Pending" && $targetDate > date('Y-m-d')) {
+                                        $notDelayedCount++;
+                                    }
+                                }
+                            @endphp
+                            <input type="hidden" name="status" value="NotDelayed">
+                            <input type="submit" class="text-success" value="{{ $notDelayedCount }}" style="background: none; border: none;">
                         </h1>
                     </form>
                 </div>

@@ -38,6 +38,9 @@ class PreAssessmentController extends Controller
                 if ($request->status == 'Delayed') {
                     $query->where('status', 'Pending')
                           ->whereRaw("DATE_ADD(created_at, INTERVAL 10 DAY) < CURDATE()");
+                }elseif ($request->status == 'NotDelayed') {
+                    $query->where('status', 'Pending')
+                          ->whereRaw("DATE_ADD(created_at, INTERVAL 10 DAY) > CURDATE()");
                 } else {
                     $query->where('status', $request->status);
                 }
@@ -51,6 +54,9 @@ class PreAssessmentController extends Controller
                 if ($request->status == 'Delayed') {
                     $query->where('status', 'Pending')
                           ->whereRaw("DATE_ADD(created_at, INTERVAL 10 DAY) < CURDATE()");
+                }elseif ($request->status == 'NotDelayed') {
+                    $query->where('status', 'Pending')
+                          ->whereRaw("DATE_ADD(created_at, INTERVAL 10 DAY) > CURDATE()");
                 } else {
                     $query->where('status', $request->status);
                 }
