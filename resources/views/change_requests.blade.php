@@ -47,7 +47,7 @@
                 <form method="get" action="">
                     <h1 class="no-margins">
                         <input type="hidden" name="status" value="Declined">
-                        <input type="submit" class="text-success" value="{{$declinedCount}}" style="background: none; border: none;">
+                        <input type="submit" class="text-success" value="{{count($requests->where('status','Declined'))}}" style="background: none; border: none;">
                     </h1>
                 </form>
             </div>
@@ -62,7 +62,7 @@
                 <form action="" method="get">
                     <input type="hidden" name="status" value="Approved">
                     <h1 class="no-margins">
-                        <input type="submit" class="text-success" value="{{$approvedCount}}"  style="background: none; border: none;">
+                        <input type="submit" class="text-success" value="{{count($requests->where('status','Approved'))}}"  style="background: none; border: none;">
                     </h1>
                 </form>
             </div>
