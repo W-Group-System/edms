@@ -23,15 +23,6 @@
                 <div class="ibox-content">
                     <form method="GET">
                         <h1 class="no-margins">
-                            @php
-                                $notDelayedCount = 0;
-                                foreach($pre_assessment as $pa) {
-                                    $targetDate = date('Y-m-d', strtotime('+10 days', strtotime($pa->created_at)));
-                                    if ($pa->status == "Pending" && $targetDate > date('Y-m-d')) {
-                                        $notDelayedCount++;
-                                    }
-                                }
-                            @endphp
                             <input type="hidden" name="status" value="NotDelayed">
                             <input type="submit" class="text-success" value="{{ $notDelayedCount }}" style="background: none; border: none;">
                         </h1>
@@ -48,7 +39,7 @@
                     <form method="GET">
                         <h1 class="no-margins">
                             <input type="hidden" name="status" value="Declined">
-                            <input type="submit" class="text-success" value="{{count($pre_assessment->where('status', 'Declined'))}}" style="background: none; border: none;">
+                            <input type="submit" class="text-success" value="{{ $declinedCount }}" style="background: none; border: none;">
                         </h1>
                     </form>
                 </div>
@@ -63,7 +54,7 @@
                     <form method="GET">
                         <h1 class="no-margins">
                             <input type="hidden" name="status" value="Approved">
-                            <input type="submit" class="text-success" value="{{count($pre_assessment->where('status', 'Approved'))}}" style="background: none; border: none;">
+                            <input type="submit" class="text-success" value="{{ $approvedCount }}" style="background: none; border: none;">
                         </h1>
                     </form>
                 </div>
@@ -77,15 +68,6 @@
                 <div class="ibox-content">
                     <form method="GET">
                         <h1 class="no-margins">
-                            @php
-                                $delayedCount = 0;
-                                foreach($pre_assessment as $pa) {
-                                    $targetDate = date('Y-m-d', strtotime('+10 days', strtotime($pa->created_at)));
-                                    if ($pa->status == "Pending" && $targetDate < date('Y-m-d')) {
-                                        $delayedCount++;
-                                    }
-                                }
-                            @endphp
                             <input type="hidden" name="status" value="Delayed">
                             <input type="submit" class="text-success" value="{{ $delayedCount }}" style="background: none; border: none;">
                         </h1>

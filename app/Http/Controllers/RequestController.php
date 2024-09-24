@@ -175,6 +175,8 @@ class RequestController extends Controller
                 $query->where('status', null);
             })
             ->get();
+        $declinedCount = ChangeRequest::where('status', 'Declined')->count();
+        $approvedCount = ChangeRequest::where('status', 'Approved')->count();
         $requests = ChangeRequest::orderBy('id','desc')
             ->when($request->status, function($q)use($request) {
                 $q->where('status', $request->status)
@@ -271,6 +273,8 @@ class RequestController extends Controller
             'approvers' =>  $approvers,
             'document_types' =>  $document_types,
             'status' => $request->status,
+            'declinedCount' => $declinedCount,
+            'approvedCount' => $approvedCount,
             'pre_assessment_approvers' => $pre_assessment_approvers
         ));
     }

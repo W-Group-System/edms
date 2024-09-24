@@ -30,6 +30,19 @@ class PreAssessmentController extends Controller
         $document_types = DocumentType::get();
         $approver = DepartmentDco::where('department_id',auth()->user()->department_id)->first();
         $loggedInUserId = auth()->user()->id;
+
+        $pendingCount = PreAssessment::where('status', 'Pending')->count();
+        $declinedCount = PreAssessment::where('status', 'Declined')->count();
+        $approvedCount = PreAssessment::where('status', 'Approved')->count();
+
+        $notDelayedCount = PreAssessment::where('status', 'Pending')
+        ->whereRaw("DATE_ADD(created_at, INTERVAL 10 DAY) > CURDATE()")
+        ->count();
+
+        $delayedCount = PreAssessment::where('status', 'Pending')
+        ->whereRaw("DATE_ADD(created_at, INTERVAL 10 DAY) < CURDATE()")
+        ->count();
+
         if (auth()->user()->role == "Document Control Officer") {
             $pre_assessment = PreAssessment::whereHas('approvers', function ($query) use ($loggedInUserId) {
                 $query->where('user_id', $loggedInUserId);
@@ -70,7 +83,12 @@ class PreAssessmentController extends Controller
                 'companies' => $companies,
                 'document_types' => $document_types,
                 'approver' => $approver,
-                'pre_assessment' => $pre_assessment
+                'pre_assessment' => $pre_assessment,
+                'pendingCount' => $pendingCount,
+                'declinedCount' => $declinedCount,
+                'approvedCount' => $approvedCount,
+                'notDelayedCount' => $notDelayedCount,
+                'delayedCount' => $delayedCount,
             )
         );
     }
