@@ -31,17 +31,49 @@ class PreAssessmentController extends Controller
         $approver = DepartmentDco::where('department_id',auth()->user()->department_id)->first();
         $loggedInUserId = auth()->user()->id;
 
-        $pendingCount = PreAssessment::where('status', 'Pending')->count();
-        $declinedCount = PreAssessment::where('status', 'Declined')->count();
-        $approvedCount = PreAssessment::where('status', 'Approved')->count();
-
-        $notDelayedCount = PreAssessment::where('status', 'Pending')
-        ->whereRaw("DATE_ADD(created_at, INTERVAL 10 DAY) > CURDATE()")
-        ->count();
-
-        $delayedCount = PreAssessment::where('status', 'Pending')
-        ->whereRaw("DATE_ADD(created_at, INTERVAL 10 DAY) < CURDATE()")
-        ->count();
+        if (auth()->user()->role == "Document Control Officer") {
+            $pendingCount = PreAssessment::where('status', 'Pending')
+                ->whereHas('approvers', function ($query) use ($loggedInUserId) {
+                    $query->where('user_id', $loggedInUserId);
+                })
+                ->count();
+        
+            $declinedCount = PreAssessment::where('status', 'Declined')
+                ->whereHas('approvers', function ($query) use ($loggedInUserId) {
+                    $query->where('user_id', $loggedInUserId);
+                })
+                ->count();
+        
+            $approvedCount = PreAssessment::where('status', 'Approved')
+                ->whereHas('approvers', function ($query) use ($loggedInUserId) {
+                    $query->where('user_id', $loggedInUserId);
+                })
+                ->count();
+        
+            $notDelayedCount = PreAssessment::where('status', 'Pending')
+                ->whereHas('approvers', function ($query) use ($loggedInUserId) {
+                    $query->where('user_id', $loggedInUserId);
+                })
+                ->whereRaw("DATE_ADD(created_at, INTERVAL 10 DAY) > CURDATE()")
+                ->count();
+        
+            $delayedCount = PreAssessment::where('status', 'Pending')
+                ->whereHas('approvers', function ($query) use ($loggedInUserId) {
+                    $query->where('user_id', $loggedInUserId);
+                })
+                ->whereRaw("DATE_ADD(created_at, INTERVAL 10 DAY) < CURDATE()")
+                ->count();
+        } else {
+            $pendingCount = PreAssessment::where('status', 'Pending')->count();
+            $declinedCount = PreAssessment::where('status', 'Declined')->count();
+            $approvedCount = PreAssessment::where('status', 'Approved')->count();
+            $notDelayedCount = PreAssessment::where('status', 'Pending')
+                ->whereRaw("DATE_ADD(created_at, INTERVAL 10 DAY) > CURDATE()")
+                ->count();
+            $delayedCount = PreAssessment::where('status', 'Pending')
+                ->whereRaw("DATE_ADD(created_at, INTERVAL 10 DAY) < CURDATE()")
+                ->count();
+        }
 
         if (auth()->user()->role == "Document Control Officer") {
             $pre_assessment = PreAssessment::whereHas('approvers', function ($query) use ($loggedInUserId) {
