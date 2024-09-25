@@ -52,6 +52,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/upload-permit/{id}', 'PermitController@upload')->name('permits');
         Route::post('/change-department/{id}', 'PermitController@update')->name('permits');
         Route::post('change-type/{id}','PermitController@change_type')->name('permits');
+        Route::post('inactive-permits/{id}', 'PermitController@inactivePermits');
+        Route::post('activate-permits/{id}', 'PermitController@activatePermits');
     
     
         Route::get('/companies', 'CompanyController@index')->name('settings');
