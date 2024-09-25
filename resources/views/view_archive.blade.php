@@ -7,7 +7,7 @@
 <div class="wrapper wrapper-content">
     @include('error')
     <div class="row">
-        <div class="col-lg-3">
+        <div class="col-lg-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Total</h5>
@@ -17,21 +17,31 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Active</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">
+                        <a href="{{url('permits?active_permits_filter=Active')}}">{{$active_permits_count}}</a>
+                    </h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>For Renewal</h5>
                 </div>
                 <div class="ibox-content">
-                    <form action="" method="get">
-                        <h1 class="no-margins">
-                            <a href="{{url('permits?renewal_filter=For+Renewal')}}">{{count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))))-count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d')))}}</a>
-                        </h1>
-                    </form>
+                    <h1 class="no-margins">
+                        <a href="{{url('permits?renewal_filter=For+Renewal')}}">{{count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))))-count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d')))}}</a>
+                    </h1>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Overdue</h5>
@@ -41,7 +51,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Archived</h5>
@@ -49,6 +59,18 @@
                 <div class="ibox-content">
                     <h1 class="no-margins">
                         <a href="{{url('archive_permits')}}">{{count($archives)}}</a>
+                    </h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Archived</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">
+                        <a href="{{url('permits?inactive_filter=Inactive')}}">{{count($inactive_count)}}</a>
                     </h1>
                 </div>
             </div>
