@@ -161,8 +161,8 @@
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
 <script>
     $(document).ready(function(){
-        var delayed = {!! json_encode($delayed) !!};
-        document.getElementById('delayed').innerText = delayed;
+        // var delayed = {!! json_encode($delayed) !!};
+        // document.getElementById('delayed').innerText = delayed;
 
         $('.cat').chosen({width: "100%"});
         $('.tables').DataTable({

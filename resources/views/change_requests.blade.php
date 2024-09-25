@@ -16,8 +16,8 @@
             <div class="ibox-content">
                 <form method="GET">
                     <h1 class="no-margins">
-                        <input type="hidden" name="status" value="Pending">
-                        <input type="submit" class="text-success" value="{{count($requests->where('status','Pending')) - $pre_assessment_count}}" style="background: none; border: none;">
+                        <input type="hidden" name="status" value="NotDelayed">
+                        <input type="submit" class="text-success" value="{{$notDelayedCount}}" style="background: none; border: none;">
                     </h1>
                 </form>
             </div>
@@ -47,7 +47,7 @@
                 <form method="get" action="">
                     <h1 class="no-margins">
                         <input type="hidden" name="status" value="Declined">
-                        <input type="submit" class="text-success" value="{{count($requests->where('status','Declined'))}}" style="background: none; border: none;">
+                        <input type="submit" class="text-success" value="{{$declinedCount}}" style="background: none; border: none;">
                     </h1>
                 </form>
             </div>
@@ -62,7 +62,7 @@
                 <form action="" method="get">
                     <input type="hidden" name="status" value="Approved">
                     <h1 class="no-margins">
-                        <input type="submit" class="text-success" value="{{count($requests->where('status','Approved'))}}"  style="background: none; border: none;">
+                        <input type="submit" class="text-success" value="{{$approvedCount}}"  style="background: none; border: none;">
                     </h1>
                 </form>
             </div>
@@ -74,11 +74,17 @@
                 <h5>Delayed</h5>
             </div>
             <div class="ibox-content">
-                <form action="" method="get">
+                {{-- <form action="" method="get">
                     <input type="hidden" name="status" value="Pending">
                     <h1 class="no-margins">
-                        {{-- <input type="submit" class="text-success" value="0" id='delayed' style="background: none; border: none;"> --}}
+                        <a href="{{url('delayed_request')}}">{{ $delayedCount }}</a>
                         <a href="{{url('delayed_request')}}" id="delayed">0</a>
+                    </h1>
+                </form> --}}
+                <form action="" method="get">
+                    <input type="hidden" name="status" value="Delayed">
+                    <h1 class="no-margins">
+                        <input type="submit" class="text-success" value="{{ $delayedCount }}"  style="background: none; border: none;">
                     </h1>
                 </form>
             </div>
@@ -278,8 +284,8 @@
 </script>
 @endif
 <script>
-    var delayed = {!! json_encode($delayed) !!};
-    document.getElementById('delayed').innerText = delayed;
+    // var delayed = {!! json_encode($delayed) !!};
+    // document.getElementById('delayed').innerText = delayed;
     // document.getElementById('delayed').value = delayed;
     $(document).ready(function(){
         
@@ -313,3 +319,7 @@
 
 </script>
 @endsection
+
+
+
+

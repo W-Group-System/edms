@@ -190,11 +190,13 @@
                                 <i class="fa fa-bell"></i>  <span class="label label-warning">{{copy_approver_count()}}</span>
                             </a>
                         </li>
+                        @if((auth()->user()->role == "Administrator") || (auth()->user()->role == "Document Control Officer") || (auth()->user()->id == "286"))
                         <li>
                             <a class=" count-info " href="{{url('/pre_assessment')}}" title='For Approval'>
                                 <i class="fa fa-bell-o"></i>  <span class="label label-warning">{{pre_assessment_count()}}</span>
                             </a>
                         </li>
+                        @endif
                         <li>
                             <a href="{{ route('logout') }}" onclick="logout(); show();">
                                 <i class="fa fa-sign-out"></i> Log out

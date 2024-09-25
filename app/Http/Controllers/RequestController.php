@@ -175,7 +175,6 @@ class RequestController extends Controller
                 $query->where('status', null);
             })
             ->get();
-       
         $requests = ChangeRequest::orderBy('id','desc')
             ->when($request->status, function($q)use($request) {
                 $q->where('status', $request->status)
@@ -191,67 +190,297 @@ class RequestController extends Controller
         $pre_assessment_count = $requests->filter(function($value, $key) {
             return optional($value->preAssessment)->status == "Pending";
         })->count();
+        if (auth()->user()->role == "User") {
+            $requestsCount = ChangeRequest::whereHas('preAssessment', function ($q) {
+                $q->where('status', 'Approved');
+            })
+            ->orWhereDoesntHave('preAssessment')
+            ->get();
         
-        if(auth()->user()->role == "User")
-        {
-            $requests = ChangeRequest::where('user_id',auth()->user()->id)
-                ->when($request->status, function($q)use($request) {
-                    $q->where('status', $request->status)
-                        ->where(function($q){
-                            $q->whereHas('preAssessment', function($q){
-                                $q->where('status', 'Approved');
-                            })
-                            ->orWhereDoesntHave('preAssessment');
-                        });
-                })
-                ->orderBy('id','desc')
-                ->get();
-                // dd($requests);
-
-            $pre_assessment_count = $requests->filter(function($value, $key) {
-                return optional($value->preAssessment)->status == "Pending";
+            foreach ($requestsCount as $count) {
+                $count->target = calculateTargetDate(
+                    $count->created_at,
+                    $count->department_head_approved,
+                    $count->type_of_document
+                );
+            }
+        
+            $declinedCount = $requestsCount->filter(function ($request) {
+                return $request->status == 'Declined' && $request->user_id == auth()->user()->id;
             })->count();
-        }
-        else if(auth()->user()->role == "Document Control Officer")
-        {
-            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->dco)
-                ->pluck('department_id')->toArray())
-                ->when($request->status, function($q)use($request) {
-                    $q->where('status', $request->status)
-                        ->where(function($q){
-                            $q->whereHas('preAssessment', function($q){
-                                $q->where('status', 'Approved');
-                            })
-                            ->orWhereDoesntHave('preAssessment');
-                        });
-                })
-                
-                ->orderBy('id','desc')->get();
-
-            $pre_assessment_count = $requests->filter(function($value, $key) {
-                return optional($value->preAssessment)->status == "Pending";
+        
+            $approvedCount = $requestsCount->filter(function ($request) {
+                return $request->status == 'Approved' && $request->user_id == auth()->user()->id;
             })->count();
-        }
-        else if(auth()->user()->role == "Department Head")
-        {
-            $requests = ChangeRequest::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())
-                ->when($request->status, function($q)use($request) {
-                    $q->where('status', $request->status)
-                        ->where(function($q){
-                            $q->whereHas('preAssessment', function($q){
-                                $q->where('status', 'Approved');
-                            })
-                            ->orWhereDoesntHave('preAssessment');
-                        });
+        
+            $notDelayedCount = $requestsCount->filter(function ($request) {
+                return $request->status == 'Pending' && $request->target >= date('Y-m-d') && $request->user_id == auth()->user()->id;
+            })->count();
+        
+            $delayedCount = $requestsCount->filter(function ($request) {
+                return $request->status == 'Pending' && $request->target < date('Y-m-d') && $request->user_id == auth()->user()->id;
+            })->count();
+        }         
+        else if (auth()->user()->role == "Document Control Officer") {
+            $departmentIds = auth()->user()->dco->pluck('department_id')->toArray();
+            
+            $requestsCount = ChangeRequest::whereIn('department_id', $departmentIds)
+                ->where(function ($q) {
+                    $q->whereHas('preAssessment', function ($q) {
+                        $q->where('status', 'Approved');
+                    })
+                    ->orWhereDoesntHave('preAssessment');
                 })
-                
-                ->orderBy('id','desc')
                 ->get();
 
-            $pre_assessment_count = $requests->filter(function($value, $key) {
+            foreach ($requestsCount as $count) {
+                $count->target = calculateTargetDate(
+                    $count->created_at,
+                    $count->department_head_approved,
+                    $count->type_of_document
+                );
+            }
+        
+            $declinedCount = $requestsCount->filter(function ($request) use ($departmentIds) {
+                return $request->status == 'Declined' && in_array($request->department_id, $departmentIds);
+            })->count();
+        
+            $approvedCount = $requestsCount->filter(function ($request) use ($departmentIds) {
+                return $request->status == 'Approved' && in_array($request->department_id, $departmentIds);
+            })->count();
+        
+            $notDelayedCount = $requestsCount->filter(function ($request) {
+                return $request->status == 'Pending' && $request->target >= date('Y-m-d');
+            })->count();
+        
+            $delayedCount = $requestsCount->filter(function ($request) {
+                return $request->status == 'Pending' && $request->target < date('Y-m-d');
+            })->count();
+        }        
+        else if (auth()->user()->role == "Department Head") {
+            $departmentIds = auth()->user()->department_head->pluck('id')->toArray();
+            
+            $requestsCount = ChangeRequest::whereIn('department_id', $departmentIds)
+                ->where(function ($q) {
+                    $q->whereHas('preAssessment', function ($q) {
+                        $q->where('status', 'Approved');
+                    })
+                    ->orWhereDoesntHave('preAssessment');
+                })
+                ->get();
+        
+            foreach ($requestsCount as $count) {
+                $count->target = calculateTargetDate(
+                    $count->created_at,
+                    $count->department_head_approved,
+                    $count->type_of_document
+                );
+            }
+        
+            $declinedCount = $requestsCount->filter(function ($request) use ($departmentIds) {
+                return $request->status == 'Declined' && in_array($request->department_id, $departmentIds);
+            })->count();
+        
+            $approvedCount = $requestsCount->filter(function ($request) use ($departmentIds) {
+                return $request->status == 'Approved' && in_array($request->department_id, $departmentIds);
+            })->count();
+        
+            $notDelayedCount = $requestsCount->filter(function ($request) {
+                return $request->status == 'Pending' && $request->target >= date('Y-m-d');
+            })->count();
+        
+            $delayedCount = $requestsCount->filter(function ($request) {
+                return $request->status == 'Pending' && $request->target < date('Y-m-d');
+            })->count();
+        }
+        
+        
+        if (auth()->user()->role == "User") {
+            $requests = ChangeRequest::where('user_id', auth()->user()->id);
+            $requests = $requests->when($request->status, function ($q) use ($request) {
+                if ($request->status == 'Pending') {
+                    $q->where('status', 'Pending')
+                        ->where(function ($q) {
+                            $q->whereHas('preAssessment', function ($q) {
+                                $q->where('status', 'Approved');
+                            })->orWhereDoesntHave('preAssessment');
+                        });
+                } elseif ($request->status == 'Approved') {
+                    $q->where('status', 'Approved');
+                } elseif ($request->status == 'Declined') {
+                    $q->where('status', 'Declined');
+                } elseif ($request->status == 'NotDelayed') {
+                    $q->where('status', 'Pending')
+                        ->where(function ($q) {
+                            $q->whereHas('preAssessment', function ($q) {
+                                $q->where('status', 'Approved');
+                            })->orWhereDoesntHave('preAssessment');
+                        });
+                } elseif ($request->status == 'Delayed') {
+                    $q->where('status', 'Pending')
+                        ->where(function ($q) {
+                            $q->whereHas('preAssessment', function ($q) {
+                                $q->where('status', 'Approved');
+                            })->orWhereDoesntHave('preAssessment');
+                        });
+                }
+                })
+                ->orderBy('id', 'desc')
+                ->get();
+            
+                foreach ($requests as $req) {
+                    $req->target = calculateTargetDate(
+                        $req->created_at,
+                        $req->department_head_approved,
+                        $req->type_of_document
+                    );
+                }
+
+            $requests = $requests->filter(function ($req) use ($request) {
+                $today = now()->format('Y-m-d');
+        
+                if ($request->status == 'Delayed') {
+                    return $req->target < $today && $req->status == 'Pending';
+                } elseif ($request->status == 'NotDelayed') {
+                    return $req->target >= $today && $req->status == 'Pending';
+                } elseif ($request->status == 'Approved') {
+                    return $req->status == 'Approved';
+                } elseif ($request->status == 'Declined') {
+                    return $req->status == 'Declined';
+                }
+        
+                return true; 
+            });
+
+            $pre_assessment_count = $requests->filter(function ($value) {
+                return optional($value->preAssessment)->status == "Pending";
+            })->count();
+
+        } else if (auth()->user()->role == "Document Control Officer") {
+            $requests = ChangeRequest::whereIn('department_id', (auth()->user()->dco)->pluck('department_id')->toArray());
+    
+            $requests = $requests->when($request->status, function ($q) use ($request) {
+                if ($request->status == 'Pending') {
+                    $q->where('status', 'Pending')
+                        ->where(function ($q) {
+                            $q->whereHas('preAssessment', function ($q) {
+                                $q->where('status', 'Approved');
+                            })->orWhereDoesntHave('preAssessment');
+                        });
+                } elseif ($request->status == 'Approved') {
+                    $q->where('status', 'Approved');
+                } elseif ($request->status == 'Declined') {
+                    $q->where('status', 'Declined');
+                } elseif ($request->status == 'NotDelayed') {
+                    $q->where('status', 'Pending')
+                        ->where(function ($q) {
+                            $q->whereHas('preAssessment', function ($q) {
+                                $q->where('status', 'Approved');
+                            })->orWhereDoesntHave('preAssessment');
+                        });
+                } elseif ($request->status == 'Delayed') {
+                    $q->where('status', 'Pending')
+                        ->where(function ($q) {
+                            $q->whereHas('preAssessment', function ($q) {
+                                $q->where('status', 'Approved');
+                            })->orWhereDoesntHave('preAssessment');
+                        });
+                }
+            })
+            ->orderBy('id', 'desc')
+            ->get();
+        
+            foreach ($requests as $req) {
+                $req->target = calculateTargetDate(
+                    $req->created_at,
+                    $req->department_head_approved,
+                    $req->type_of_document
+                );
+            }
+        
+            $requests = $requests->filter(function ($req) use ($request) {
+                $today = now()->format('Y-m-d');
+        
+                if ($request->status == 'Delayed') {
+                    return $req->target < $today && $req->status == 'Pending';
+                } elseif ($request->status == 'NotDelayed') {
+                    return $req->target >= $today && $req->status == 'Pending';
+                } elseif ($request->status == 'Approved') {
+                    return $req->status == 'Approved';
+                } elseif ($request->status == 'Declined') {
+                    return $req->status == 'Declined';
+                }
+        
+                return true; 
+            });
+        
+            $pre_assessment_count = $requests->filter(function ($value) {
                 return optional($value->preAssessment)->status == "Pending";
             })->count();
         }
+        
+        else if (auth()->user()->role == "Department Head") {
+            $requests = ChangeRequest::whereIn('department_id', (auth()->user()->department_head)->pluck('id')->toArray());
+
+                 $requests = $requests->when($request->status, function ($q) use ($request) {
+                    if ($request->status == 'Pending') {
+                        $q->where('status', 'Pending')
+                            ->where(function ($q) {
+                                $q->whereHas('preAssessment', function ($q) {
+                                    $q->where('status', 'Approved');
+                                })->orWhereDoesntHave('preAssessment');
+                            });
+                    } elseif ($request->status == 'Approved') {
+                        $q->where('status', 'Approved');
+                    } elseif ($request->status == 'Declined') {
+                        $q->where('status', 'Declined');
+                    } elseif ($request->status == 'NotDelayed') {
+                        $q->where('status', 'Pending')
+                            ->where(function ($q) {
+                                $q->whereHas('preAssessment', function ($q) {
+                                    $q->where('status', 'Approved');
+                                })->orWhereDoesntHave('preAssessment');
+                            });
+                    } elseif ($request->status == 'Delayed') {
+                        $q->where('status', 'Pending')
+                            ->where(function ($q) {
+                                $q->whereHas('preAssessment', function ($q) {
+                                    $q->where('status', 'Approved');
+                                })->orWhereDoesntHave('preAssessment');
+                            });
+                    }
+                })
+                ->orderBy('id', 'desc')
+                ->get();
+        
+            foreach ($requests as $req) {
+                $req->target = calculateTargetDate(
+                    $req->created_at,
+                    $req->department_head_approved,
+                    $req->type_of_document
+                );
+            }
+        
+            $requests = $requests->filter(function ($req) use ($request) {
+                $today = now()->format('Y-m-d');
+        
+                if ($request->status == 'Delayed') {
+                    return $req->target < $today && $req->status == 'Pending';
+                } elseif ($request->status == 'NotDelayed') {
+                    return $req->target >= $today && $req->status == 'Pending';
+                } elseif ($request->status == 'Approved') {
+                    return $req->status == 'Approved';
+                } elseif ($request->status == 'Declined') {
+                    return $req->status == 'Declined';
+                }
+        
+                return true; 
+            });
+            $pre_assessment_count = $requests->filter(function ($value) {
+                return optional($value->preAssessment)->status == "Pending";
+            })->count();
+        }
+        
         else if(auth()->user()->role == "Documents and Records Controller")
         {
             $requests = ChangeRequest::where('user_id',auth()->user()->id)
@@ -272,6 +501,10 @@ class RequestController extends Controller
             'approvers' =>  $approvers,
             'document_types' =>  $document_types,
             'status' => $request->status,
+            'declinedCount' => $declinedCount,
+            'approvedCount' => $approvedCount,
+            'notDelayedCount' => $notDelayedCount,
+            'delayedCount' => $delayedCount,
             'pre_assessment_approvers' => $pre_assessment_approvers
         ));
     }
@@ -472,7 +705,6 @@ class RequestController extends Controller
         Alert::success('Successfully Submitted')->persistent('Dismiss');
         return redirect('/change-requests');
 
-
     }
     public function new_request(Request $request)
     {
@@ -637,7 +869,7 @@ class RequestController extends Controller
         $copyRequestApprover->remarks = $request->remarks;
         $copyRequestApprover->save();
 
-        $copyApprover = RequestApprover::where('change_request_id',$copyRequestApprover->change_request_id)->whereIn('status',['Waiting','Returned'])->orderBy('level','asc')->first();
+        $copyApprover = RequestApprover::where('change_request_id',$copyRequestApprover->change_request_id)->where('status','Waiting')->orderBy('level','asc')->first();
         $copyRequest = ChangeRequest::findOrfail($copyRequestApprover->change_request_id);
 
         
@@ -1028,3 +1260,6 @@ class RequestController extends Controller
         ));
     }
 }
+
+
+

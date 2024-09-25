@@ -16,3 +16,29 @@ function pre_assessment_count(){
     $count = $pre_assessment;
     return $count;
 }
+
+function calculateTargetDate($createdAt, $departmentHeadApproved, $typeOfDocument)
+
+{
+    $date_push = '2024-08-22';
+    $createdDate = date('Y-m-d', strtotime($createdAt));
+
+    if (in_array($typeOfDocument, ["FORM", "ANNEX", "TEMPLATE"])) {
+        if ($date_push > $createdDate) {
+            return date('Y-m-d', strtotime("+7 days", strtotime($createdDate)));
+        } else {
+            return $departmentHeadApproved != null
+                ? date('Y-m-d', strtotime("+7 days", strtotime($departmentHeadApproved)))
+                : date('Y-m-d');
+        }
+    } else {
+        if ($date_push > $createdDate) {
+            return date('Y-m-d', strtotime("+1 month", strtotime($createdDate)));
+        } else {
+            return $departmentHeadApproved != null
+                ? date('Y-m-d', strtotime("+1 month", strtotime($departmentHeadApproved)))
+                : date('Y-m-d');
+        }
+    }
+    
+}

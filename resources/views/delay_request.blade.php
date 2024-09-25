@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-2">
+        {{-- <div class="col-lg-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Cancelled</h5>
@@ -30,14 +30,14 @@
                 <div class="ibox-content">
                     <form action="" method="get">
                         <h1 class="no-margins">
-                            {{-- <input type="hidden" name="status" value="Cancelled">
-                            <input type="submit" class="text-success" value="{{count($requests->where('status','Cancelled'))}}" style="background: none; border: none;"> --}}
+                            <input type="hidden" name="status" value="Cancelled">
+                            <input type="submit" class="text-success" value="{{count($requests->where('status','Cancelled'))}}" style="background: none; border: none;">
                             <a href="{{url('change-requests?status=Cancelled')}}">0</a>
                         </h1>
                     </form>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="col-lg-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
