@@ -58,12 +58,16 @@ class PermitController extends Controller
                 ->when($request->active_permits_filter, function($q) {
                     $q->where('expiration_date', '>', date('Y-m-d'))->where('expiration_date', '>', date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))));
                 })
+                ->when($request->inactive_filter, function($q) {
+                    $q->where('status', 'Inactive');
+                })
                 ->get();
 
             $permits_count = Permit::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->count();
             $for_renewal_count = Permit::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('expiration_date', '>',  date('Y-m-d'))->count();
             $overdue_count = Permit::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->where('expiration_date', '<', date('Y-m-d'))->count();
             $active_permits_count = Permit::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->where('expiration_date', '>', date('Y-m-d'))->where('expiration_date', '>', date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->count();
+            $inactive_permits_count = Permit::where('status', 'Inactive')->count();
 
             $departments = Department::whereHas('permit_accounts')->whereIn('id',((auth()->user()->dco)->pluck('department_id')->toArray()))->where('status', '=', null)->get();
         }
