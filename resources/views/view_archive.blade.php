@@ -36,7 +36,8 @@
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">
-                        <a href="{{url('permits?renewal_filter=For+Renewal')}}">{{count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))))-count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d')))}}</a>
+                        {{-- <a href="{{url('permits?renewal_filter=For+Renewal')}}">{{count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d'))))))-count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d')))}}</a> --}}
+                        <a href="{{url('permits?renewal_filter=For+Renewal')}}">{{$for_renewal_count}}</a>
                     </h1>
                 </div>
             </div>
@@ -47,7 +48,7 @@
                     <h5>Overdue</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins"><a href="{{url('permits?overdue_filter=Overdue')}}">{{count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d')))}}</a></h1>
+                    <h1 class="no-margins"><a href="{{url('permits?overdue_filter=Overdue')}}">{{$overdue_count}}</a></h1>
                 </div>
             </div>
         </div>
