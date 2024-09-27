@@ -175,17 +175,50 @@ class RequestController extends Controller
                 $query->where('status', null);
             })
             ->get();
-        $requests = ChangeRequest::orderBy('id','desc')
-            ->when($request->status, function($q)use($request) {
-                $q->where('status', $request->status)
-                    ->where(function($q){
-                        $q->whereHas('preAssessment', function($q){
-                            $q->where('status', 'Approved');
-                        })
-                        ->orWhereDoesntHave('preAssessment');
-                    });
+            $requests = ChangeRequest::orderBy('id', 'desc')
+            ->when($request->status, function ($q) use ($request) {
+                if ($request->status == 'Pending') {
+                    $q->where('status', 'Pending')
+                        ->where(function ($q) {
+                            $q->whereHas('preAssessment', function ($q) {
+                                $q->where('status', 'Approved');
+                            })->orWhereDoesntHave('preAssessment');
+                        });
+                } elseif (in_array($request->status, ['Approved', 'Declined'])) {
+                    $q->where('status', $request->status);
+                } elseif (in_array($request->status, ['NotDelayed', 'Delayed'])) {
+                    $q->where('status', 'Pending')
+                        ->where(function ($q) {
+                            $q->whereHas('preAssessment', function ($q) {
+                                $q->where('status', 'Approved');
+                            })->orWhereDoesntHave('preAssessment');
+                        });
+                }
             })
             ->get();
+        
+        foreach ($requests as $req) {
+            $req->target = calculateTargetDate(
+                $req->created_at,
+                $req->department_head_approved,
+                $req->type_of_document
+            );
+        }
+        
+        $requests = $requests->filter(function ($req) use ($request) {
+            $today = date('Y-m-d'); 
+            
+            if ($request->status == 'Delayed') {
+                return $req->target < $today && $req->status == 'Pending';
+            } elseif ($request->status == 'NotDelayed') {
+                return $req->target >= $today && $req->status == 'Pending';
+            } elseif (in_array($request->status, ['Approved', 'Declined'])) {
+                return $req->status == $request->status;
+            }
+            
+            return true;
+        });
+        
             $requestsCount = ChangeRequest::whereHas('preAssessment', function ($q) {
                 $q->where('status', 'Approved');
             })
@@ -201,19 +234,19 @@ class RequestController extends Controller
             }
         
             $declinedCount = $requestsCount->filter(function ($request) {
-                return $request->status == 'Declined' && $request->user_id == auth()->user()->id;
+                return $request->status == 'Declined';
             })->count();
         
             $approvedCount = $requestsCount->filter(function ($request) {
-                return $request->status == 'Approved' && $request->user_id == auth()->user()->id;
+                return $request->status == 'Approved';
             })->count();
         
             $notDelayedCount = $requestsCount->filter(function ($request) {
-                return $request->status == 'Pending' && $request->target >= date('Y-m-d') && $request->user_id == auth()->user()->id;
+                return $request->status == 'Pending' && $request->target >= date('Y-m-d');
             })->count();
         
             $delayedCount = $requestsCount->filter(function ($request) {
-                return $request->status == 'Pending' && $request->target < date('Y-m-d') && $request->user_id == auth()->user()->id;
+                return $request->status == 'Pending' && $request->target < date('Y-m-d');
             })->count();
 
         $pre_assessment_count = $requests->filter(function($value, $key) {
