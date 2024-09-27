@@ -186,6 +186,35 @@ class RequestController extends Controller
                     });
             })
             ->get();
+            $requestsCount = ChangeRequest::whereHas('preAssessment', function ($q) {
+                $q->where('status', 'Approved');
+            })
+            ->orWhereDoesntHave('preAssessment')
+            ->get();
+        
+            foreach ($requestsCount as $count) {
+                $count->target = calculateTargetDate(
+                    $count->created_at,
+                    $count->department_head_approved,
+                    $count->type_of_document
+                );
+            }
+        
+            $declinedCount = $requestsCount->filter(function ($request) {
+                return $request->status == 'Declined' && $request->user_id == auth()->user()->id;
+            })->count();
+        
+            $approvedCount = $requestsCount->filter(function ($request) {
+                return $request->status == 'Approved' && $request->user_id == auth()->user()->id;
+            })->count();
+        
+            $notDelayedCount = $requestsCount->filter(function ($request) {
+                return $request->status == 'Pending' && $request->target >= date('Y-m-d') && $request->user_id == auth()->user()->id;
+            })->count();
+        
+            $delayedCount = $requestsCount->filter(function ($request) {
+                return $request->status == 'Pending' && $request->target < date('Y-m-d') && $request->user_id == auth()->user()->id;
+            })->count();
 
         $pre_assessment_count = $requests->filter(function($value, $key) {
             return optional($value->preAssessment)->status == "Pending";
