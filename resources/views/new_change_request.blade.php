@@ -82,7 +82,7 @@
                     <div class='row'>
                         <div class="col-md-6">
                             Reason for New Request :
-                            <select name="reason_for_new_request" class="form-control cat" id="reason-for-new-request">
+                            <select name="reason_for_new_request" class="form-control cat" id="reason-for-new-request" required>
                                 <option value=""></option>
                                 <option value="Updated Regulations or Standards">Updated Regulations or Standards (Legal Compliance and ISO standards)</option>
                                 <option value="Process Improvement">Process Improvement (Technological Advancements & Operational Processes)</option>

@@ -53,6 +53,8 @@ class ForApproval extends Notification
                     ->greeting('Good day,')
                     ->line('Request for Approval.')
                     ->line('Reference Number : '.$this->type.str_pad($this->copy_request->id, 5, '0', STR_PAD_LEFT))
+                    ->line('Control Code : '.$this->copy_request->control_code)
+                    ->line('Title : '.$this->copy_request->title)
                     ->line('Requestor : '.$this->copy_request->user->name)
                     ->line('Type of Request : '.$this->typedata)
                     ->line('Please click the button provided for faster transaction')
