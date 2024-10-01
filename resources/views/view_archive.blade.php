@@ -13,7 +13,10 @@
                     <h5>Total</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($permits)}}</h1>
+                    {{-- <h1 class="no-margins">{{count($permits)}}</h1> --}}
+                    <h1 class="no-margins">
+                        <a href="{{url('permits')}}">{{count($permits)}}</a>
+                    </h1>
                 </div>
             </div>
         </div>
@@ -67,7 +70,7 @@
         <div class="col-lg-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Archived</h5>
+                    <h5>Inactive</h5>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">

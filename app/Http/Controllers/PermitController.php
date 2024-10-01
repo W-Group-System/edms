@@ -323,6 +323,7 @@ class PermitController extends Controller
         $inactive_count = Permit::where('status', 'Inactive')->get();
         $overdue_count = Permit::where('expiration_date', '<', date('Y-m-d'))->where('status', null)->count();
         $for_renewal_count = Permit::where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('expiration_date', '>',  date('Y-m-d'))->where('status', null)->count();
+        $permits_count = Permit::count();
 
         if(auth()->user()->role == "Document Control Officer")
         { 
@@ -369,7 +370,8 @@ class PermitController extends Controller
             'active_permits_count' => $active_permits_count,
             'inactive_count' => $inactive_count,
             'overdue_count' => $overdue_count,
-            'for_renewal_count' => $for_renewal_count
+            'for_renewal_count' => $for_renewal_count,
+            'permits_count' => $permits_count
         ));
     }
 

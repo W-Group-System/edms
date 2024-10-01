@@ -15,7 +15,10 @@
                 </div>
                 <div class="ibox-content">
                     {{-- <h1 class="no-margins">{{count($permits)}}</h1> --}}
-                    <h1 class="no-margins">{{$permits_count}}</h1>
+                    <h1 class="no-margins">
+                        {{-- {{$permits_count}} --}}
+                        <a href="{{url('permits')}}">{{$permits_count}}</a>
+                    </h1>
                 </div>
             </div>
         </div>
