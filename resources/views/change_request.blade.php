@@ -51,11 +51,11 @@
                     <div class='row'>
                         <div class='col-md-4' >
                             Proposed Effective Date :
-                            <input type="date" class="form-control-sm form-control " min='{{date('Y-m-d')}}' name="effective_date" required/>
+                            <input type="date" class="form-control-sm form-control " min='{{date('Y-m-d')}}' value="{{old('effective_date')}}" name="effective_date" required/>
                         </div>
                         <div class='col-md-4' >
                             Draft Link <i>(Google Link)</i> :
-                            <input type="name" class="form-control-sm form-control " min='{{date('Y-m-d')}}' name="draft_link" required/>
+                            <input type="name" class="form-control-sm form-control " min='{{date('Y-m-d')}}' value="{{old('draft_link')}}" name="draft_link" required/>
                         </div>
                         <div class="col-md-4">
                             Supporting Document <small><i>(PSF, Executive Summary, etc.)</i></small>
@@ -65,7 +65,7 @@
                     <div class='row'>
                         <div class='col-md-6' >
                             Reason/s for Change :
-                            <select name="reason_for_new_request" class="form-control cat" id="reason-for-new-request" required>
+                            <select name="reason_for_new_request" class="form-control cat" id="reason-for-new-request" >
                                 <option value=""></option>
                                 <option value="Updated Regulations or Standards">Updated Regulations or Standards (Legal Compliance and ISO standards)</option>
                                 <option value="Process Improvement">Process Improvement (Technological Advancements & Operational Processes)</option>
@@ -76,17 +76,17 @@
                         </div>
                         <div class='col-md-12' >
                             Description : 
-                            <textarea name='description' rows="5" cols="100" charswidth="23" class="form-control-sm form-control " required></textarea>
+                            <textarea name='description' rows="5" cols="100" charswidth="23" class="form-control-sm form-control " required>{{old('description')}}</textarea>
                         </div>
                     </div>
                     <div class='row'>
                         <div class='col-md-6' >
                             From (Indicate clause)
-                            <textarea placeholder="From (Indicate clause)" rows="8" cols="50" charswidth="23" class="form-control-sm form-control " name='from_clause'></textarea>
+                            <textarea placeholder="From (Indicate clause)" rows="8" cols="50" charswidth="23" class="form-control-sm form-control " name='from_clause'>{{old('from_clause')}}</textarea>
                         </div>
                         <div class='col-md-6' >
                             To (Indicate the changes)
-                            <textarea placeholder="To (Indicate the changes)" rows="8" cols="50" charswidth="23" class="form-control-sm form-control " name='to_changes'></textarea>
+                            <textarea placeholder="To (Indicate the changes)" rows="8" cols="50" charswidth="23" class="form-control-sm form-control " name='to_changes'>{{old('to_changes')}}</textarea>
                         </div>
                     </div>
                     @if((auth()->user()->role == "Document Control Officer"))

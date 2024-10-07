@@ -637,9 +637,9 @@ class RequestController extends Controller
     public function store(Request $request)
     {
         //
-        // dd($request->all());
         $request->validate([
-            'supporting_document' => 'mimes:pdf'
+            'supporting_document' => 'mimes:pdf',
+            'reason_for_new_request' => 'required'
         ]);
         
         $document = Document::findOrfail($request->id);
@@ -772,7 +772,9 @@ class RequestController extends Controller
     {
         //
         $request->validate([
-            'supporting_document' => 'mimes:pdf'
+            'supporting_document' => 'mimes:pdf',
+            'category' => 'required',
+            'reason_for_new_request' => 'required'
         ]);
 
         $preAssessment = new PreAssessment;

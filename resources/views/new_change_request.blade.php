@@ -50,7 +50,7 @@
                         </div>
                         <div class='col-md-4'>
                             Document Type :
-                            <select name='category' class='form-control-sm form-control cat' required>
+                            <select name='category' class='form-control-sm form-control cat' >
                                 <option value=""></option>
                                 @foreach($document_types as $type)
                                     <option value='{{$type->name}}' @if(old('category') == $type->name) selected @endif>{{$type->code}} - {{$type->name}}</option>
@@ -72,7 +72,7 @@
                         </div>
                         <div class='col-md-4' >
                             Draft Link <i>(Google Link)</i> :
-                            <input type="name" class="form-control-sm form-control " min='{{date('Y-m-d')}}' name="draft_link" required/>
+                            <input type="name" class="form-control-sm form-control " min='{{date('Y-m-d')}}' value="{{old('draft_link')}}" name="draft_link" required/>
                         </div>
                         <div class='col-md-4' >
                             Supporting Document <small><i>(PSF,Executive Summary,Etc.)</i></small> :
@@ -82,7 +82,7 @@
                     <div class='row'>
                         <div class="col-md-6">
                             Reason for New Request :
-                            <select name="reason_for_new_request" class="form-control cat" id="reason-for-new-request" required>
+                            <select name="reason_for_new_request" class="form-control cat" id="reason-for-new-request" >
                                 <option value=""></option>
                                 <option value="Updated Regulations or Standards">Updated Regulations or Standards (Legal Compliance and ISO standards)</option>
                                 <option value="Process Improvement">Process Improvement (Technological Advancements & Operational Processes)</option>
@@ -93,7 +93,7 @@
                         </div>
                         <div class='col-md-12' >
                             Description:
-                            <textarea name='description' rows="5" cols="100" charswidth="23" class="form-control-sm form-control " required></textarea>
+                            <textarea name='description' rows="5" cols="100" charswidth="23" class="form-control-sm form-control " required>{{old('Description')}}</textarea>
                         </div>
                     </div>
                     @if((auth()->user()->role == "Document Control Officer"))
