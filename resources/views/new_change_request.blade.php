@@ -50,7 +50,7 @@
                         </div>
                         <div class='col-md-4'>
                             Document Type :
-                            <select name='category' class='form-control-sm form-control cat' >
+                            <select name='category' class='form-control-sm form-control ' required>
                                 <option value=""></option>
                                 @foreach($document_types as $type)
                                     <option value='{{$type->name}}' @if(old('category') == $type->name) selected @endif>{{$type->code}} - {{$type->name}}</option>
@@ -82,7 +82,7 @@
                     <div class='row'>
                         <div class="col-md-6">
                             Reason for New Request :
-                            <select name="reason_for_new_request" class="form-control cat" id="reason-for-new-request" >
+                            <select name="reason_for_new_request" class="form-control " id="reason-for-new-request" required>
                                 <option value=""></option>
                                 <option value="Updated Regulations or Standards">Updated Regulations or Standards (Legal Compliance and ISO standards)</option>
                                 <option value="Process Improvement">Process Improvement (Technological Advancements & Operational Processes)</option>

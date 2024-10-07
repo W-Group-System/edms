@@ -639,7 +639,7 @@ class RequestController extends Controller
         //
         $request->validate([
             'supporting_document' => 'mimes:pdf',
-            'reason_for_new_request' => 'required'
+            // 'reason_for_new_request' => 'required'
         ]);
         
         $document = Document::findOrfail($request->id);
@@ -773,8 +773,8 @@ class RequestController extends Controller
         //
         $request->validate([
             'supporting_document' => 'mimes:pdf',
-            'category' => 'required',
-            'reason_for_new_request' => 'required'
+            // 'category' => 'required',
+            // 'reason_for_new_request' => 'required'
         ]);
 
         $preAssessment = new PreAssessment;
