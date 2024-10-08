@@ -55,27 +55,27 @@ class BPD extends Command
                 $q->where('user_id',  $user->id)->where('status','Pending');
             })->where('status','Pending')->get();
 
-            $table = "<table style='margin-bottom:10px;' width='100%' border='1' cellspacing=0><tr><th colspan='3'>For Your Approval</th></tr>";
+            $table = "<table style='margin-bottom:10px;' width='100%' border='1' cellspacing=0><tr><th colspan='4'>For Your Approval</th></tr>";
             if(count($change_requests) > 0)
            
             {
-                $table .= "<tr><th colspan='3'>Copy Requests</th></tr>";
+                $table .= "<tr><th colspan='4'>Change Requests</th></tr>";
             }
-            $table .= "<tr><th>Date Requested</th><th>Code</th><th>Approver</th></tr>";
+            $table .= "<tr><th>Date Requested</th><th>Code</th><th>Title</th><th>Approver</th></tr>";
             foreach($change_requests as $request)
             {
                 $approver = ($request->approvers)->where('level',$request->level)->first();
-                $table .= "<tr><td>".date('Y-m-d',strtotime($request->created_at))."</td><td>DICR-".str_pad($request->id, 5, '0', STR_PAD_LEFT)."</td><td>".$approver->user->name."</td></tr>";
+                $table .= "<tr><td>".date('Y-m-d',strtotime($request->created_at))."</td><td>DICR-".str_pad($request->id, 5, '0', STR_PAD_LEFT)."</td><td>".$request->title."</td><td>".$approver->user->name."</td></tr>";
             }
             if(count($copy_requests) > 0)
             {
 
             
-                $table .= "<tr><th colspan='3'>Copy Requests</th></tr>";
+                $table .= "<tr><th colspan='4'>Copy Requests</th></tr>";
                 foreach($copy_requests as $request)
                 {
                     $approver = ($request->approvers)->where('level',$request->level)->first();
-                    $table .= "<tr><td>".date('Y-m-d',strtotime($request->created_at))."</td><td>CR-".str_pad($request->id, 5, '0', STR_PAD_LEFT)."</td><td>".$approver->user->name."</td></tr>";
+                    $table .= "<tr><td>".date('Y-m-d',strtotime($request->created_at))."</td><td>CR-".str_pad($request->id, 5, '0', STR_PAD_LEFT)."</td><td>".$request->title."</td><td>".$approver->user->name."</td></tr>";
                 }
             }
             
