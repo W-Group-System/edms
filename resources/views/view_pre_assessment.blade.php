@@ -28,6 +28,11 @@
                             Draft Link : <a href="{{$pa->link_draft}}" target="_blank">Draft Link</a>
                         </div>
                         @endif
+                        @if($pa->original_attachment_pdf != null)
+                            <div class="col-lg-6">
+                                Original PDF Link : <a href='{{url($pa->original_attachment_pdf."?page=hsn#toolbar=0")}}' target="_blank">Link</a> <br>
+                            </div>
+                        @endif
                         @if($pa->supporting_documents != null)
                         <div class="col-lg-6">
                             Supporting Documents : <a href="{{url($pa->supporting_documents)}}" target="_blank">Link</a>
