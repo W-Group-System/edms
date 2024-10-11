@@ -657,7 +657,7 @@ class RequestController extends Controller
         $preAssessment->request_type = $request->request_type;
         $preAssessment->effective_date = $request->effective_date;
         $preAssessment->link_draft = $request->draft_link;
-        $preAssessment->reason_for_changes = $request->reason_for_change;
+        $preAssessment->reason_for_changes = $request->reason_for_new_request;
         $preAssessment->change_request = $request->description;
         $preAssessment->indicate_clause = $request->from_clause;
         $preAssessment->indicate_changes = $request->to_changes;
@@ -694,6 +694,7 @@ class RequestController extends Controller
         $changeRequest->user_id = auth()->user()->id;
         $changeRequest->type_of_document = $document->category;
         $changeRequest->document_id = $request->id;
+        $changeRequest->reason_for_changes = $request->reason_for_new_request;
         $changeRequest->change_request = $request->description;
         $changeRequest->indicate_clause = $request->from_clause;
         $changeRequest->indicate_changes = $request->to_changes;
@@ -771,6 +772,7 @@ class RequestController extends Controller
     public function new_request(Request $request)
     {
         //
+        // dd($request->all());
         $request->validate([
             'supporting_document' => 'mimes:pdf',
             // 'category' => 'required',
