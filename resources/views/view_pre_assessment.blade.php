@@ -23,9 +23,11 @@
                         <div class="col-lg-6">
                             Type of Document : {{$pa->type_of_document}}
                         </div>
+                        @if($request->request_type != 'Obsolete')
                         <div class="col-lg-6">
                             Draft Link : <a href="{{$pa->link_draft}}" target="_blank">Draft Link</a>
                         </div>
+                        @endif
                         @if($pa->supporting_documents != null)
                         <div class="col-lg-6">
                             Supporting Documents : <a href="{{url($pa->supporting_documents)}}" target="_blank">Link</a>
