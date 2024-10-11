@@ -72,11 +72,13 @@
                             Request Type: <b>{{$request->request_type}}</b>
                         </div>
                     </div>
+                    @if($request->request_type != 'Obsolete')
                     <div class="row">
                         <div class="col-md-12">
                             Reason for changes : <b>{{$request->reason_for_changes}}</b>
                         </div>
                     </div>
+                    @endif
                     <div class='row'>
                         <div class='col-md-12 '>
                             <div class="panel panel-primary">
