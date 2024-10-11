@@ -23,7 +23,7 @@
                         <div class="col-lg-6">
                             Type of Document : {{$pa->type_of_document}}
                         </div>
-                        @if($request->request_type != 'Obsolete')
+                        @if($pa->request_type != 'Obsolete')
                         <div class="col-lg-6">
                             Draft Link : <a href="{{$pa->link_draft}}" target="_blank">Draft Link</a>
                         </div>
