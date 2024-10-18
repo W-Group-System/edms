@@ -239,7 +239,7 @@
                                             @endif
                                         </td>
                                         <td>{{$request->request_type}}</td>
-                                        <td>{{date('M d Y',strtotime($request->created_at))}}</td>
+                                        <td>{{date('Y-m-d',strtotime($request->created_at))}}</td>
                                      
                                             @if($request->document_id != null)
                                             <td>
