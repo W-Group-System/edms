@@ -79,7 +79,7 @@
                                             $dep = (auth()->user()->dco)->where('department_id',$document->department_id);
                                         @endphp
                                         @if(count($dep) == 1)
-                                            <a href="#" data-target="#changeRequest" data-toggle="modal" class="btn btn-warning btn-sm ">Change Request </a>
+                                            {{-- <a href="#" data-target="#changeRequest" data-toggle="modal" class="btn btn-warning btn-sm ">Change Request </a> --}}
                                             <a href="#"  data-target="#obsoleteRequest" data-toggle="modal"  class="btn btn-danger btn-sm ">Obsolete Request </a>
                                         @endif
                                     @endif
