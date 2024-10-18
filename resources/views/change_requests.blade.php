@@ -158,14 +158,22 @@
                                         }
                                         else
                                         {
-                                            if ($request->preAssessment->status == 'Approved')
+                                            if ($request->preAssessment != null)
                                             {
-                                                // $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at)));
-                                                $target = "";
+                                                if ($request->preAssessment->status == 'Approved')
+                                                {
+                                                    // $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at)));
+                                                    $target = "";
+                                                }
+                                                else
+                                                {
+                                                    $target = date('Y-m-d', strtotime("+10 days", strtotime($request->preAssessment->created_at)));
+                                                }
                                             }
                                             else
                                             {
-                                                $target = date('Y-m-d', strtotime("+10 days", strtotime($request->preAssessment->created_at)));
+                                                // For old data that does not have pre assessment
+                                                $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at))); 
                                             }
                                         }
                                     }
@@ -193,14 +201,22 @@
                                         }
                                         else
                                         {
-                                            if ($request->preAssessment->status == 'Approved')
+                                            if ($request->preAssessment != null)
                                             {
-                                                // $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at)));
-                                                $target = "";
+                                                if ($request->preAssessment->status == 'Approved')
+                                                {
+                                                    // $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at)));
+                                                    $target = "";
+                                                }
+                                                else
+                                                {
+                                                    $target = date('Y-m-d', strtotime("+10 days", strtotime($request->preAssessment->created_at)));
+                                                }
                                             }
                                             else
                                             {
-                                                $target = date('Y-m-d', strtotime("+10 days", strtotime($request->preAssessment->created_at)));
+                                                // For old data that does not have pre assessment
+                                                $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at))); 
                                             }
                                         }
                                     } 
