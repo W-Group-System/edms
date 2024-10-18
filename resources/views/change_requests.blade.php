@@ -263,12 +263,12 @@
                                         <td>{{$request->user->name}}</td>
                                         <td>
                                             @if($target != null)
-                                                {{date('M d Y', strtotime($target))}}
+                                                {{date('Y-m-d', strtotime($target))}}
                                             @endif
                                         </td>
                                         <td>
                                             @if($request->status == 'Approved')
-                                                {{date('M d Y', strtotime($request->updated_at))}}
+                                                {{date('Y-m-d', strtotime($request->updated_at))}}
                                             @endif
                                         </td>
                                         <td> 
