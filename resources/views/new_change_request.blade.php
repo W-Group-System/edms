@@ -66,10 +66,10 @@
                     </div>
                     
                     <div class='row'>
-                        <div class='col-md-4' >
+                        {{-- <div class='col-md-4' >
                             Proposed Effective Date :
                             <input type="date" class="form-control-sm form-control " min='{{date('Y-m-d')}}' name="effective_date" required/>
-                        </div>
+                        </div> --}}
                         <div class='col-md-4' >
                             Draft Link <i>(Google Link)</i> :
                             <input type="name" class="form-control-sm form-control " min='{{date('Y-m-d')}}' value="{{old('draft_link')}}" name="draft_link" required/>

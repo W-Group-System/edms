@@ -96,12 +96,12 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Change Requests
-                        @if(auth()->user()->role == "Documents and Records Controller")
+                        {{-- @if(auth()->user()->role == "Documents and Records Controller")
                         <button class="btn btn-success "  data-target="#newRequest" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New </button>
                         @endif
                         @if(auth()->user()->role == "Document Control Officer")
                         <button class="btn btn-success "  data-target="#newRequest" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New </button>
-                        @endif
+                        @endif --}}
                         @if(auth()->user()->role == "User")
                         <button class="btn btn-success "  data-target="#newRequest" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New </button>
                         @endif
@@ -111,7 +111,7 @@
                 <div class="ibox-content">
 
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover tables" >
+                        <table class="table table-striped table-bordered table-hover tables">
                             <thead>
                                 <tr>
                                     
@@ -125,6 +125,7 @@
                                     <th>Type</th>
                                     <th>Requested By</th>
                                     <th>Target Date</th>
+                                    <th>Approved Date</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -157,7 +158,15 @@
                                         }
                                         else
                                         {
-                                            $target = date('Y-m-d');
+                                            if ($request->preAssessment->status == 'Approved')
+                                            {
+                                                // $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at)));
+                                                $target = "";
+                                            }
+                                            else
+                                            {
+                                                $target = date('Y-m-d', strtotime("+10 days", strtotime($request->preAssessment->created_at)));
+                                            }
                                         }
                                     }
                                 @endphp
@@ -184,7 +193,15 @@
                                         }
                                         else
                                         {
-                                            $target = date('Y-m-d');
+                                            if ($request->preAssessment->status == 'Approved')
+                                            {
+                                                // $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at)));
+                                                $target = "";
+                                            }
+                                            else
+                                            {
+                                                $target = date('Y-m-d', strtotime("+10 days", strtotime($request->preAssessment->created_at)));
+                                            }
                                         }
                                     } 
                                 @endphp
@@ -228,28 +245,42 @@
                                                 {{$request->type_of_document}}
                                             </td>   
                                         <td>{{$request->user->name}}</td>
-                                        <td>{{$target}}</td>
+                                        <td>
+                                            @if($target != null)
+                                                {{date('M d Y', strtotime($target))}}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($request->status == 'Approved')
+                                                {{date('M d Y', strtotime($request->updated_at))}}
+                                            @endif
+                                        </td>
                                         <td> 
                                             @if(optional($request->preAssessment)->status == "Pending")
                                                 <span style="background-color: #b9ff66; font-weight: bold;" class="label"> Pre-Assessment
                                                 {{-- <span class="label label-primary"> Pre-Assessment --}}
                                             @else
                                                 @if($request->status == "Pending")
-                                                    @if($target < date('Y-m-d'))
-                                                    @php
-                                                        $delayed++;
-                                                    @endphp
-                                                    <span class='label label-danger'>
-                                                        Delayed - 
+                                                    @if($target != null)
+                                                        @if($target < date('Y-m-d'))
+                                                        @php
+                                                            $delayed++;
+                                                        @endphp
+                                                        <span class='label label-danger'>
+                                                            Delayed - 
+                                                        @else
+                                                        <span class='label label-success'>
+                                                        @endif
                                                     @else
-                                                    <span class='label label-success'>
+                                                        <span class='label label-success'>
+                                                    @endif
+                                                @elseif($request->status ==  "Approved")
+                                                    <span class='label label-info'>    
+                                                @elseif($request->status ==  "Declined")
+                                                        <span class='label label-warning'>
+                                                @else<span class='label label-success'>
                                                 @endif
-                                            @elseif($request->status ==  "Approved")
-                                                <span class='label label-info'>    
-                                            @elseif($request->status ==  "Declined")
-                                                    <span class='label label-warning'>
-                                            @else<span class='label label-success'>
-                                                @endif
+
                                                 {{$request->status}} 
                                             @endif
 
