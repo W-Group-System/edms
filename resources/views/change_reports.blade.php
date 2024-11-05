@@ -49,7 +49,7 @@
                                     <th>Control Code</th>
                                     <th>Title</th>
                                     <th>Request By</th>
-                                    <th>Effective Date</th>
+                                    {{-- <th>Effective Date</th> --}}
                                     
                                     <th>Status</th>
                                     
@@ -72,7 +72,7 @@
                                         <td >{{$request->control_code}}</td>
                                         <td>{{$request->title}}</td>
                                         <td>{{$request->user->name}}</td>
-                                        <td>{{date('M. d, Y',strtotime($request->effective_date))}}</td>
+                                        {{-- <td>{{date('M. d, Y',strtotime($request->effective_date))}}</td> --}}
                                         <td >@if($request->status == "Pending")
                                             <span class='label label-warning'>
                                         @elseif($request->status ==  "Approved")
