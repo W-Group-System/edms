@@ -208,7 +208,7 @@
                     <div class='row'>
                         <div class='col-md-4'>
                             Action :
-                            <select name='action' class='form-control-sm form-control cat'  @if(($request->request_type != "Obsolete"))   onchange='handleActionChange(this.value); remove_required({{ $request->id }}, this.value)' @endif required>
+                            <select name='action' class='form-control-sm form-control cat'  @if(($request->request_type != "Obsolete"))   onchange='handleActionChange(this.value, {{$request->id}}); remove_required({{ $request->id }}, this.value)' @endif required>
                                 <option value=""></option>
                                 <option value="Approved" >Approve</option>
                                 <option value="Declined" >Decline</option>
@@ -220,7 +220,7 @@
                             <textarea name='remarks' class='form-control-sm form-control' required></textarea>
                         </div>
                     </div>
-                    <div id="returnOptions" class='row' style="display: none;">
+                    <div  class='returnOptions{{$request->id}} row' style="display: none;">
                         <div class='col-md-4'>
                             Return To :
                             <select name='return_to' class='form-control-sm form-control cat'>
@@ -243,8 +243,9 @@
     </div>
 </div>
 <script>
-     function handleActionChange(value) {
-        var returnOptionsDiv = document.getElementById('returnOptions');
+     function handleActionChange(value, requestId) {
+        console.log(value);
+        var returnOptionsDiv = document.querySelector('.returnOptions' + requestId);
         
         if (value === 'Returned') {
             returnOptionsDiv.style.display = 'block';
