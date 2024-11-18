@@ -212,7 +212,14 @@
                                 <option value=""></option>
                                 <option value="Approved" >Approve</option>
                                 <option value="Declined" >Decline</option>
-                                <option value="Returned" >Return</option>
+                                @foreach($request->approvers as $approver)
+                                    @if (auth()->user()->id == $approver->user_id)
+                                        @if ($approver->level == "1")
+                                        @else
+                                        <option value="Returned" >Return</option>
+                                        @endif
+                                    @endif
+                                @endforeach
                             </select>
                         </div>
                         <div class='col-md-8'>
@@ -224,14 +231,19 @@
                         <div class='col-md-4'>
                             Return To :
                             <select name='return_to' class='form-control-sm form-control cat'>
-                                @if (auth()->user()->role == "Department Head")
-                                @elseif (auth()->user()->role == 'Document Control Officer')
-                                    <option value="DepartmentHead">Return to Department Head</option>
-                                @else
-                                    <option value="DocumentControlOfficer">Return to DCO</option>
-                                    <option value="DepartmentHead">Return to Department Head</option>
-                                @endif
-                            </select>
+                                @foreach($request->approvers as $approver)
+                                    @if (auth()->user()->id == $approver->user_id)
+                                        @if ($approver->level == "1")
+                                        @elseif ($approver->level == "2")
+                                            <option value="DepartmentHead">Return to Department Head</option>
+                                        @else
+                                            <option value="DocumentControlOfficer">Return to DCO</option>
+                                            <option value="DepartmentHead">Return to Department Head</option>
+                                        @endif
+                                        @break
+                                    @endif
+                                @endforeach
+                            </select>                            
                         </div>
                     </div>
                 </div>
@@ -249,8 +261,10 @@
         
         if (value === 'Returned') {
             returnOptionsDiv.style.display = 'block';
+            inputField.setAttribute('required', 'true');
         } else {
             returnOptionsDiv.style.display = 'none';
+            inputField.removeAttribute('required');
         }
     }
 </script>
