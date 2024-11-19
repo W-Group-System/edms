@@ -191,11 +191,11 @@
                         </div>
                         <div class='row'>
                             <div class='col-md-4'>
-                                SOFT Copy <small><i>(.word,.csv,.ppt,etc)</i></small>
+                                SOFT Copy <small><i>(.word,.csv,.ppt,excel,etc)</i></small>
                                 <input type="file" class="form-control-sm form-control " id='soft_copy_{{$request->id}}'  name="soft_copy" required/>
                             </div>
                             <div class='col-md-4'>
-                                FILLABLE/SCANNED Copy <small><i>(.pdf,excel,word)</i></small>
+                                FILLABLE/SCANNED Copy <small><i>(.pdf)</i></small>
                                 <input type="file" class="form-control-sm form-control " id='pdf_copy_{{$request->id}}'  name="pdf_copy" required/>
                             </div>
                             {{-- <div class='col-md-4'>
@@ -208,7 +208,7 @@
                     <div class='row'>
                         <div class='col-md-4'>
                             Action :
-                            <select name='action' class='form-control-sm form-control cat'  @if(($request->request_type != "Obsolete"))   onchange='handleActionChange(this.value, {{$request->id}}); remove_required({{ $request->id }}, this.value)' @endif required>
+                            <select name='action' class='form-control-sm form-control cat'  @if(($request->request_type != "Obsolete"))   onchange='remove_required({{ $request->id }}, this.value)' @endif required>
                                 <option value=""></option>
                                 <option value="Approved" >Approve</option>
                                 <option value="Declined" >Decline</option>
@@ -227,10 +227,10 @@
                             <textarea name='remarks' class='form-control-sm form-control' required></textarea>
                         </div>
                     </div>
-                    <div  class='returnOptions{{$request->id}} row' style="display: none;">
+                    <div class='returnOptions{{$request->id}} row' style="display: none;">
                         <div class='col-md-4'>
                             Return To :
-                            <select name='return_to' class='form-control-sm form-control cat'>
+                            <select name='return_to' class='form-control-sm form-control cat' id="returned_to{{$request->id}}" required>
                                 @foreach($request->approvers as $approver)
                                     @if (auth()->user()->id == $approver->user_id)
                                         @if ($approver->level == "1")
@@ -254,7 +254,7 @@
         </div>
     </div>
 </div>
-<script>
+{{-- <script>
      function handleActionChange(value, requestId) {
         console.log(value);
         var returnOptionsDiv = document.querySelector('.returnOptions' + requestId);
@@ -267,4 +267,4 @@
             inputField.removeAttribute('required');
         }
     }
-</script>
+</script> --}}

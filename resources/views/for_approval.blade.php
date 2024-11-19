@@ -159,15 +159,24 @@ $request = $copy_approval->copy_request;
     {
         if(value=="Declined")
         {
-            console.log('renz');
             $('#soft_copy_'+id).prop('required',false);
             $('#pdf_copy_'+id).prop('required',false);
+
+            $('.returnOptions'+id).css('display', 'none');
+        }
+        else if(value=="Returned")
+        {
+            $('#soft_copy_'+id).prop('required',false);
+            $('#pdf_copy_'+id).prop('required',false);
+            
+            $('.returnOptions'+id).css('display', 'block');
         }
         else
         {
-            console.log('di ko alam');
             $('#soft_copy_'+id).prop('required',true);
             $('#pdf_copy_'+id).prop('required',true);
+
+            $('.returnOptions'+id).css('display', 'none');
         }
         
     }
