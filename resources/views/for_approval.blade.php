@@ -163,6 +163,7 @@ $request = $copy_approval->copy_request;
             $('#pdf_copy_'+id).prop('required',false);
 
             $('.returnOptions'+id).css('display', 'none');
+            $("#returned_to"+id).prop('required', false);
         }
         else if(value=="Returned")
         {
@@ -170,6 +171,7 @@ $request = $copy_approval->copy_request;
             $('#pdf_copy_'+id).prop('required',false);
             
             $('.returnOptions'+id).css('display', 'block');
+            $("#returned_to"+id).prop('required', true);
         }
         else
         {
@@ -177,6 +179,7 @@ $request = $copy_approval->copy_request;
             $('#pdf_copy_'+id).prop('required',true);
 
             $('.returnOptions'+id).css('display', 'none');
+            $("#returned_to"+id).prop('required', false);
         }
         
     }

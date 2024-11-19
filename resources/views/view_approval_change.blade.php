@@ -230,7 +230,7 @@
                     <div class='returnOptions{{$request->id}} row' style="display: none;">
                         <div class='col-md-4'>
                             Return To :
-                            <select name='return_to' class='form-control-sm form-control cat' id="returned_to{{$request->id}}" required>
+                            <select name='return_to' class='form-control-sm form-control cat' id="returned_to{{$request->id}}" >
                                 @foreach($request->approvers as $approver)
                                     @if (auth()->user()->id == $approver->user_id)
                                         @if ($approver->level == "1")
