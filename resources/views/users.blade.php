@@ -72,7 +72,7 @@
                                 <td>{{$user->name}}</td>
                                 <td>{{$user->email}}</td>
                                 <td>{{$user->company->name}}</td>
-                                <td>{{$user->department->name}}</td>
+                                <td>{{optional($user->department)->name}}</td>
                                 
                                 <td>
                                     <small>

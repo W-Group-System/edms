@@ -44,7 +44,8 @@ class PermitController extends Controller
         $overdue_count = Permit::where('expiration_date', '<', date('Y-m-d'))->where('status', null)->count();
         $active_permits_count = Permit::where('expiration_date', '>', date('Y-m-d'))->where('expiration_date', '>', date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('status', null)->count();
         $inactive_permits_count = Permit::where('status', 'Inactive')->count();
-        
+        $archives = Archive::get();
+    
         if(auth()->user()->role == "Document Control Officer")
         { 
             $permits = Permit::with('company', 'department')
@@ -75,28 +76,57 @@ class PermitController extends Controller
         if((auth()->user()->role == "Department Head"))
         {
             $permits = Permit::with('company', 'department')
-                ->whereIn('department_id',(auth()->user()->permits)->pluck('department_id')->toArray())
+                // ->whereIn('department_id',(auth()->user()->permits)->pluck('department_id')->toArray())
+                ->where('department_id', auth()->user()->department_id)
                 ->when($request->renewal_filter, function($q) {
-                    $q->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('expiration_date', '>',  date('Y-m-d'));
+                    $q->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('expiration_date', '>',  date('Y-m-d'))->where('status', null);
                 })
                 ->when($request->overdue_filter, function($q) {
-                    $q->where('expiration_date', '<', date('Y-m-d'));
+                    $q->where('expiration_date', '<', date('Y-m-d'))->where('status', null);
+                })
+                ->when($request->active_permits_filter, function($q) {
+                    $q->where('expiration_date', '>', date('Y-m-d'))->where('expiration_date', '>', date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('status', null);
+                })
+                ->when($request->inactive_filter, function($q) {
+                    $q->where('status', 'Inactive');
                 })
                 ->get();
-            $departments = Department::whereHas('permit_accounts')->whereIn('id',(auth()->user()->permits)->pluck('department_id')->toArray())->where('status', '=', null)->get();
+            // $departments = Department::whereHas('permit_accounts')->whereIn('id',(auth()->user()->permits)->pluck('department_id')->toArray())->where('status', '=', null)->get();
+            $departments = Department::whereHas('permit_accounts')->where('id',auth()->user()->department_id)->where('status', '=', null)->get();
+
+            $permits_count = Permit::where('department_id',auth()->user()->department_id)->where('status',null)->count();
+            $for_renewal_count = Permit::where('department_id',auth()->user()->department_id)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('expiration_date', '>',  date('Y-m-d'))->where('status',null)->count();
+            $overdue_count = Permit::where('department_id',auth()->user()->department_id)->where('expiration_date', '<', date('Y-m-d'))->where('status',null)->count();
+            $active_permits_count = Permit::where('department_id',auth()->user()->department_id)->where('expiration_date', '>', date('Y-m-d'))->where('expiration_date', '>', date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('status',null)->count();
+            $inactive_permits_count = Permit::where('department_id',auth()->user()->department_id)->where('status', 'Inactive')->count();
+            $archives = Archive::where('department_id', auth()->user()->department_id)->get();
         }
         if((auth()->user()->role == "User"))
         {
             $permits = Permit::with('company', 'department')
                 ->whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())
                 ->when($request->renewal_filter, function($q) {
-                    $q->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('expiration_date', '>',  date('Y-m-d'));
+                    $q->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('expiration_date', '>',  date('Y-m-d'))->where('status', null);
                 })
                 ->when($request->overdue_filter, function($q) {
-                    $q->where('expiration_date', '<', date('Y-m-d'));
+                    $q->where('expiration_date', '<', date('Y-m-d'))->where('status', null);
+                })
+                ->when($request->active_permits_filter, function($q) {
+                    $q->where('expiration_date', '>', date('Y-m-d'))->where('expiration_date', '>', date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('status', null);
+                })
+                ->when($request->inactive_filter, function($q) {
+                    $q->where('status', 'Inactive');
                 })
                 ->get();
             $departments = Department::whereHas('permit_accounts')->whereIn('id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('status', '=', null)->get();
+
+            $permits_count = Permit::whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('status',null)->count();
+            $for_renewal_count = Permit::whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('expiration_date', '>',  date('Y-m-d'))->where('status',null)->count();
+            $overdue_count = Permit::whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('expiration_date', '<', date('Y-m-d'))->where('status',null)->count();
+            $active_permits_count = Permit::whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('expiration_date', '>', date('Y-m-d'))->where('expiration_date', '>', date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('status',null)->count();
+            $inactive_permits_count = Permit::whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('status', 'Inactive')->count();
+
+            $archives = Archive::whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->get();
         }
         if((auth()->user()->role == "Documents and Records Controller"))
         {
@@ -112,7 +142,6 @@ class PermitController extends Controller
             $departments = Department::whereHas('permit_accounts')->whereIn('id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('status', '=', null)->get();
         }
        
-        $archives = Archive::get();
         return view('permits', array(
             'companies' => $companies,
             'departments' => $departments,
@@ -324,6 +353,7 @@ class PermitController extends Controller
         $overdue_count = Permit::where('expiration_date', '<', date('Y-m-d'))->where('status', null)->count();
         $for_renewal_count = Permit::where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('expiration_date', '>',  date('Y-m-d'))->where('status', null)->count();
         $permits_count = Permit::count();
+        $archives = Archive::with('department', 'company')->get();
 
         if(auth()->user()->role == "Document Control Officer")
         { 
@@ -340,10 +370,29 @@ class PermitController extends Controller
         }
         if((auth()->user()->role == "Department Head"))
         {
+            // $permits = Permit::with('company', 'department')
+            //     ->whereIn('department_id',(auth()->user()->permits)->pluck('department_id')->toArray())
+            //     ->get();
+            // $departments = Department::whereHas('permit_accounts')->whereIn('id',(auth()->user()->permits)->pluck('department_id')->toArray())->where('status', '=', null)->get();
             $permits = Permit::with('company', 'department')
-                ->whereIn('department_id',(auth()->user()->permits)->pluck('department_id')->toArray())
+                // ->whereIn('department_id',(auth()->user()->permits)->pluck('department_id')->toArray())
+                ->where('department_id', auth()->user()->department_id)
+                ->when($request->renewal_filter, function($q) {
+                    $q->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('expiration_date', '>',  date('Y-m-d'));
+                })
+                ->when($request->overdue_filter, function($q) {
+                    $q->where('expiration_date', '<', date('Y-m-d'));
+                })
                 ->get();
-            $departments = Department::whereHas('permit_accounts')->whereIn('id',(auth()->user()->permits)->pluck('department_id')->toArray())->where('status', '=', null)->get();
+            // $departments = Department::whereHas('permit_accounts')->whereIn('id',(auth()->user()->permits)->pluck('department_id')->toArray())->where('status', '=', null)->get();
+            $departments = Department::whereHas('permit_accounts')->where('id',auth()->user()->department_id)->where('status', '=', null)->get();
+
+            $permits_count = Permit::where('department_id',auth()->user()->department_id)->where('status',null)->count();
+            $for_renewal_count = Permit::where('department_id',auth()->user()->department_id)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('expiration_date', '>',  date('Y-m-d'))->where('status',null)->count();
+            $overdue_count = Permit::where('department_id',auth()->user()->department_id)->where('expiration_date', '<', date('Y-m-d'))->where('status',null)->count();
+            $active_permits_count = Permit::where('department_id',auth()->user()->department_id)->where('expiration_date', '>', date('Y-m-d'))->where('expiration_date', '>', date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('status',null)->count();
+            $inactive_count = Permit::where('department_id',auth()->user()->department_id)->where('status', 'Inactive')->get();
+            $archives = Archive::with('department', 'company')->where('department_id', auth()->user()->department_id)->get();
         }
         if((auth()->user()->role == "User"))
         {
@@ -351,6 +400,14 @@ class PermitController extends Controller
                 ->whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())
                 ->get();
             $departments = Department::whereHas('permit_accounts')->whereIn('id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('status', '=', null)->get();
+
+            $permits_count = Permit::whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('status',null)->count();
+            $for_renewal_count = Permit::whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('expiration_date', '>',  date('Y-m-d'))->where('status',null)->count();
+            $overdue_count = Permit::whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('expiration_date', '<', date('Y-m-d'))->where('status',null)->count();
+            $active_permits_count = Permit::whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('expiration_date', '>', date('Y-m-d'))->where('expiration_date', '>', date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))->where('status',null)->count();
+            $inactive_count = Permit::whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('status', 'Inactive')->get();
+
+            $archives = Archive::whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->get();
         }
         if((auth()->user()->role == "Documents and Records Controller"))
         {
@@ -359,8 +416,6 @@ class PermitController extends Controller
                 ->get();
             $departments = Department::whereHas('permit_accounts')->whereIn('id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->where('status', '=', null)->get();
         }
-
-        $archives = Archive::with('department', 'company')->get();
 
         return view('view_archive', array(
             'companies' => $companies,

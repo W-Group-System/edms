@@ -126,7 +126,7 @@
                                 class="nav-label">Acknowledgement </span></a>
                     </li>
                     {{-- @endif --}}
-                    @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Document Control Officer') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (count(auth()->user()->accountable_persons) !=0 ))
+                    @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Document Control Officer') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (auth()->user()->role == 'Department Head') ||  (count(auth()->user()->accountable_persons) !=0 ))
                     <li class="{{ Route::current()->getName() == 'permits' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Permits & Licenses">
                         <a href="{{url('/permits')}}"><i class="fa fa-file-archive-o"></i> <span
                                 class="nav-label">Permits & Licenses </span></a>
