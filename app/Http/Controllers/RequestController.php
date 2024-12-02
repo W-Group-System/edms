@@ -1190,7 +1190,13 @@ class RequestController extends Controller
             //    }
             // }
             $approver = $copyApprovers->pluck('user_id')->toArray();
-            $userHead = User::wherein('id', $approver)->where('role', 'Business Process Manager')->orWhere('role', 'Department Head')->where('department_id', $copyRequest->department_id)->first();
+            $userHead = User::whereIn('id', $approver)
+            ->where(function ($query) {
+                $query->where('role', 'Business Process Manager')
+                    ->orWhere('role', 'Department Head');
+            })
+            ->where('department_id', $copyRequest->department_id)
+            ->first();
             // dd($userHead);
             $dco = User::wherein('id', $approver)->where('role', 'Document Control Officer')->first();
             
