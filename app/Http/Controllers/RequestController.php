@@ -1195,9 +1195,10 @@ class RequestController extends Controller
                 $query->where('role', 'Business Process Manager')
                     ->orWhere('role', 'Department Head');
             })
-            ->where('department_id', $copyRequest->department_id)
+            // ->where('department_id', $copyRequest->department_id)
             ->first();
             // dd($userHead);
+
             $dco = User::wherein('id', $approver)->where('role', 'Document Control Officer')->first();
             
             $dcoLevel = $copyApprovers->where('user_id', $dco->id)->first()->level;
