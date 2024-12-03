@@ -935,7 +935,12 @@ class RequestController extends Controller
         $copyRequestApprover->remarks = $request->remarks;
         $copyRequestApprover->save();
 
-        $copyApprover = RequestApprover::where('change_request_id',$copyRequestApprover->change_request_id)->where('status','Waiting')->where('status','Returned')->orderBy('level','asc')->first();
+        $copyApprover = RequestApprover::where('change_request_id',$copyRequestApprover->change_request_id)
+        ->where(function ($query) {
+            $query->where('status', 'Waiting')
+                  ->orWhere('status', 'Returned');
+        })
+        ->orderBy('level','asc')->first();
         $copyRequest = ChangeRequest::findOrfail($copyRequestApprover->change_request_id);
 
         
