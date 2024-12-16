@@ -128,7 +128,7 @@
                             @foreach($request->approvers as $approver)
                                 <div class='row' id='{{$approver->id}}'>
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                        <a class=" btn-sm " onclick='remove_approver({{$request->id}});'>
+                                        <a class=" btn-sm " onclick='remove_approver({{$approver->id}});'>
                                             @if($approver->status == "Waiting")
                                                 <i class="fa fa-minus-circle text-danger"></i>
                                                 <input name='approver[]' value='{{$approver->id}}' type='hidden'>
@@ -164,11 +164,8 @@
 <script>
     function remove_approver(id)
     {
-        if($('#'+id+' div.row').length > 1)
-        {
-        var lastItemID = $('#'+id+'').children().last().attr('id');
-        $('#'+lastItemID).remove();
-        }
+        $('#'+id).remove();
+        
 
     }
 </script>
