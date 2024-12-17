@@ -1194,7 +1194,21 @@ class RequestController extends Controller
             //     $approver->save(); 
             //    }
             // }
-            $approver = $copyApprovers->pluck('user_id')->toArray();
+            if ($returnTo == 'DepartmentHead') {
+                $approver = $copyApprovers
+                ->filter(function ($approver) {
+                    return $approver->level == 1;
+                })
+                ->pluck('user_id')->toArray();
+            } elseif ($returnTo == 'DocumentControlOfficer') {
+                $approver = $copyApprovers
+                ->filter(function ($approver) {
+                    return $approver->level == 2;
+                })
+                ->pluck('user_id')->toArray();
+            }
+
+           
             $userHead = User::whereIn('id', $approver)
             ->where(function ($query) {
                 $query->where('role', 'Business Process Manager')
@@ -1206,8 +1220,8 @@ class RequestController extends Controller
 
             $dco = User::wherein('id', $approver)->where('role', 'Document Control Officer')->first();
             
-            $dcoLevel = $copyApprovers->where('user_id', $dco->id)->first()->level;
-            $deptHeadLevel = $copyApprovers->where('user_id', $userHead->id)->first()->level;
+            $dcoLevel = $dco ? $copyApprovers->where('user_id', $dco->id)->first()->level : null;
+            $deptHeadLevel = $userHead ? $copyApprovers->where('user_id', $userHead->id)->first()->level : null;
 
             foreach ($copyApprovers as $approver) {
                 if ($returnTo == 'DepartmentHead') {
