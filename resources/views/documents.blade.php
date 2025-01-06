@@ -81,7 +81,7 @@
                         </div>
                     </form>
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover" >
+                        <table class="table table-striped table-bordered table-hover tables" >
                         <thead>
                             <tr>
                                 <th>Action</th>
@@ -132,7 +132,7 @@
                             @endforeach
                         </tbody>
                         </table>
-                        {{ $documents_na->appends(['search' => $search ,'department' => $dep])->links() }}
+                        {{-- {{ $documents_na->appends(['search' => $search ,'department' => $dep])->links() }} --}}
                     </div>
 
                 </div>

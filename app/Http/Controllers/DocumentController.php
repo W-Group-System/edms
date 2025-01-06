@@ -87,7 +87,8 @@ class DocumentController extends Controller
        
         }
 
-        $documents_na = $documents_filter->orderBy('control_code', 'asc')->paginate(10);
+        $documents_na = $documents_filter->orderBy('control_code', 'asc')->get();
+            // ->paginate(10);
         
  
         return view('documents',
