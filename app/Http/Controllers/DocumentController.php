@@ -327,7 +327,7 @@ class DocumentController extends Controller
 
         $search = $request->search;
         $department = $request->department;
-            $documents_na = $documents_filter->paginate(10);
+            $documents_na = $documents_filter->get();
         
             return view('documents',
             array(
