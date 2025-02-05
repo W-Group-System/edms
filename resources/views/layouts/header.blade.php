@@ -110,7 +110,7 @@
                                 class="nav-label">Change Requests </span></a>
                     </li>
                     {{-- @endif --}}
-                    @if((count(auth()->user()->copy_approvers) != 0) || (count(auth()->user()->department_approvers) != 0) || (count(auth()->user()->change_approvers) != 0))
+                    @if((count(auth()->user()->copy_approvers) != 0) || (count(auth()->user()->department_approvers) != 0) || (count(auth()->user()->change_approvers) != 0) || auth()->user()->role == 'Administrator')
                     <li class="{{ Route::current()->getName() == 'for-approval' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="For Approval">
                         <a href="{{url('/for-approval')}}"><i class="fa fa-check-square-o"></i> <span
                                 class="nav-label">For Approval </span></a>
