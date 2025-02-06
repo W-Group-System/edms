@@ -14,6 +14,8 @@
             </div>
             <form method='post' action='{{url('change-request-action/'.$change_approval->id)}}' onsubmit='show();' class="form-horizontal"  enctype="multipart/form-data" >
                 {{ csrf_field() }}
+                <input type="hidden" name="department" value="{{$request->department_id}}">
+                
                 <div class="modal-body">
                     <div class='row '>
                         <div class='col-md-6'>
@@ -231,7 +233,7 @@
                         <div class='col-md-4'>
                             Return To :
                             <select name='return_to' class='form-control-sm form-control cat' id="returned_to{{$request->id}}" >
-                                @foreach($request->approvers as $approver)
+                                {{-- @foreach($request->approvers as $approver)
                                     @if (auth()->user()->id == $approver->user_id)
                                         @if ($approver->level == "1")
                                         @elseif ($approver->level == "2")
@@ -242,7 +244,9 @@
                                         @endif
                                         @break
                                     @endif
-                                @endforeach
+                                @endforeach --}}
+                                <option value="DocumentControlOfficer">Return to DCO</option>
+                                <option value="DepartmentHead">Return to Department Head</option>
                             </select>                            
                         </div>
                     </div>

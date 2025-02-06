@@ -930,6 +930,7 @@ class RequestController extends Controller
     }
     public function action(Request $request,$id)
     {
+        // dd($request->all());
         $copyRequestApprover = RequestApprover::findOrfail($id);
         $copyRequestApprover->status = $request->action;
         $copyRequestApprover->remarks = $request->remarks;
@@ -1137,6 +1138,7 @@ class RequestController extends Controller
         }
         elseif($request->action == "Returned")
         {
+            // dd($request->all());
             $returnTo = $request->input('return_to');
             $copyRequest->status = "Pending";
             $copyRequest->level =1;
@@ -1144,102 +1146,113 @@ class RequestController extends Controller
             $copyApprovers = RequestApprover::where('change_request_id', $copyRequestApprover->change_request_id)
             ->orderBy('level', 'asc')
             ->get();
-            // foreach($copyApproverPending as $key => $app)
-            // {
-                // $appr = RequestApprover::findOrfail($app->id);
-                // if($key == 0)
-                // {
-                //     $app->status = "Pending";
-                // }
-                // else
-                // {
-                //     $app->status = "Waiting";
-                // }
-                // $app->save();
-            // }
-            // foreach ($copyApprovers as $approver) {
-            //    if (auth()->user()->department_id == 2) {
-            //     if ($returnTo == 'DepartmentHead') {
-            //         if ($approver->level == 1) {
-            //             $approver->status = 'Pending'; 
-            //         } else {
-            //             $approver->status = 'Waiting'; 
-            //         }
-            //     } elseif ($returnTo == 'DocumentControlOfficer') {
-            //         if ($approver->level == 1) {
-            //             $approver->status = 'Approved'; 
-            //         } elseif ($approver->level == 2) {
-            //             $approver->status = 'Pending'; 
-            //         } else {
-            //             $approver->status = 'Waiting'; 
-            //         }
-            //     }
-            //     $approver->save(); 
-            //    } else {
-            //     if ($returnTo == 'DepartmentHead') {
-            //         if ($approver->level == 1) {
-            //             $approver->status = 'Pending'; 
-            //         } else {
-            //             $approver->status = 'Waiting'; 
-            //         }
-            //     } elseif ($returnTo == 'DocumentControlOfficer') {
-            //         if ($approver->level == 1) {
-            //             $approver->status = 'Approved'; 
-            //         } elseif ($approver->level == 2) {
-            //             $approver->status = 'Pending'; 
-            //         } else {
-            //             $approver->status = 'Waiting'; 
-            //         }
-            //     }
-            //     $approver->save(); 
-            //    }
-            // }
-            if ($returnTo == 'DepartmentHead') {
-                $approver = $copyApprovers
-                ->filter(function ($approver) {
-                    return $approver->level == 1;
-                })
-                ->pluck('user_id')->toArray();
-            } elseif ($returnTo == 'DocumentControlOfficer') {
-                $approver = $copyApprovers
-                ->filter(function ($approver) {
-                    return $approver->level == 2;
-                })
-                ->pluck('user_id')->toArray();
+
+            if ($returnTo == 'DepartmentHead')
+            {
+                $approvers = $copyApprovers->pluck('user_id')->toArray();
+                $dept_head = User::whereIn('id', $approvers)
+                    ->where(function($q) {
+                        $q->where('role','Department Head')->orWhere('role', 'Business Process Manager');
+                    })
+                    ->where('department_id', $request->department)
+                    ->first();
+                
+                foreach($copyApprovers as $approver)
+                {
+                    if ($dept_head->id == $approver->user_id)
+                    {
+                        $approver->status = 'Pending';
+                    }
+                    else
+                    {
+                        if ($approver->level > 1)
+                        {
+                            $approver->status = 'Waiting';
+                        }
+                    }
+
+                    if ($approver->user_id == auth()->id())
+                    {
+                        $approver->status = 'Returned';
+                    }
+
+                    $approver->save();
+                }
             }
+            elseif($returnTo == 'DocumentControlOfficer')
+            {
+                $approvers = $copyApprovers->pluck('user_id')->toArray();
+                $dco = User::whereIn('id', $approvers)->where('role', 'Document Control Officer')->first();
+                
+                foreach($copyApprovers as $approver)
+                {
+                    if ($dco->id == $approver->user_id)
+                    {
+                        $approver->status = 'Pending';
+                    }
+                    else
+                    {
+                        if ($approver->level > 1)
+                        {
+                            $approver->status = 'Waiting';
+                        }
+                    }
 
-           
-            $userHead = User::whereIn('id', $approver)
-            ->where(function ($query) {
-                $query->where('role', 'Business Process Manager')
-                    ->orWhere('role', 'Department Head');
-            })
-            // ->where('department_id', $copyRequest->department_id)
-            ->first();
-            // dd($userHead);
+                    if ($approver->user_id == auth()->id())
+                    {
+                        $approver->status = 'Returned';
+                    }
 
-            $dco = User::wherein('id', $approver)->where('role', 'Document Control Officer')->first();
+                    $approver->save();
+                }
+            }
             
-            $dcoLevel = $dco ? $copyApprovers->where('user_id', $dco->id)->first()->level : null;
-            $deptHeadLevel = $userHead ? $copyApprovers->where('user_id', $userHead->id)->first()->level : null;
+            // if ($returnTo == 'DepartmentHead') {
+            //     $approver = $copyApprovers
+            //     ->filter(function ($approver) {
+            //         return $approver->level == 1;
+            //     })
+            //     ->pluck('user_id')->toArray();
+            // } elseif ($returnTo == 'DocumentControlOfficer') {
+            //     $approver = $copyApprovers
+            //     ->filter(function ($approver) {
+            //         return $approver->level == 2;
+            //     })
+            //     ->pluck('user_id')->toArray();
+            // }
+            // dd($approver, $copyApprovers);
+           
+            // $userHead = User::whereIn('id', $approver)
+            // ->where(function ($query) {
+            //     $query->where('role', 'Business Process Manager')
+            //         ->orWhere('role', 'Department Head');
+            // })
+            // // ->where('department_id', $copyRequest->department_id)
+            // ->first();
+            // // dd($userHead);
 
-            foreach ($copyApprovers as $approver) {
-                if ($returnTo == 'DepartmentHead') {
-                    if ($approver->level > $deptHeadLevel) {
-                        $approver->status = 'Waiting';
-                    } elseif ($approver->user_id == $userHead->id) {
-                        $approver->status = 'Pending';
-                    }
-                }
-                elseif ($returnTo == 'DocumentControlOfficer') {
-                     if ($approver->level > $dcoLevel) {
-                        $approver->status = 'Waiting';
-                    } elseif ($approver->user_id == $dco->id) {
-                        $approver->status = 'Pending';
-                    }
-                }
-                $approver->save(); 
-                }
+            // $dco = User::wherein('id', $approver)->where('role', 'Document Control Officer')->first();
+            
+            // $dcoLevel = $dco ? $copyApprovers->where('user_id', $dco->id)->first()->level : null;
+            // $deptHeadLevel = $userHead ? $copyApprovers->where('user_id', $userHead->id)->first()->level : null;
+
+            // foreach ($copyApprovers as $approver) {
+            //     if ($returnTo == 'DepartmentHead') {
+            //         if ($approver->level > $deptHeadLevel) {
+            //             $approver->status = 'Waiting';
+            //         } elseif ($approver->user_id == $userHead->id) {
+            //             $approver->status = 'Pending';
+            //         }
+            //     }
+            //     elseif ($returnTo == 'DocumentControlOfficer') {
+            //          if ($approver->level > $dcoLevel) {
+            //             $approver->status = 'Waiting';
+            //         } elseif ($approver->user_id == $dco->id) {
+            //             $approver->status = 'Pending';
+            //         }
+            //     }
+            //     $approver->save(); 
+            //     }
             $declinedRequestNotif = User::where('id',$copyRequest->user_id)->first();
             $declinedRequestNotif->notify(new ReturnRequest($copyRequest,"DICR-","Document Information Change Request","change-requests"));
 
