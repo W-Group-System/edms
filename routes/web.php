@@ -109,6 +109,11 @@ Route::group(['middleware' => 'auth'], function () {
     
         // Archive Permits
         Route::get('/archive_permits', 'PermitController@viewArchived');
+
+        // Memorandum
+        Route::get('memorandum', 'MemorandumController@index');
+        Route::post('store_memorandum', 'MemorandumController@store');
+        Route::post('update_memorandum/{id}', 'MemorandumController@update');
     });
 
 });
