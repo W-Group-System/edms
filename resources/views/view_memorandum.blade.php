@@ -1,4 +1,4 @@
-<div class="modal" id="view{{$memo->id}}">
+{{-- <div class="modal" id="view{{$memo->id}}">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -17,4 +17,4 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}

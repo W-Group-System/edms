@@ -167,13 +167,12 @@
                         </ul>
                     </li>
                     @endif
-                    @if(auth()->user()->role == 'User')
                     <li class="@if(Request::is('memorandum')) active @endif" data-toggle="tooltip" data-placement="right" title="Memorandum">
                         <a href="{{url('memorandum')}}">
                             <i class="fa fa-sticky-note"></i>
+                            <span class="nav-label">Memorandum</span>
                         </a>
                     </li>
-                    @endif
                 </ul>
             </div>
         </nav>

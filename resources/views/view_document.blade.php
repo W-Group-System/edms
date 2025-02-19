@@ -227,6 +227,7 @@
                                         <li class="active"><a href="#tab-1" data-toggle="tab">Revisions</a></li>
                                         <li class=""><a href="#tab-2" data-toggle="tab">Change Requests</a></li>
                                         <li class=""><a href="#tab-3" data-toggle="tab">Copy Requests</a></li>
+                                        <li class=""><a href="#tab-4" data-toggle="tab">Memo</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -336,6 +337,38 @@
                                     </tbody>
                                 </table>
 
+                            </div>
+                            <div class="tab-pane" id="tab-4">
+                                <table class="table table-striped tables">
+                                    <thead>
+                                        <tr>
+                                            <th>Memo #</th>
+                                            <th>Title</th>
+                                            <th>Status</th>
+                                            <th>Attachment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($document->memo_document as $memo_docs)
+                                            <tr>
+                                                <td>{{$memo_docs->memorandum->memo_number}}</td>
+                                                <td>{{$memo_docs->memorandum->title}}</td>
+                                                <td>
+                                                    @if($memo_docs->memorandum->status == 'Private')
+                                                        <span class="label label-danger">Private</span>
+                                                    @else
+                                                        <span class="label label-primary">Public</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <a href="{{url($memo_docs->memorandum->file_memo)}}" target="_blank">
+                                                        <i class="fa fa-file"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                             </div>
 

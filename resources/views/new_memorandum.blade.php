@@ -22,8 +22,16 @@
                             <input type="date" name="released_date" class="form-control input-sm" min="{{date('Y-m-d')}}" required>
                         </div>
                         <div class="col-md-12">
+                            Type :
+                            <select data-placeholder="Select type" name="type" id="type" class="form-control cat" required>
+                                <option value=""></option>
+                                <option value="Informative">Informative</option>
+                                <option value="Align Policy">Align Policy</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12" id="policySelectOption" hidden>
                             Align Policy :
-                            <select data-placeholder="Choose policy" name="document" class="form-control cat" required>
+                            <select data-placeholder="Choose policy" name="document[]" class="form-control cat" multiple required>
                                 <option value=""></option>
                                 @foreach ($documents as $document)
                                     <option value="{{$document->id}}">{{$document->control_code .' - '.$document->title}}</option>

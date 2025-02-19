@@ -40,4 +40,8 @@ class Document extends Model implements Auditable
     {
         return $this->belongsTo(User::class,'process_owner');
     }
+    public function memo_document()
+    {
+        return $this->hasMany(MemorandumDocument::class);
+    }
 }

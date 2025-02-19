@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Document;
 use App\Memorandum;
+use App\MemorandumDocument;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -17,7 +18,12 @@ class MemorandumController extends Controller
     public function index()
     {
         $documents = Document::where('department_id', auth()->user()->department_id)->where('category', 'POLICY')->get();
-        $memos = Memorandum::where('department_id', auth()->user()->department_id)->get();
+
+        $memos = Memorandum::get();
+        if(auth()->user()->role == 'User')
+        {
+            $memos = Memorandum::where('department_id', auth()->user()->department_id)->orWhere('status', 'Public')->get();
+        }
         
         return view('memorandum', compact('documents', 'memos'));
     }
@@ -46,7 +52,8 @@ class MemorandumController extends Controller
         $memo->memo_number = $request->memo_number;
         $memo->title = $request->title;
         $memo->released_date = $request->released_date;
-        $memo->document_id = $request->document;
+        // $memo->document_id = $request->document;
+        $memo->type = $request->type;
         $memo->uploaded_by = auth()->user()->id;
         
         $memo_file = $request->file('memo_file');
@@ -55,7 +62,16 @@ class MemorandumController extends Controller
         $file = '/memorandum_files/'.$name;
 
         $memo->file_memo = $file;
+        $memo->status = 'Private';
         $memo->save();
+
+        foreach($request->document as $document)
+        {
+            $memo_docs = new MemorandumDocument();
+            $memo_docs->memorandum_id = $memo->id;
+            $memo_docs->document_id = $document;
+            $memo_docs->save();
+        }
 
         Alert::success('Successfully Saved')->persistent('Dismiss');
         return back();
@@ -99,6 +115,7 @@ class MemorandumController extends Controller
         $memo->title = $request->title;
         $memo->released_date = $request->released_date;
         $memo->document_id = $request->document;
+        $memo->type = $request->type;
         $memo->uploaded_by = auth()->user()->id;
         
         if ($request->has('memo_file'))
@@ -125,5 +142,23 @@ class MemorandumController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $memo = Memorandum::findOrFail($id);
+        if($request->has('status'))
+        {
+            $memo->status = 'Public';
+            Alert::success('Successfully Public')->persistent('Dismiss');
+        }
+        else
+        {
+            $memo->status = 'Private';
+            Alert::success('Successfully Private')->persistent('Dismiss');
+        }
+        $memo->save();
+
+        return back();
     }
 }

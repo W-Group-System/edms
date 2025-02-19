@@ -16,8 +16,8 @@ class Memorandum extends Model
     {
         return $this->belongsTo(User::class,'uploaded_by');
     }
-    public function document()
+    public function memorandum_document()
     {
-        return $this->belongsTo(Document::class);
+        return $this->hasMany(MemorandumDocument::class);
     }
 }
