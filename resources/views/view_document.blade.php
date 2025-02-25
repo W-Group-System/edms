@@ -13,7 +13,17 @@
                 <div class="ibox">
                     <div class="ibox-title">
                         
-                        <h5>{{$document->title}} </h5>@if($document->status == null)<span class="label label-primary">Active</span>  @else<span class="label label-danger">Obsolete</span> @endif
+                        {{-- <h5>{{$document->title}} </h5> --}}
+                        @php
+                            $updated_title = $document->change_requests->where('status','Approved')->sortByDesc('id')->first();
+                        @endphp
+                        @if($updated_title)
+                        <h5>{{$updated_title->title}}</h5>
+                        @else
+                        <h5>{{$document->title}}</h5>
+                        @endif
+                        
+                        @if($document->status == null)<span class="label label-primary">Active</span>  @else<span class="label label-danger">Obsolete</span> @endif
                         <div class='float-right text-right'>
                             @if(auth()->user()->role == "Document Control Officer")
                         <button class="btn btn-sm btn-info "  title='Edit' data-target="#edit_document" data-toggle="modal"><i class="fa fa-edit"></i></button> 
