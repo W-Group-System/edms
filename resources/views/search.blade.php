@@ -63,7 +63,7 @@
                                         <small class="label label-info">{{$document->department->dep_head->name}}</small>
                                     @endif
                                     <p>
-                                        Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
+                                        Date Effective : {{date('M d, Y',strtotime($document->updated_at))}} <br>
                                         Company : {{$document->department->name}}
                                         
                                     </p>
@@ -85,7 +85,7 @@
                                     <small class="label label-info">{{$document->department->dep_head->name}}</small>
                                 @endif
                                 <p>
-                                    Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
+                                    Date Effective : {{date('M d, Y',strtotime($document->updated_at))}} <br>
                                     Company : {{$document->department->name}}
                                     
                                 </p>
@@ -106,7 +106,7 @@
                                     <small class="label label-info">{{$document->department->dep_head->name}}</small>
                                 @endif
                                 <p>
-                                    Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
+                                    Date Effective : {{date('M d, Y',strtotime($document->updated_at))}} <br>
                                     Company : {{$document->department->name}}
                                     
                                 </p>
@@ -127,7 +127,7 @@
                                     <small class="label label-info">{{$document->department->dep_head->name}}</small>
                                 @endif
                                 <p>
-                                    Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
+                                    Date Effective : {{date('M d, Y',strtotime($document->updated_at))}} <br>
                                     Company : {{$document->department->name}}
                                     
                                 </p>
@@ -148,7 +148,7 @@
                                     <small class="label label-info">{{$document->department->dep_head->name}}</small>
                                 @endif
                                 <p>
-                                    Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
+                                    Date Effective : {{date('M d, Y',strtotime($document->updated_at))}} <br>
                                     Company : {{$document->department->name}}
                                     
                                 </p>
@@ -172,7 +172,7 @@
                                     <small class="label label-info">{{$document->department->dep_head->name}}</small>
                                 @endif
                                 <p>
-                                    Date Effective : {{date('M d, Y',strtotime($document->effective_date))}} <br>
+                                    Date Effective : {{date('M d, Y',strtotime($document->updated_at))}} <br>
                                     Company : {{$document->department->name}}
                                     
                                 </p>
