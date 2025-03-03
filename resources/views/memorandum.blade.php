@@ -24,7 +24,7 @@
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>Memorandum
-                            @if(auth()->user()->role == 'User' || auth()->user()->role == 'Document Control Officer' || auth()->user()->role == 'Administrator' || auth()->user()->role == 'Document Control Officer')
+                            @if(auth()->user()->role == 'User' || auth()->user()->role == 'Document Control Officer' || auth()->user()->role == 'Administrator' || auth()->user()->role == 'Business Process Manager')
                             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#new">
                                 <i class="fa fa-plus"></i>
                                 &nbsp;
