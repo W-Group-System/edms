@@ -1130,6 +1130,7 @@ class RequestController extends Controller
             {   
                 $document = Document::findOrFail($copyRequest->document_id);
                 $document->process_owner = $copyRequest->user_id;
+                $document->title = $copyRequest->title;
                 $document->save();
             }
 

@@ -54,15 +54,7 @@
                             @foreach($documents->where('category', 'PROCEDURE') as $document)
                                 <div class="search-result">
                                     <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
-                                    {{-- Title : {{$document->title}}<br> --}}
-                                    @php
-                                        $updated_title = $document->change_requests->where('status','Approved')->sortByDesc('id')->first();
-                                    @endphp
-                                    @if($updated_title)
-                                    Title : {{$updated_title->title}} <br>
-                                    @else
-                                    Title : {{$document->title}} <br>
-                                    @endif
+                                    Title : {{$document->title}}<br>
                                     Process Owner : 
                                     {{-- @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif --}}
                                     @if($document->process_owner != null)
@@ -84,15 +76,7 @@
                         @foreach($documents->where('category', 'POLICY') as $document)
                             <div class="search-result">
                                 <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
-                                {{-- Title : {{$document->title}}<br> --}}
-                                @php
-                                    $updated_title = $document->change_requests->where('status','Approved')->sortByDesc('id')->first();
-                                @endphp
-                                @if($updated_title)
-                                Title : {{$updated_title->title}} <br>
-                                @else
-                                Title : {{$document->title}} <br>
-                                @endif
+                                Title : {{$document->title}}<br>
                                 {{-- Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif --}}
                                 Process Owner : 
                                 @if($document->process_owner != null)
@@ -113,15 +97,7 @@
                         @foreach($documents->where('category', 'FORM') as $document)
                             <div class="search-result">
                                 <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
-                                {{-- Title : {{$document->title}}<br> --}}
-                                @php
-                                    $updated_title = $document->change_requests->where('status','Approved')->sortByDesc('id')->first();
-                                @endphp
-                                @if($updated_title)
-                                Title : {{$updated_title->title}} <br>
-                                @else
-                                Title : {{$document->title}} <br>
-                                @endif
+                                Title : {{$document->title}}<br>
                                 {{-- Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif --}}
                                 Process Owner : 
                                 @if($document->process_owner != null)
@@ -142,15 +118,7 @@
                         @foreach($documents->where('category', 'TEMPLATE') as $document)
                             <div class="search-result">
                                 <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
-                                {{-- Title : {{$document->title}}<br> --}}
-                                @php
-                                    $updated_title = $document->change_requests->where('status','Approved')->sortByDesc('id')->first();
-                                @endphp
-                                @if($updated_title)
-                                Title : {{$updated_title->title}} <br>
-                                @else
-                                Title : {{$document->title}} <br>
-                                @endif
+                                Title : {{$document->title}}<br>
                                 {{-- Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif --}}
                                 Process Owner : 
                                 @if($document->process_owner != null)
@@ -171,15 +139,7 @@
                         @foreach($documents->where('category', 'ANNEX') as $document)
                             <div class="search-result">
                                 <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
-                                {{-- Title : {{$document->title}}<br> --}}
-                                @php
-                                    $updated_title = $document->change_requests->where('status','Approved')->sortByDesc('id')->first();
-                                @endphp
-                                @if($updated_title)
-                                Title : {{$updated_title->title}} <br>
-                                @else
-                                Title : {{$document->title}} <br>
-                                @endif
+                                Title : {{$document->title}}<br>
                                 {{-- Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif --}}
                                 Process Owner : 
                                 @if($document->process_owner != null)
@@ -203,15 +163,7 @@
                         @foreach($documents->whereNotIn('category', $category) as $document)
                             <div class="search-result">
                                 <h3><a href="{{url('view-document/'.$document->id)}}" target="_blank"><i>({{$document->old_control_code}})</i> {{$document->control_code}} Rev. {{$document->version}}</a> @if($document->public == null)<span class="label label-danger">Private</span>@else<span class="label label-primary">Public</span>@endif</h3>
-                                {{-- Title : {{$document->title}}<br> --}}
-                                @php
-                                    $updated_title = $document->change_requests->where('status','Approved')->sortByDesc('id')->first();
-                                @endphp
-                                @if($updated_title)
-                                Title : {{$updated_title->title}} <br>
-                                @else
-                                Title : {{$document->title}} <br>
-                                @endif
+                                Title : {{$document->title}}<br>
                                 {{-- Process Owner : @if(count($document->department->drc) != 0) @foreach($document->department->drc as $drc) <small class="label label-info"> {{$drc->name}} </small> @endforeach @else <small class="label label-danger">No Process Owner</small>  @endif --}}
                                 Process Owner : 
                                 @if($document->process_owner != null)

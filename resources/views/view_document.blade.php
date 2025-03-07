@@ -13,15 +13,7 @@
                 <div class="ibox">
                     <div class="ibox-title">
                         
-                        {{-- <h5>{{$document->title}} </h5> --}}
-                        @php
-                            $updated_title = $document->change_requests->where('status','Approved')->sortByDesc('id')->first();
-                        @endphp
-                        @if($updated_title)
-                        <h5>{{$updated_title->title}}</h5>
-                        @else
-                        <h5>{{$document->title}}</h5>
-                        @endif
+                        <h5>{{$document->title}} </h5>
                         
                         @if($document->status == null)<span class="label label-primary">Active</span>  @else<span class="label label-danger">Obsolete</span> @endif
                         <div class='float-right text-right'>
