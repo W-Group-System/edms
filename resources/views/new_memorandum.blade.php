@@ -19,7 +19,7 @@
                         </div>
                         <div class="col-md-12">
                             Released Date :
-                            <input type="date" name="released_date" class="form-control input-sm" min="{{date('Y-m-d')}}" required>
+                            <input type="date" name="released_date" class="form-control input-sm" required>
                         </div>
                         <div class="col-md-12">
                             Type :
