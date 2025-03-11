@@ -187,6 +187,13 @@
                                     <dt>Attachments</dt>
                                         @foreach($document->attachments as $attachment)
                                             @if($attachment->attachment != null)
+                                                @if(($attachment->type == "soft_copy") && ($document->department_id == 8))
+                                                <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-word-o"></i> Editable Copy</a> 
+                                                    @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (auth()->user()->role == "Document Control Officer"))
+                                                    <a href='#' class='text-danger'  data-target="#edit{{$attachment->id}}"  data-toggle="modal" ><i class="fa fa-edit"></i> </a>
+                                                    @endif
+                                                </dd>
+                                                @endif
                                                 @if(($attachment->type == "soft_copy") && (auth()->user()->audit_role == null))
                                                 <dd><a href='{{url($attachment->attachment)}}' target="_blank" ><i class="fa fa-file-word-o"></i> Editable Copy</a> 
                                                     @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Management Representative') || (auth()->user()->role == "Document Control Officer"))
