@@ -29,6 +29,10 @@
                             <div class="col-lg-12">
                                 <div class="m-b-md">
                                         @if((auth()->user()->role == "User") || (auth()->user()->role == "Documents and Records Controller") || (auth()->user()->role == "Document Control Officer") || (auth()->user()->role == "Department Head"))
+                                            @if($document->department_id == 8)
+                                                <a href="#" data-target="#changeRequest" data-toggle="modal" class="btn btn-warning btn-sm ">Change Request </a>
+                                                <a href="#"  data-target="#obsoleteRequest" data-toggle="modal"  class="btn btn-danger btn-sm ">Obsolete Request </a>
+                                            @endif 
                                             @if(auth()->user()->role == "Documents and Records Controller")
                                                 @if(auth()->user()->department_id != $document->department_id)
                                                     @if(auth()->user()->audit_role == null)
