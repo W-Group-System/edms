@@ -80,7 +80,7 @@ class CopyController extends Controller
         }
         else
         {
-            $first_notify = User::where('id',$request->drc)->first();
+            $first_notify = User::where('id',$request->immediate_head_document)->first();
         }
         $first_notify->notify(new ForApproval($copy_request,"CR-","Copy Request"));
         $dco = User::whereIn('id', $request->dco)->get();
