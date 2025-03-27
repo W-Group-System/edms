@@ -24,13 +24,13 @@
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>Memorandum
-                            @if(auth()->user()->role == 'User' || auth()->user()->role == 'Document Control Officer' || auth()->user()->role == 'Administrator' || auth()->user()->role == 'Business Process Manager')
+                            {{-- @if(auth()->user()->role == 'User' || auth()->user()->role == 'Document Control Officer' || auth()->user()->role == 'Administrator' || auth()->user()->role == 'Business Process Manager') --}}
                             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#new">
                                 <i class="fa fa-plus"></i>
                                 &nbsp;
                                 Upload
                             </button>
-                            @endif
+                            {{-- @endif --}}
                         </h5>
                     </div>
                     <div class="ibox-content">
@@ -39,6 +39,7 @@
                                 <thead>
                                     <tr>
                                         <th>Action</th>
+                                        <th>Public</th>
                                         <th>Department</th>
                                         <th>Memo Number</th>
                                         <th>Title</th>
@@ -56,17 +57,26 @@
                                                 {{-- <button type="button" class="btn btn-sm btn-info" title="View" data-toggle="modal" data-target="#view{{$memo->id}}">
                                                     <i class="fa fa-eye"></i>
                                                 </button> --}}
-                                                @if(auth()->user()->role == 'User')
                                                 <button type="button" class="btn btn-sm btn-warning" title="Edit" data-toggle="modal" data-target="#edit{{$memo->id}}">
                                                     <i class="fa fa-pencil-square-o"></i>
                                                 </button>
-                                                @elseif(auth()->user()->role == 'Document Control Officer')
+                                                @if(auth()->user()->role == 'Document Control Officer')
+                                                <form method="POST" action="{{ url('delete_memo/'.$memo->id) }}" onsubmit="show()">
+                                                    @csrf
+
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                                
+                                                @endif
+                                            </td>
+                                            <td>
                                                 <form method="POST" action="{{url('update_status/'.$memo->id)}}" onsubmit="show()" id="updateStatusForm{{$memo->id}}">
                                                     @csrf 
 
                                                     <input type="checkbox" name="status" class="form-check" onchange="updateStatus({{$memo->id}})" value="Public" @if($memo->status == 'Public') checked @endif>
                                                 </form>
-                                                @endif
                                             </td>
                                             <td>{{$memo->department->name}}</td>
                                             <td>{{$memo->memo_number}}</td>
@@ -148,10 +158,12 @@
             if($(this).val() == 'Align Policy')
             {
                 $("#policySelectOption").removeAttr('hidden')
+                $("[name='document[]']").prop('required', true)
             }
             else
             {
                 $("#policySelectOption").prop('hidden', true)
+                $("[name='document[]']").removeAttr('required')
             }
         })
     });

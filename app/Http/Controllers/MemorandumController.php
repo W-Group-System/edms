@@ -66,12 +66,15 @@ class MemorandumController extends Controller
         $memo->status = 'Private';
         $memo->save();
 
-        foreach($request->document as $document)
+        if($request->has('document'))
         {
-            $memo_docs = new MemorandumDocument();
-            $memo_docs->memorandum_id = $memo->id;
-            $memo_docs->document_id = $document;
-            $memo_docs->save();
+            foreach($request->document as $document)
+            {
+                $memo_docs = new MemorandumDocument();
+                $memo_docs->memorandum_id = $memo->id;
+                $memo_docs->document_id = $document;
+                $memo_docs->save();
+            }
         }
 
         Alert::success('Successfully Saved')->persistent('Dismiss');
@@ -142,7 +145,11 @@ class MemorandumController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $memo = Memorandum::findOrFail($id);
+        $memo->delete();
+
+        Alert::success('Successfully Deleted')->persistent('Dismiss');
+        return back();
     }
 
     public function updateStatus(Request $request, $id)

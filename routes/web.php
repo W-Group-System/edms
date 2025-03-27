@@ -115,6 +115,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('store_memorandum', 'MemorandumController@store');
         Route::post('update_memorandum/{id}', 'MemorandumController@update');
         Route::post('update_status/{id}', 'MemorandumController@updateStatus');
+        Route::post('delete_memo/{id}', 'MemorandumController@destroy');
     });
 
 });

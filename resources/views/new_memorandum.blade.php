@@ -23,7 +23,7 @@
                         </div>
                         <div class="col-md-12">
                             Type :
-                            <select data-placeholder="Select type" name="type" id="type" class="form-control cat" required>
+                            <select data-placeholder="Select type" name="type" id="type" class="form-control cat">
                                 <option value=""></option>
                                 <option value="Informative">Informative</option>
                                 <option value="Align Policy">Align Policy</option>
