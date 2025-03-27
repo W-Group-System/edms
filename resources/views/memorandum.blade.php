@@ -2,6 +2,7 @@
 
 @section('css')
 <link href="{{ asset('login_css/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+<link href="{{ asset('login_css/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -61,13 +62,13 @@
                                                     <i class="fa fa-pencil-square-o"></i>
                                                 </button>
                                                 @if(auth()->user()->role == 'Document Control Officer')
-                                                <form method="POST" action="{{ url('delete_memo/'.$memo->id) }}" onsubmit="show()">
+                                                {{-- <form method="POST" action="{{ url('delete_memo/'.$memo->id) }}" onsubmit="show()">
                                                     @csrf
 
-                                                    <button type="submit" class="btn btn-sm btn-danger">
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
-                                                </form>
+                                                </form> --}}
+                                                <button type="button" class="btn btn-sm btn-danger deleteMemo" id="{{ $memo->id }}">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
                                                 
                                                 @endif
                                             </td>
@@ -120,6 +121,7 @@
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
+<script src="{{ asset('login_css/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
 <script>
     function updateStatus(id)
     {
@@ -166,6 +168,37 @@
                 $("[name='document[]']").removeAttr('required')
             }
         })
+
+        $('.deleteMemo').click(function () {
+            var id = this.id;
+            
+            swal({
+                title: "Are you sure?",
+                text: "This memo will be deleted!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            }, function (){
+                $.ajax({
+                    dataType: 'json',
+                    type:'POST',
+                    url:  '{{url("delete_memo")}}',
+                    data:{id:id},
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                }).done(function(data){
+                    console.log(data);
+                    swal("Deleted!", "Memo is now deleted.", "success");
+                    location.reload();
+                }).fail(function(data)
+                {
+                    
+                    swal("Deleted!", "Memo is now deleted.", "success");
+                location.reload();
+                });
+            });
+        });
     });
 
 </script>

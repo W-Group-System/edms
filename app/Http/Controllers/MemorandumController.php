@@ -143,9 +143,9 @@ class MemorandumController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $memo = Memorandum::findOrFail($id);
+        $memo = Memorandum::findOrFail($request->id);
         $memo->delete();
 
         Alert::success('Successfully Deleted')->persistent('Dismiss');
