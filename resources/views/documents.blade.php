@@ -62,10 +62,10 @@
                 <div class="ibox-content">
                     <form method="GET" action="" class="custom_form" enctype="multipart/form-data">
                         <div class="row">
-                            <div class="col-md-3">
+                            {{-- <div class="col-md-3">
                                 <input type='text' class='form-control' name='search' placeholder="Search Control Code,Title,Type of Document" >
                                
-                            </div>
+                            </div> --}}
                             <div class="col-md-2">
                                 <select class='form-control cat' name='department' placeholder="Department" >
                                         <option value=''>Select All Department</option>
