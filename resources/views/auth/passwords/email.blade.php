@@ -11,7 +11,7 @@
                     {{ config('app.name', 'Laravel') }}
                 </span>
                 <span class="login100-form-title p-b-43">
-                    <h6>{{ __('Reset Passwordsssss') }}</h6>
+                    <h6>{{ __('Reset Password') }}</h6>
                 </span>
                 
                 @if (session('status'))
