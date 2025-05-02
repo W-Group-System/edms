@@ -82,6 +82,7 @@ Route::group(['middleware' => 'auth'], function () {
         //DCO
         Route::get('dco','DcoController@index')->name('settings');
         Route::post('edit-dco/{id}','DcoController@update')->name('settings');
+        Route::post('edit_dco/{id}','DcoController@editDco')->name('settings');
     
     
         Route::get('/logs', 'AuditController@index')->name('reports');

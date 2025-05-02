@@ -37,4 +37,19 @@ class DcoController extends Controller
         Alert::success('Successfully Assigned')->persistent('Dismiss');
         return back();
     }
+    public function editDco(Request $request,$id)
+    {
+        $dcos = DepartmentDco::where('department_id', $id)->delete();
+
+        foreach($request->dco as $dco)
+        {
+            $dcos = new DepartmentDco;
+            $dcos->user_id = $dco;
+            $dcos->department_id = $id;
+            $dcos->save();
+        }
+        
+        Alert::success('Successfully Assigned')->persistent('Dismiss');
+        return back();
+    }
 }

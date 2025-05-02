@@ -62,6 +62,7 @@
                         <table class="table table-striped table-bordered table-hover tables" >
                         <thead>
                             <tr>
+                                <th>Action</th>
                                 <th>Name</th>
                                 <th>Code</th>
                                 <th>Status</th>
@@ -70,10 +71,17 @@
                         <tbody>
                             @foreach($departments as $department)
                             <tr>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit{{ $department->id }}">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                    </button>
+                                </td>
                                 <td>{{$department->name}}</td>
                                 <td>{{$department->code}}</td>
                                 <td>@if(count($department->dco) == 0) <small class="label label-danger">No DCO</small>  @else @foreach($department->dco as $dco) <small class="label label-primary">{{$dco->user->name}}</small>@endforeach @endif</td>
                             </tr>
+                            
+                            @include('edit_dco')
                             @endforeach
                         </tbody>
                         </table>
