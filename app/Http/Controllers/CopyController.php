@@ -85,7 +85,7 @@ class CopyController extends Controller
         }
         $first_notify->notify(new ForApproval($copy_request,"CR-","Copy Request"));
         $dco = User::whereIn('id', $request->dco)->get();
-        dd($dco);
+        
         foreach($dco as $d)
         {
             $d->notify(new ForApproval($copy_request,"CR-","Copy Request"));
