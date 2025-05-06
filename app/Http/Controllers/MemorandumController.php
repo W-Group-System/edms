@@ -148,6 +148,8 @@ class MemorandumController extends Controller
         $memo = Memorandum::findOrFail($request->id);
         $memo->delete();
 
+        $memo_docs = MemorandumDocument::where('memorandum_id', $request->id)->delete();
+
         Alert::success('Successfully Deleted')->persistent('Dismiss');
         return back();
     }

@@ -58,9 +58,11 @@
                                                 {{-- <button type="button" class="btn btn-sm btn-info" title="View" data-toggle="modal" data-target="#view{{$memo->id}}">
                                                     <i class="fa fa-eye"></i>
                                                 </button> --}}
+                                                @if($memo->department_id == auth()->user()->department_id)
                                                 <button type="button" class="btn btn-sm btn-warning" title="Edit" data-toggle="modal" data-target="#edit{{$memo->id}}">
                                                     <i class="fa fa-pencil-square-o"></i>
                                                 </button>
+                                                @endif
                                                 @if(auth()->user()->role == 'Document Control Officer')
                                                 {{-- <form method="POST" action="{{ url('delete_memo/'.$memo->id) }}" onsubmit="show()">
                                                     @csrf

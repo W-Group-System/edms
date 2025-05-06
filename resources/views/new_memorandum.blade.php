@@ -33,9 +33,15 @@
                             Align Policy :
                             <select data-placeholder="Choose policy" name="document[]" class="form-control cat" multiple required>
                                 <option value=""></option>
-                                @foreach ($documents as $document)
-                                    <option value="{{$document->id}}">{{$document->control_code .' - '.$document->title}}</option>
-                                @endforeach
+                                @if(auth()->user()->role == 'User')
+                                    @foreach ($documents->where('department_id', auth()->user()->department_id) as $document)
+                                        <option value="{{$document->id}}">{{$document->control_code .' - '.$document->title}}</option>
+                                    @endforeach
+                                @else
+                                    @foreach ($documents as $document)
+                                        <option value="{{$document->id}}">{{$document->control_code .' - '.$document->title}}</option>
+                                    @endforeach
+                                @endif
                             </select>
                         </div>
                         <div class="col-md-12">
