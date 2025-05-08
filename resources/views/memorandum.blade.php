@@ -75,12 +75,15 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <form method="POST" action="{{url('update_status/'.$memo->id)}}" onsubmit="show()" id="updateStatusForm{{$memo->id}}">
-                                                    @csrf 
+                                                @if(auth()->user()->role == 'Document Control Officer' || auth()->user()->role == 'Administrator')
+                                                    <form method="POST" action="{{url('update_status/'.$memo->id)}}" onsubmit="show()" id="updateStatusForm{{$memo->id}}">
+                                                        @csrf 
 
-                                                    <input type="checkbox" name="status" class="form-check" onchange="updateStatus({{$memo->id}})" value="Public" @if($memo->status == 'Public') checked @endif>
-                                                </form>
+                                                        <input type="checkbox" name="status" class="form-check" onchange="updateStatus({{$memo->id}})" value="Public" @if($memo->status == 'Public') checked @endif>
+                                                    </form>
+                                                @endif
                                             </td>
+
                                             <td>{{$memo->department->name}}</td>
                                             <td>{{$memo->memo_number}}</td>
                                             <td>{{$memo->title}}</td>
