@@ -173,6 +173,14 @@
                             <span class="nav-label">Memorandum</span>
                         </a>
                     </li>
+                    @if(auth()->user()->role == 'Department Head' || auth()->user()->role == 'Administrator')
+                    <li class="@if(Request::is('supporting_document')) active @endif" data-toggle="tooltip" data-placement="right" title="Supporting Documents">
+                        <a href="{{url('supporting_document')}}">
+                            <i class="fa fa-file"></i>
+                            <span class="nav-label">Supporting Documents</span>
+                        </a>
+                    </li>
+                    @endif
                 </ul>
             </div>
         </nav>

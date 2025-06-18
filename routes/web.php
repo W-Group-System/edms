@@ -117,6 +117,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('update_memorandum/{id}', 'MemorandumController@update');
         Route::post('update_status/{id}', 'MemorandumController@updateStatus');
         Route::post('delete_memo', 'MemorandumController@destroy');
+
+        // Supporting Documents
+        Route::get('supporting_document', 'SupportingDocumentController@index');
+        Route::post('store_supporting_document', 'SupportingDocumentController@store');
+        Route::post('destroy_supporting_document', 'SupportingDocumentController@destroy');
     });
 
 });
