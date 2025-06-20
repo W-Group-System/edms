@@ -17,4 +17,8 @@ class SupportingDocument extends Model implements Auditable
     {
         return $this->belongsTo(User::class,'uploaded_by');
     }
+    public function supporting_document_dept()
+    {
+        return $this->hasMany(SupportingDocumentsDepartment::class);
+    }
 }

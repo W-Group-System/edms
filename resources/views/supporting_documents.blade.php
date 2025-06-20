@@ -55,8 +55,19 @@
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             </td>
-                                            <td>{{ $supporting_document->supporting_docs }}</td>
-                                            <td>{{ $supporting_document->department->name }}</td>
+                                            <td>
+                                                @if($supporting_document->others)
+                                                {{ $supporting_document->supporting_docs }} - {{ $supporting_document->others }} 
+                                                @else
+                                                {{ $supporting_document->supporting_docs }}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @foreach ($supporting_document->supporting_document_dept  as $key=>$support_docs_dept)
+                                                    <small>{{ $key+1 }}.</small>
+                                                    {{ $support_docs_dept->department->name }} <br>
+                                                @endforeach 
+                                            </td>
                                             <td>{{ $supporting_document->title }}</td>
                                             <td>{{ $supporting_document->uploadedBy->name }}</td>
                                             <td>
@@ -116,18 +127,18 @@
 
         });
 
-        // $("#type").on('change', function() {
-        //     if($(this).val() == 'Align Policy')
-        //     {
-        //         $("#policySelectOption").removeAttr('hidden')
-        //         $("[name='document[]']").prop('required', true)
-        //     }
-        //     else
-        //     {
-        //         $("#policySelectOption").prop('hidden', true)
-        //         $("[name='document[]']").removeAttr('required')
-        //     }
-        // })
+        $("[name='supporting_documents']").on('change', function() {
+            if($(this).val() == 'Others')
+            {
+                $("#othersCol").removeAttr('hidden')
+                $("[name='others']").prop('required', true)
+            }
+            else
+            {
+                $("#othersCol").prop('hidden', true)
+                $("[name='others']").removeAttr('required')
+            }
+        })
 
         $('.deleteSuppDocs').click(function () {
             var id = this.id;

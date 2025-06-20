@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Department;
 use App\SupportingDocument;
+use App\SupportingDocumentsDepartment;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -16,8 +18,9 @@ class SupportingDocumentController extends Controller
     public function index()
     {
         $supporting_documents = SupportingDocument::get();
+        $departments = Department::whereNull('status')->get();
 
-        return view('supporting_documents', compact('supporting_documents'));
+        return view('supporting_documents', compact('supporting_documents','departments'));
     }
 
     /**
@@ -38,18 +41,26 @@ class SupportingDocumentController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $attachment = $request->file('attachment');
         $name = time().'_'.$attachment->getClientOriginalName();
         $attachment->move(public_path('supporting_documents'),$name);
 
         $supporting_documents = new SupportingDocument;
-        $supporting_documents->department_id = auth()->user()->department_id;
+        // $supporting_documents->department_id = auth()->user()->department_id;
         $supporting_documents->title = $request->title;
         $supporting_documents->uploaded_by = auth()->user()->id;
         $supporting_documents->file = '/supporting_documents/'.$name;
         $supporting_documents->supporting_docs = $request->supporting_documents;
+        $supporting_documents->others = $request->others;
         $supporting_documents->save();
+
+        foreach($request->department as $department)
+        {
+            $supporting_documents_department = new SupportingDocumentsDepartment;
+            $supporting_documents_department->department_id = $department;
+            $supporting_documents_department->supporting_document_id = $supporting_documents->id;
+            $supporting_documents_department->save();
+        }
         
         Alert::success('Successfully Saved')->persistent('Dismiss');
         return back();
