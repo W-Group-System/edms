@@ -18,6 +18,13 @@ class SupportingDocumentController extends Controller
     public function index()
     {
         $supporting_documents = SupportingDocument::get();
+        if (auth()->user()->role == "User" || auth()->user()->role == "Department Head")
+        {
+            $supporting_documents = SupportingDocument::whereHas('supporting_document_dept', function($q) {
+                    $q->where('department_id', auth()->user()->department_id);
+                })
+                ->get();
+        }
         $departments = Department::whereNull('status')->get();
 
         return view('supporting_documents', compact('supporting_documents','departments'));
