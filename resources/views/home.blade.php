@@ -2,6 +2,7 @@
 @section('css')
 <link href="{{ asset('login_css/css/plugins/c3/c3.min.css') }}" rel="stylesheet">
 <link href="{{ asset('login_css/css/plugins/morris/morris-0.4.3.min.css') }}" rel="stylesheet">
+<link href="{{ asset('login_css/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
 @endsection
 @section('content')
 
@@ -61,6 +62,39 @@
         </div>
     </div>
     <div class="row ">
+        <div class="col-lg-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-success pull-right">as of this Month ({{date('M. Y')}})</span>
+                    <h5>WGI Policies</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><a href="javascript:void(0)" data-toggle="modal" data-target="#viewWGI">{{count($company_policies->where('company_id',1))}}</a></h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-success pull-right">as of this Month ({{date('M. Y')}})</span>
+                    <h5>WHI Policies</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><a href="javascript:void(0)" data-toggle="modal" data-target="#viewWHI">{{count($company_policies->where('company_id',2))}}</a></h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-success pull-right">as of this Month ({{date('M. Y')}})</span>
+                    <h5>WLI Policies</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><a href="javascript:void(0)" data-toggle="modal" data-target="#viewWLI">{{count($company_policies->where('company_id',3))}}</a></h1>
+                </div>
+            </div>
+        </div>
         {{-- <div class="col-lg-8 stretch-card">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
@@ -105,6 +139,7 @@
                 </div>
             </div>
         </div> --}}
+        @if(auth()->user()->role == "Department Head")
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
@@ -118,7 +153,45 @@
                 </div>
             </div>
         </div>
-        
+        @endif
+        @if(auth()->user()->role == "Administrator" || auth()->user()->role == "Business Process Manager" || auth()->user()->role == "Document Control Officer")
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>W Group Inc. Documents </h5>
+                </div>
+                <div class="ibox-content">
+                    <div>
+                        <div id="wgiGraph"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>W Hydrocoloids Inc. Documents </h5>
+                </div>
+                <div class="ibox-content">
+                    <div>
+                        <div id="whiGraph"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>W Landmark Inc. Documents </h5>
+                </div>
+                <div class="ibox-content">
+                    <div>
+                        <div id="wliGraph"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
   
     <div class='row'>
@@ -166,7 +239,9 @@
         @endif
     </div>
 </div>
-
+@include('view_wgi_policies')
+@include('view_whi_policies')
+@include('view_wli_policies')
 @endsection
 
 @section('js')
@@ -182,6 +257,9 @@
 <script src="{{ asset('login_css/js/plugins/c3/c3.min.js') }}"></script>
 <script>
     var departments = {!! json_encode(($departments)->toArray()) !!};
+    var wgi_departments = {!! json_encode(($wgi_departments)->toArray()) !!};
+    var whi_departments = {!! json_encode(($whi_departments)->toArray()) !!};
+    var wli_departments = {!! json_encode(($wli_departments)->toArray()) !!};
     var for_renewal = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))))) !!};
     var over_due = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d'))))) !!};
     var active = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','>=',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))))) !!};
@@ -272,6 +350,164 @@
                     },
                 }
             });
+        var types_names = {!! json_encode(($categories)->toArray()) !!};
+        var colors ={};
+        var column = ['x'];
+        for(y=0;y<whi_departments.length;y++)
+        {
+            column.push(whi_departments[y].code+"("+whi_departments[y].documents_count+")");
+        }
+        var types = [];
+        var columns= [column];
+        for(i =0;i< types_names.length;i++)
+        {
+            type_column=[types_names[i].name];
+            
+            for(z=0;z<whi_departments.length;z++)
+            {
+                var doc = whi_departments[z].documents;
+                
+                var count = doc.filter(o => o.category === types_names[i].name);
+                type_column.push(count.length)
+            }
+            
+            columns.push(type_column);
+            colors[types_names[i].code] = types_names[i].color;
+            types.push(types_names[i].name);
+        }
+        final_types = [types];
+        
+        c3.generate({
+            bindto: '#whiGraph',
+            data:{
+                x : 'x',
+                columns: columns,
+                colors:colors,
+                type: 'bar',
+                groups: final_types,
+                
+            },
+            axis: {
+                x: {
+                    show: true,
+                    type: 'categorized', // this is needed to load string x value
+                },
+                y2: {
+                    show: true,
+                    label: 'Counts'
+                },
+                y: {
+                    show: true,
+                    label: 'Counts'
+                },
+            }
+        });
+
+        var types_names = {!! json_encode(($categories)->toArray()) !!};
+        var colors ={};
+        var column = ['x'];
+        for(y=0;y<wgi_departments.length;y++)
+        {
+            column.push(wgi_departments[y].code+"("+wgi_departments[y].documents_count+")");
+        }
+        var types = [];
+        var columns= [column];
+        for(i =0;i< types_names.length;i++)
+        {
+            type_column=[types_names[i].name];
+            
+            for(z=0;z<wgi_departments.length;z++)
+            {
+                var doc = wgi_departments[z].documents;
+                
+                var count = doc.filter(o => o.category === types_names[i].name);
+                type_column.push(count.length)
+            }
+            
+            columns.push(type_column);
+            colors[types_names[i].code] = types_names[i].color;
+            types.push(types_names[i].name);
+        }
+        final_types = [types];
+        
+        c3.generate({
+            bindto: '#wgiGraph',
+            data:{
+                x : 'x',
+                columns: columns,
+                colors:colors,
+                type: 'bar',
+                groups: final_types,
+                
+            },
+            axis: {
+                x: {
+                    show: true,
+                    type: 'categorized', // this is needed to load string x value
+                },
+                y2: {
+                    show: true,
+                    label: 'Counts'
+                },
+                y: {
+                    show: true,
+                    label: 'Counts'
+                },
+            }
+        });
+
+        var types_names = {!! json_encode(($categories)->toArray()) !!};
+        var colors ={};
+        var column = ['x'];
+        for(y=0;y<wli_departments.length;y++)
+        {
+            column.push(wli_departments[y].code+"("+wli_departments[y].documents_count+")");
+        }
+        var types = [];
+        var columns= [column];
+        for(i =0;i< types_names.length;i++)
+        {
+            type_column=[types_names[i].name];
+            
+            for(z=0;z<wli_departments.length;z++)
+            {
+                var doc = wli_departments[z].documents;
+                
+                var count = doc.filter(o => o.category === types_names[i].name);
+                type_column.push(count.length)
+            }
+            
+            columns.push(type_column);
+            colors[types_names[i].code] = types_names[i].color;
+            types.push(types_names[i].name);
+        }
+        final_types = [types];
+        
+        c3.generate({
+            bindto: '#wliGraph',
+            data:{
+                x : 'x',
+                columns: columns,
+                colors:colors,
+                type: 'bar',
+                groups: final_types,
+                
+            },
+            axis: {
+                x: {
+                    show: true,
+                    type: 'categorized', // this is needed to load string x value
+                },
+                y2: {
+                    show: true,
+                    label: 'Counts'
+                },
+                y: {
+                    show: true,
+                    label: 'Counts'
+                },
+            }
+        });
 
             c3.generate({
                 bindto: '#pie',
@@ -302,6 +538,7 @@
 
         });
 
+        $("#")
     });
   
 

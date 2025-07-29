@@ -1,0 +1,30 @@
+<div class="modal" id="viewWLI">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">View WLI Policies</h5>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group">
+                    @foreach ($company_policies->where('company_id',3)->groupBy('department_id') as $key=>$policies)
+                    @php
+                    $department = $departments->where('id', $key)->first();
+                    @endphp
+
+                    <li class="list-group-item">
+                        <b>{{ $department->name }} - {{ count($policies) }}</b>
+                        <hr>
+                        @foreach ($policies as $policy)
+                        {{ $policy->control_code .' - '.$policy->title }} <br>
+                        @endforeach
+
+                    </li>
+                    @endforeach
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

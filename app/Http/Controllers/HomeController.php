@@ -10,6 +10,7 @@ use App\CopyRequest;
 use App\DocumentType;
 use App\Company;
 use Illuminate\Http\Request;
+use stdClass;
 
 class HomeController extends Controller
 {
@@ -28,7 +29,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
         
         $change_requests = ChangeRequest::get();
@@ -40,7 +41,12 @@ class HomeController extends Controller
         $departments = Department::whereHas('documents')->with('documents','obsoletes')->withCount('documents','obsoletes')->get();
         $permits = Permit::with('company', 'department')->get();
         $months = [];
-       
+        $company_policies = Document::with('department')->whereIn('category',['POLICY','PROCEDURE'])->get();
+        $document_types = DocumentType::get();
+        $wgi_departments = Department::with('documents')->whereHas('documents')->where('code','LIKE','%WGI%')->withCount('documents','obsoletes')->get();
+        $whi_departments = Department::with('documents')->whereHas('documents')->where('code','LIKE','%WHI%')->withCount('documents','obsoletes')->get();
+        $wli_departments = Department::with('documents')->whereHas('documents')->where('code','LIKE','%WLI%')->withCount('documents','obsoletes')->get();
+        
         for ($m=1; $m<=12; $m++) {
             $object = new \stdClass();
             $object->y =date('M-Y', mktime(0,0,0,$m, 1, date('Y')));
@@ -60,6 +66,7 @@ class HomeController extends Controller
                 $copy_requests = CopyRequest::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->get();
                 $documents = Document::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->where('status',null)->toArray())->get();
                 $permits = Permit::with('company', 'department')->whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->get();
+                $company_policies = Document::with('department')->whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->whereIn('category',['POLICY','PROCEDURE'])->get();
            
             }
             elseif((auth()->user()->role == "Documents and Records Controller"))
@@ -79,6 +86,7 @@ class HomeController extends Controller
                 $copy_requests = CopyRequest::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->get();
                 $documents = Document::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->where('status',null)->get();
                 $permits = Permit::with('company', 'department')->whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->get();
+                $company_policies = Document::with('department')->whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->whereIn('category',['POLICY','PROCEDURE'])->get();
             }
 
         }
@@ -95,7 +103,11 @@ class HomeController extends Controller
             'months' =>  $months,
             'yearChangeRequests' =>  $yearChangeRequests,
             'yearCopyRequests' =>  $yearCopyRequests,
-
+            'company_policies' => $company_policies,
+            'document_types' => $document_types,
+            'wgi_departments' => $wgi_departments,
+            'whi_departments' => $whi_departments,
+            'wli_departments' => $wli_departments
         ));
     }
     public function search(Request $request)
