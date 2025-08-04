@@ -5,7 +5,7 @@
                 <h5 class="modal-title">View WHI Policies</h5>
             </div>
             <div class="modal-body">
-                <ul class="list-group">
+                {{-- <ul class="list-group">
                     @foreach ($company_policies->where('company_id',2)->groupBy('department_id') as $key=>$policies)
                     @php
                     $department = ($departments)->where('id', $key)->first();
@@ -29,7 +29,34 @@
 
                     </li>
                     @endforeach
-                </ul>
+                </ul> --}}
+                <div class="table-responsive">
+                    <table class="table table-bordered policiesTable">
+                        <thead>
+                            <tr>
+                                <th>Department</th>
+                                <th>Policies</th>
+                                <th>Last Revision Date</th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($company_policies->where('company_id',2) as $company_policy)
+                                <tr>
+                                    <td>{{ $company_policy->department->code.' - '.$company_policy->department->name }} </td>
+                                    <td>{{ $company_policy->control_code .' - '.$company_policy->title }} </td>
+                                    <td>
+                                        @php
+                                            $change_request = ($company_policy->change_requests)->where('status','Approved')->sortByDesc('id')->first();
+                                        @endphp
+                                        @if($change_request)
+                                            <span class="label label-primary">{{ date('Y-m-d', strtotime($change_request->updated_at)) }}</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

@@ -538,7 +538,20 @@
 
         });
 
-        $("#")
+        $('.policiesTable').DataTable({
+            // pageLength: 10,
+            paginate:false,
+            info:false,
+            responsive: true,
+            orderable:true,
+            dom: '<"html5buttons"B>lTfgitp',
+            columnDefs: [
+                { "orderable": false, "targets": [0, 1] } // Columns 0 and 3 are not sortable
+            ],
+            buttons: [
+                
+            ]
+        });
     });
   
 
