@@ -164,6 +164,9 @@
                             <li><a href="{{url('/dicr-reports')}}"></i>Change Requests</a></li>
                             <li><a href="{{url('/copy-reports')}}"></i>Copy Requests</a></li>
                             <li><a href="{{url('/dco-reports')}}"></i>DCO</a></li>
+                            <li><a href="{{url('masterlist-internal-documents')}}">Masterlist of Internal Document</a></li>
+                            <li><a href="{{url('masterlist-external-documents')}}">Masterlist of External Document</a></li>
+                            <li><a href="{{url('masterlist-form-templates-documents')}}">Masterlist of Forms and Templates</a></li>
                         </ul>
                     </li>
                     @endif

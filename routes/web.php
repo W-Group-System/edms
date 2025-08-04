@@ -122,6 +122,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('supporting_document', 'SupportingDocumentController@index');
         Route::post('store_supporting_document', 'SupportingDocumentController@store');
         Route::post('destroy_supporting_document', 'SupportingDocumentController@destroy');
+
+        // Masterlist Internal Documents
+        Route::get('masterlist-internal-documents','MasterlistInternalDocumentController@index');
+
+        // Masterlist Form Template
+        Route::get('masterlist-form-templates-documents','MasterlistFormTemplateController@index');
+
+        // Masterlist External Documents
+        Route::get('masterlist-external-documents','MasterlistExternalDocumentController@index');
     });
 
 });

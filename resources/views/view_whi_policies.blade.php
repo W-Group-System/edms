@@ -15,7 +15,16 @@
                         <b>{{ $department->name }} - {{ count($policies) }}</b>
                         <hr>
                         @foreach ($policies as $policy)
-                        {{ $policy->control_code .' - '.$policy->title }} <br>
+                        {{ $policy->control_code .' - '.$policy->title }}
+                        @php
+                            $change_request = ($policy->change_requests)->sortByDesc('id')->first();
+                        @endphp
+                        @if($change_request)
+                            @if($change_request->status == "Approved")
+                            <span class="label label-primary">{{ date('M d Y', strtotime($change_request->updated_at)) }}</span>
+                            @endif
+                        @endif
+                            <br>
                         @endforeach
 
                     </li>
