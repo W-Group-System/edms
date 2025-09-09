@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\ChangeRequest;
 use App\DepartmentApprover;
 use App\PreAssessment;
+use App\PreAssessmentApprover;
 use App\RequestApprover;
 use Illuminate\Console\Command;
 
@@ -53,6 +54,10 @@ class AutoChangeRequest extends Command
                 $pre_assessment = PreAssessment::where('id', $pa->id)->first();
                 $pre_assessment->status = "Approved";
                 $pre_assessment->save();
+
+                $pre_assessment_approver = PreAssessmentApprover::where('pre_assessment_id', $pa->id)->first();
+                $pre_assessment_approver->status = "Approved";
+                $pre_assessment_approver->save();
 
                 $changeRequests = ChangeRequest::where('pre_assessment_id', $pa->id)->get();
                 
