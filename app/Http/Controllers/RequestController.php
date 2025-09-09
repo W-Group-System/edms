@@ -1184,20 +1184,30 @@ class RequestController extends Controller
             elseif($returnTo == 'DocumentControlOfficer')
             {
                 $approvers = $copyApprovers->pluck('user_id')->toArray();
-                $dco = User::whereIn('id', $approvers)->where('role', 'Document Control Officer')->first();
+                $dcoUser = User::whereIn('id', $approvers)
+                    ->where('role', 'Document Control Officer')
+                    ->first();
+                $dco = $copyApprovers->firstWhere('user_id', $dcoUser->id);
+                // $dco = User::whereIn('id', $approvers)->where('role', 'Document Control Officer')->first();
                 
                 foreach($copyApprovers as $approver)
                 {
-                    if ($dco->id == $approver->user_id)
-                    {
+                    // if ($dco->id == $approver->user_id)
+                    // {
+                    //     $approver->status = 'Pending';
+                    // }
+                    if ($approver->user_id == $dco->user_id) {
                         $approver->status = 'Pending';
                     }
                     else
                     {
-                        if ($approver->level > 1)
-                        {
+                        if ($approver->level > $dco->level) {
                             $approver->status = 'Waiting';
                         }
+                        // if ($approver->level > 1)
+                        // {
+                        //     $approver->status = 'Waiting';
+                        // }
                     }
 
                     if ($approver->user_id == auth()->id())
