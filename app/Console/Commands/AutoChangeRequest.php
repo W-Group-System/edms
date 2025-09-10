@@ -55,7 +55,7 @@ class AutoChangeRequest extends Command
                 $pre_assessment->status = "Approved";
                 $pre_assessment->save();
 
-                $pre_assessment_approver = PreAssessmentApprover::where('pre_assessment_id', $pa->id)->first();
+                $pre_assessment_approver = PreAssessmentApprover::where('pre_assessment_id', $pre_assessment->id)->first();
                 $pre_assessment_approver->status = "Approved";
                 $pre_assessment_approver->save();
 
