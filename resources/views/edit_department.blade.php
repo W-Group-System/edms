@@ -42,7 +42,15 @@
                                 @endforeach
                             </select>
                         </div>
-                    
+                        <div class='col-md-12'>
+                            Company <i>(optional)</i> :
+                            <select name='company_id' class='form-control-sm form-control cat' >
+                                <option value=""></option>
+                                @foreach($companies as $company)
+                                    <option value='{{$company->id}}' @if($department->company_id == $company->id) selected @endif>{{$company->code}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class='col-md-12 mb-2 '>
                             <hr >
                             Approvers <button type="button" onclick='add_edit_approver({{$department->id}})' class="btn btn-primary btn-xs"><i class='fa fa-plus-square-o'></i></button> <button type="button" onclick='remove_edit_approver({{$department->id}})' class="btn btn-danger btn-xs"><i class='fa fa-minus-square-o'></i></button>

@@ -47,6 +47,28 @@ class HomeController extends Controller
         $whi_departments = Department::with('documents')->whereHas('documents')->where('code','LIKE','%WHI%')->withCount('documents','obsoletes')->get();
         $wli_departments = Department::with('documents')->whereHas('documents')->where('code','LIKE','%WLI%')->withCount('documents','obsoletes')->get();
         
+        $wgi_departments_permit = Department::whereHas('company')->where('code', 'LIKE', '%WGI%')->pluck('id')->toArray();
+        $whi_departments_permit = Department::whereHas('company')->where('code', 'LIKE', '%WHI%')->pluck('id')->toArray();
+        $wli_departments_permit = Department::whereHas('company')->where('code', 'LIKE', '%WLI%')->pluck('id')->toArray();
+
+        $year = date('Y');
+
+        $yearChangeRequests = ChangeRequest::with('department')
+            ->whereYear('created_at', $year)
+            ->get();
+
+        $wgiChangeRequests = $yearChangeRequests->filter(function($req){
+            return str_contains($req->department->company->code, 'WGI');
+        });
+
+        $wliChangeRequests = $yearChangeRequests->filter(function($req){
+            return str_contains($req->department->company->code, 'WLI');
+        });
+
+        $whiChangeRequests = $yearChangeRequests->filter(function($req){
+            return str_contains($req->department->company->code, 'WHI');
+        });
+
         for ($m=1; $m<=12; $m++) {
             $object = new \stdClass();
             $object->y =date('M-Y', mktime(0,0,0,$m, 1, date('Y')));
@@ -107,7 +129,13 @@ class HomeController extends Controller
             'document_types' => $document_types,
             'wgi_departments' => $wgi_departments,
             'whi_departments' => $whi_departments,
-            'wli_departments' => $wli_departments
+            'wli_departments' => $wli_departments,
+            'wgi_departments_permit' => $wgi_departments_permit,
+            'wli_departments_permit' => $wli_departments_permit,
+            'whi_departments_permit' => $whi_departments_permit,
+            'wgiChangeRequests' => $wgiChangeRequests,
+            'wliChangeRequests' => $wliChangeRequests,
+            'whiChangeRequests' => $whiChangeRequests,
         ));
     }
     public function search(Request $request)

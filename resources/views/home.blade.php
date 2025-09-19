@@ -210,21 +210,49 @@
             
         @endif
         @if(count($permits) != 0)
+        @php
+            $wgiPermits = $permits->whereIn('department_id', $wgi_departments_permit);
+            $whiPermits = $permits->whereIn('department_id', $whi_departments_permit);
+            $wliPermits = $permits->whereIn('department_id', $wli_departments_permit);
+        @endphp
+        
         <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Permits and licenses ({{count($permits)}}) </h5>
+                    <h5>WGI Permits and licenses ({{count($wgiPermits)}}) </h5>
                    
                 </div>
                 <div class="ibox-content">
-                    <div id="morris-donut-chart" ></div>
+                    <div id="morris-donut-chart-wgi" ></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>WLI Permits and licenses ({{count($wliPermits)}}) </h5>
+                   
+                </div>
+                <div class="ibox-content">
+                    <div id="morris-donut-chart-wli" ></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>WHI Permits and licenses ({{count($whiPermits)}}) </h5>
+                   
+                </div>
+                <div class="ibox-content">
+                    <div id="morris-donut-chart-whi" ></div>
                 </div>
             </div>
         </div>
         @endif
         @if((auth()->user()->role == "Administrator") || (auth()->user()->role == "Management Representative") || (auth()->user()->role == "Business Process Manager"))
     
-        <div class="col-lg-4">
+        {{-- <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Document Requests Status this {{date('Y')}}</h5>
@@ -235,10 +263,33 @@
                     </div>
                 </div>
             </div>
+        </div> --}}
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="ibox">
+                    <div class="ibox-title"><h5>WGI Requests {{ date('Y') }}</h5></div>
+                    <div class="ibox-content"><div id="pie-wgi"></div></div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="ibox">
+                    <div class="ibox-title"><h5>WLI Requests {{ date('Y') }}</h5></div>
+                    <div class="ibox-content"><div id="pie-wli"></div></div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="ibox">
+                    <div class="ibox-title"><h5>WHI Requests {{ date('Y') }}</h5></div>
+                    <div class="ibox-content"><div id="pie-whi"></div></div>
+                </div>
+            </div>
         </div>
         @endif
     </div>
 </div>
+
 @include('view_wgi_policies')
 @include('view_whi_policies')
 @include('view_wli_policies')
@@ -260,10 +311,25 @@
     var wgi_departments = {!! json_encode(($wgi_departments)->toArray()) !!};
     var whi_departments = {!! json_encode(($whi_departments)->toArray()) !!};
     var wli_departments = {!! json_encode(($wli_departments)->toArray()) !!};
-    var for_renewal = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))))) !!};
-    var over_due = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d'))))) !!};
-    var active = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','>=',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))))) !!};
-    var no_expiration = {!! json_encode((count($permits->where('expiration_date','==',null)))) !!};
+    // var for_renewal = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))))) !!};
+    // var over_due = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','<',date('Y-m-d'))))) !!};
+    // var active = {!! json_encode((count($permits->where('expiration_date','!=',null)->where('expiration_date','>=',date('Y-m-d', strtotime("+3 months", strtotime(date('Y-m-d')))))))) !!};
+    // var no_expiration = {!! json_encode((count($permits->where('expiration_date','==',null)))) !!};
+    var wgi_for_renewal = {!! count($wgiPermits->filter(function($p){ return $p->expiration_date != null && $p->expiration_date < date('Y-m-d', strtotime("+3 months")); })) !!};
+    var wgi_over_due    = {!! count($wgiPermits->filter(function($p){ return $p->expiration_date != null && $p->expiration_date < date('Y-m-d'); })) !!};
+    var wgi_active      = {!! count($wgiPermits->filter(function($p){ return $p->expiration_date != null && $p->expiration_date >= date('Y-m-d', strtotime("+3 months")); })) !!};
+    var wgi_no_exp      = {!! count($wgiPermits->filter(function($p){ return $p->expiration_date == null; })) !!};
+
+    var whi_for_renewal = {!! count($whiPermits->filter(function($p){ return $p->expiration_date != null && $p->expiration_date < date('Y-m-d', strtotime("+3 months")); })) !!};
+    var whi_over_due    = {!! count($whiPermits->filter(function($p){ return $p->expiration_date != null && $p->expiration_date < date('Y-m-d'); })) !!};
+    var whi_active      = {!! count($whiPermits->filter(function($p){ return $p->expiration_date != null && $p->expiration_date >= date('Y-m-d', strtotime("+3 months")); })) !!};
+    var whi_no_exp      = {!! count($whiPermits->filter(function($p){ return $p->expiration_date == null; })) !!};
+
+    var wli_for_renewal = {!! count($wliPermits->filter(function($p){ return $p->expiration_date != null && $p->expiration_date < date('Y-m-d', strtotime("+3 months")); })) !!};
+    var wli_over_due    = {!! count($wliPermits->filter(function($p){ return $p->expiration_date != null && $p->expiration_date < date('Y-m-d'); })) !!};
+    var wli_active      = {!! count($wliPermits->filter(function($p){ return $p->expiration_date != null && $p->expiration_date >= date('Y-m-d', strtotime("+3 months")); })) !!};
+    var wli_no_exp      = {!! count($wliPermits->filter(function($p){ return $p->expiration_date == null; })) !!};
+
     var types = {!! json_encode(($categories->pluck('name'))->toArray()) !!};
     var obsoletes = {!! json_encode(($departments->pluck('obsoletes_count'))->toArray()) !!};
     var months = {!! json_encode(($months)) !!};
@@ -271,15 +337,50 @@
     var pending = {!!json_encode(($yearChangeRequests->where('status','Pending')->count()))!!}
     var approved = {!!json_encode(($yearChangeRequests->where('status','Approved')->count()))!!}
     var declined = {!!json_encode(($yearChangeRequests->where('status','Declined')->count()))!!}
+
+    var wgi_pending = {!! json_encode($wgiChangeRequests->where('status','Pending')->count()) !!};
+    var wgi_approved = {!! json_encode($wgiChangeRequests->where('status','Approved')->count()) !!};
+    var wgi_declined = {!! json_encode($wgiChangeRequests->where('status','Declined')->count()) !!};
+
+    var wli_pending = {!! json_encode($wliChangeRequests->where('status','Pending')->count()) !!};
+    var wli_approved = {!! json_encode($wliChangeRequests->where('status','Approved')->count()) !!};
+    var wli_declined = {!! json_encode($wliChangeRequests->where('status','Declined')->count()) !!};
+
+    var whi_pending = {!! json_encode($whiChangeRequests->where('status','Pending')->count()) !!};
+    var whi_approved = {!! json_encode($whiChangeRequests->where('status','Approved')->count()) !!};
+    var whi_declined = {!! json_encode($whiChangeRequests->where('status','Declined')->count()) !!};
+
     $(function() {
-            Morris.Donut({
-            element: 'morris-donut-chart',
+        Morris.Donut({
+            element: 'morris-donut-chart-wgi',
             data: [
-                
-                { label: "For Renewal", value: for_renewal-over_due },
-                { label: "Overdue", value: over_due },
-                { label: "Active", value: active },
-                { label: "No Expiration", value: no_expiration } ],
+                { label: "For Renewal", value: wgi_for_renewal-wgi_over_due },
+                { label: "Overdue", value: wgi_over_due },
+                { label: "Active", value: wgi_active },
+                { label: "No Expiration", value: wgi_no_exp }
+            ],
+            resize: true,
+            colors: ['#FFA500','#f44336', '#54cdb4','#1ab394'],
+        });
+        Morris.Donut({
+            element: 'morris-donut-chart-whi',
+            data: [
+                { label: "For Renewal", value: whi_for_renewal-whi_over_due },
+                { label: "Overdue", value: whi_over_due },
+                { label: "Active", value: whi_active },
+                { label: "No Expiration", value: whi_no_exp }
+            ],
+            resize: true,
+            colors: ['#FFA500','#f44336', '#54cdb4','#1ab394'],
+        });
+        Morris.Donut({
+            element: 'morris-donut-chart-wli',
+            data: [
+                { label: "For Renewal", value: wli_for_renewal-wli_over_due },
+                { label: "Overdue", value: wli_over_due },
+                { label: "Active", value: wli_active },
+                { label: "No Expiration", value: wli_no_exp }
+            ],
             resize: true,
             colors: ['#FFA500','#f44336', '#54cdb4','#1ab394'],
         });
@@ -509,20 +610,58 @@
             }
         });
 
+            // c3.generate({
+            //     bindto: '#pie',
+            //     data:{
+            //         columns: [
+            //             ['Approved', approved],
+            //             ['Declined', declined],
+            //             ['Pending', pending]
+            //         ],
+            //         colors:{
+            //             Approved: '#54cdb4',
+            //             Declined: '#f44336',
+            //             Pending: '#BABABA',
+            //         },
+            //         type : 'pie'
+            //     }
+            // });
             c3.generate({
-                bindto: '#pie',
+                bindto: '#pie-wgi',
                 data:{
                     columns: [
-                        ['Approved', approved],
-                        ['Declined', declined],
-                        ['Pending', pending]
+                        ['Approved', wgi_approved],
+                        ['Declined', wgi_declined],
+                        ['Pending', wgi_pending]
                     ],
-                    colors:{
-                        Approved: '#54cdb4',
-                        Declined: '#f44336',
-                        Pending: '#BABABA',
-                    },
-                    type : 'pie'
+                    colors:{ Approved:'#54cdb4', Declined:'#f44336', Pending:'#BABABA' },
+                    type:'pie'
+                }
+            });
+
+            c3.generate({
+                bindto: '#pie-wli',
+                data:{
+                    columns: [
+                        ['Approved', wli_approved],
+                        ['Declined', wli_declined],
+                        ['Pending', wli_pending]
+                    ],
+                    colors:{ Approved:'#54cdb4', Declined:'#f44336', Pending:'#BABABA' },
+                    type:'pie'
+                }
+            });
+
+            c3.generate({
+                bindto: '#pie-whi',
+                data:{
+                    columns: [
+                        ['Approved', whi_approved],
+                        ['Declined', whi_declined],
+                        ['Pending', whi_pending]
+                    ],
+                    colors:{ Approved:'#54cdb4', Declined:'#f44336', Pending:'#BABABA' },
+                    type:'pie'
                 }
             });
         

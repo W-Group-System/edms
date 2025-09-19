@@ -47,4 +47,8 @@ class Department extends Model  implements Auditable
     {
         return $this->hasMany(DepartmentApprover::class);
     }
+    public function company()
+    {
+        return $this->hasOne(Company::class, 'id', 'company_id');
+    }
 }

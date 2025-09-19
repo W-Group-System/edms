@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Company;
 use App\Department;
 use App\DepartmentApprover;
 use App\PermitAccountable;
@@ -20,9 +21,12 @@ class DepartmentController extends Controller
     {
         $departments = Department::with('dep_head','approvers')->get();
         $employees = User::where('status', null)->get();
+        $companies = Company::take(3)->get();
+
         return view('departments', array(
             'departments' => $departments,
             'employees' => $employees,
+            'companies' => $companies,
         ));
         //
     }
@@ -56,6 +60,7 @@ class DepartmentController extends Controller
         $department = new Department;
         $department->code = $request->code;
         $department->name = $request->name;
+        $department->company_id = $request->company_id;
         $department->user_id = $request->user_id;
         $department->save();
 
@@ -122,6 +127,7 @@ class DepartmentController extends Controller
         
         $department = Department::findOrfail($id);
         $department->name = $request->name;
+        $department->company_id = $request->company_id;
         $department->user_id = $request->user_id;
         $department->save();
 
