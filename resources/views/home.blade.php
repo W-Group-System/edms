@@ -209,6 +209,11 @@
             </div>
             
         @endif
+        @php
+            $wgiPermits = collect();
+            $whiPermits = collect();
+            $wliPermits = collect();
+        @endphp
         @if(count($permits) != 0)
         @php
             $wgiPermits = $permits->whereIn('department_id', $wgi_departments_permit);
