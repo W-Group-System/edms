@@ -18,7 +18,7 @@ class SupportingDocumentController extends Controller
     public function index()
     {
         $supporting_documents = SupportingDocument::get();
-        if (auth()->user()->role == "User" || auth()->user()->role == "Department Head")
+        if ((auth()->user()->role == "User" || auth()->user()->role == "Department Head") && auth()->user()->audit_role == null)
         {
             $supporting_documents = SupportingDocument::whereHas('supporting_document_dept', function($q) {
                     $q->where('department_id', auth()->user()->department_id);
