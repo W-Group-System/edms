@@ -158,7 +158,7 @@
 
                         {{-- ALL --}}
                         @php
-                            $category = array('POLICY', 'FORM', 'TEMPLATE', 'ANNEX');
+                            $category = array('POLICY', 'FORM', 'TEMPLATE', 'ANNEX', 'PROCEDURE');
                         @endphp
                         @foreach($documents->whereNotIn('category', $category) as $document)
                             <div class="search-result">
