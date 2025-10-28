@@ -20,8 +20,7 @@ class MemorandumController extends Controller
         // $documents = Document::where('department_id', auth()->user()->department_id)->where('category', 'POLICY')->get();
         $documents = Document::whereIn('category', ['POLICY', 'PROCEDURE'])->get();
         $memos = Memorandum::get();
-        
-        if((auth()->user()->role == 'User' && auth()->user()->audit_role == null) || auth()->user()->role == 'Department Head')
+        if((auth()->user()->role == 'User' && auth()->user()->audit_role == null) || (auth()->user()->role == 'Department Head' && auth()->user()->audit_role == null))
         {
             $memos = Memorandum::where('department_id', auth()->user()->department_id)->orWhere('status', 'Public')->get();
         }
