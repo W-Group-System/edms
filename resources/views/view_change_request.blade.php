@@ -29,6 +29,7 @@
                         </div>
                         <div class='col-md-6'>
                             {{-- Effective Date : {{date('M d Y',strtotime($request->effective_date))}} --}}
+                            Classification : {{ $request->classification }}
                         </div>
                        
                         <div class='col-md-6'>

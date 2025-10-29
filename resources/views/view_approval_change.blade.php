@@ -204,6 +204,14 @@
                                 FILLABLE Copy <small><i>(.pdf)</i><small>
                                 <input type="file" class="form-control-sm form-control "  name="fillable_copy" />
                             </div> --}}
+                            <div class='col-md-4'>
+                                Classification :
+                                <select data-placeholder="Select classification" name="classification" class="form-control cat">
+                                    <option value=""></option>
+                                    <option value="CRITICAL">CRITICAL</option>
+                                    <option value="NON-CRITICAL">NON-CRITICAL</option>
+                                </select>
+                            </div>
                         </div>
                     @endif
 
