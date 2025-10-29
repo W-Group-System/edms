@@ -1108,13 +1108,13 @@ class RequestController extends Controller
 
                 $approvedRequestsNotif = User::where('id',$copyRequest->user_id)->first();
                 // $approvedRequestsNotif->notify(new ApprovedRequest($copyRequest,"DICR-","Document Information Change Request","request"));
-                // $approvedRequestsNotif->notify(new NewPolicy($copyRequest,"DICR-","Document Information Change Request","request"));
+                $approvedRequestsNotif->notify(new NewPolicy($copyRequest,"DICR-","Document Information Change Request","request"));
 
                 $approvers_all = RequestApprover::where('change_request_id',$copyRequestApprover->change_request_id)->orderBy('level','asc')->get();
                 foreach($approvers_all as $user_approver)
                 {
                     $app = User::where('id',$user_approver->user_id)->first();
-                    // $app->notify(new NewPolicy($copyRequest,"DICR-","Document Information Change Request","request"));
+                    $app->notify(new NewPolicy($copyRequest,"DICR-","Document Information Change Request","request"));
                 }
             }
             else
