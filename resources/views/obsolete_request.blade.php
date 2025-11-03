@@ -53,6 +53,10 @@
                             Proposed Effective Date :
                             <input type="date" class="form-control-sm form-control " min='{{date('Y-m-d')}}' name="effective_date" required/>
                         </div>
+                        <div class='col-md-8' >
+                            Supporting Document :
+                            <input type="file" class="form-control-sm form-control " name="supporting_document" required/>
+                        </div>
                     </div>
                     <div class='row'>
                         <div class='col-md-12' >

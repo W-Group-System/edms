@@ -636,11 +636,10 @@ class RequestController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        $request->validate([
-            'supporting_document' => 'mimes:pdf',
-            // 'reason_for_new_request' => 'required'
-        ]);
+        // $request->validate([
+        //     'supporting_document' => 'mimes:pdf',
+        //     // 'reason_for_new_request' => 'required'
+        // ]);
         
         $document = Document::findOrfail($request->id);
         // $document->process_owner = auth()->user()->id;
