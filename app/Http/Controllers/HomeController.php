@@ -41,7 +41,7 @@ class HomeController extends Controller
         $departments = Department::whereHas('documents')->with('documents','obsoletes')->withCount('documents','obsoletes')->get();
         $permits = Permit::with('company', 'department')->get();
         $months = [];
-        $company_policies = Document::with('department','change_requests')->whereIn('category',['POLICY','PROCEDURE','DEPARTMENT MANUAL'])->whereNull('status')->get();
+        $company_policies = Document::with('department','change_requests')->whereIn('category',['POLICY','PROCEDURE','DEPARTMENT MANUAL','ANNEX'])->whereNull('status')->get();
         $document_types = DocumentType::get();
         $wgi_departments = Department::with('documents')->whereHas('documents')->where('code','LIKE','%WGI%')->withCount('documents','obsoletes')->get();
         $whi_departments = Department::with('documents')->whereHas('documents')->where('code','LIKE','%WHI%')->withCount('documents','obsoletes')->get();
