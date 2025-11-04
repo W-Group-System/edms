@@ -204,6 +204,7 @@
                                 FILLABLE Copy <small><i>(.pdf)</i><small>
                                 <input type="file" class="form-control-sm form-control "  name="fillable_copy" />
                             </div> --}}
+                            @if($request->type_of_document == "POLICY" || $request->type_of_document == "PROCEDURE")
                             <div class='col-md-4'>
                                 Classification :
                                 <select data-placeholder="Select classification" name="classification" class="form-control cat">
@@ -212,6 +213,7 @@
                                     <option value="NON-CRITICAL">NON-CRITICAL</option>
                                 </select>
                             </div>
+                            @endif
                         </div>
                     @endif
 
