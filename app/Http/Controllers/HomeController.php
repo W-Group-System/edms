@@ -58,15 +58,15 @@ class HomeController extends Controller
             ->get();
 
         $wgiChangeRequests = $yearChangeRequests->filter(function($req){
-            return str_contains($req->department->company->code, 'WGI');
+            return str_contains(optional($req->department->company)->code, 'WGI');
         });
 
         $wliChangeRequests = $yearChangeRequests->filter(function($req){
-            return str_contains($req->department->company->code, 'WLI');
+            return str_contains(optional($req->department->company)->code, 'WLI');
         });
 
         $whiChangeRequests = $yearChangeRequests->filter(function($req){
-            return str_contains($req->department->company->code, 'WHI');
+            return str_contains(optional($req->department->company)->code, 'WHI');
         });
 
         for ($m=1; $m<=12; $m++) {

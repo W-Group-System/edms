@@ -51,4 +51,8 @@ class Department extends Model  implements Auditable
     {
         return $this->hasOne(Company::class, 'id', 'company_id');
     }
+    public function process_rel()
+    {
+        return $this->hasMany(Process::class, 'department_id', 'id');
+    }
 }
