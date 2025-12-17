@@ -151,6 +151,8 @@
                             <li><a href="{{url('/departments')}}"></i>Departments</a></li>
                             <li><a href="{{url('/users')}}"></i>Users</a></li>
                             <li><a href="{{url('/dco')}}"></i>DCO</a></li>
+                            <li><a href="{{url('/processes')}}"></i>Process</a></li>
+                            <li><a href="{{url('/policies')}}"></i>Policies</a></li>
                         </ul>
                     </li>
                     

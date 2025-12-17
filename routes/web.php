@@ -131,6 +131,21 @@ Route::group(['middleware' => 'auth'], function () {
 
         // Masterlist External Documents
         Route::get('masterlist-external-documents','MasterlistExternalDocumentController@index');
+
+        //Processes
+        Route::get('/processes', 'ProcessController@index')->name('process');
+        Route::post('/new-process', 'ProcessController@new_process')->name('new-process');
+        Route::post('/deactivate-process-setup', 'ProcessController@deactivate');
+        Route::post('/activate-process-setup', 'ProcessController@activate');
+        Route::post('/edit-process-setup{id}', 'ProcessController@edit')->name('policies');
+
+        //Policies
+        Route::get('/policies', 'PolicyController@index')->name('policies');
+        Route::post('/new-policy', 'PolicyController@new_policy')->name('new-policy');
+        Route::post('/new-policy-edit', 'PolicyController@new_policy_edit')->name('new-policy-edit');
+        Route::post('/deactivate-major-process', 'PolicyController@deactivate');
+        Route::post('/activate-major-process', 'PolicyController@activate');
+
     });
 
 });

@@ -697,6 +697,18 @@
             ]
         });
     });
+
+    let returnModal = null;
+    $(document).on('click', '.open-policy-modal', function () {
+        returnModal = $(this).data('return-modal');
+    });
+
+    $('.policies-modal-new').on('hidden.bs.modal', function () {
+        if (returnModal) {
+            $('#' + returnModal).modal('show');
+            returnModal = null;
+        }
+    });
   
 
 </script>

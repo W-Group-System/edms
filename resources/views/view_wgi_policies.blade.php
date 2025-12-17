@@ -1,4 +1,4 @@
-<div class="modal" id="viewWGI">
+<div class="modal" id="viewWGI" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -12,6 +12,16 @@
                     @endphp
                     <li class="list-group-item">
                         <b>{{ $department->name }} - {{ count($policies) }}</b>
+                        <button 
+                            type="button"
+                            class="btn btn-sm btn-primary open-policy-modal"
+                            data-dismiss="modal"
+                            data-toggle="modal"
+                            data-target="#policiesModal{{ $department->id }}"
+                            data-return-modal="viewWGI">
+                            View Policies
+                        </button>
+
                         <hr>
 
                         <table class="table table-bordered">
@@ -68,3 +78,5 @@
         </div>
     </div>
 </div>
+
+@include('view_wgi_policies_nested')
