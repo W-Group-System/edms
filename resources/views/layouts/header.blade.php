@@ -151,8 +151,8 @@
                             <li><a href="{{url('/departments')}}"></i>Departments</a></li>
                             <li><a href="{{url('/users')}}"></i>Users</a></li>
                             <li><a href="{{url('/dco')}}"></i>DCO</a></li>
-                            <li><a href="{{url('/processes')}}"></i>Process</a></li>
-                            <li><a href="{{url('/policies')}}"></i>Policies</a></li>
+                            {{-- <li><a href="{{url('/processes')}}"></i>Process</a></li>
+                            <li><a href="{{url('/policies')}}"></i>Policies</a></li> --}}
                         </ul>
                     </li>
                     
@@ -169,6 +169,16 @@
                             <li><a href="{{url('masterlist-internal-documents')}}">Masterlist of Internal Document</a></li>
                             <li><a href="{{url('masterlist-external-documents')}}">Masterlist of External Document</a></li>
                             <li><a href="{{url('masterlist-form-templates-documents')}}">Masterlist of Forms and Templates</a></li>
+                        </ul>
+                    </li>
+                    @endif
+                    @if((auth()->user()->role == 'Administrator') || (auth()->user()->role == 'Document Control Officer') || (auth()->user()->role == 'Business Process Manager') || (auth()->user()->role == 'Department Head'))
+                    <li class="{{ Route::current()->getName() == 'settings' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Process Setup">
+                        <a href="#"><i class="fa fa-rotate-right"></i> <span class="nav-label">Process Setup</span><span
+                                class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li><a href="{{url('/processes')}}"></i>Process</a></li>
+                            <li><a href="{{url('/policies')}}"></i>Policies</a></li>
                         </ul>
                     </li>
                     @endif
