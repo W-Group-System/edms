@@ -61,91 +61,123 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach($major_processes as $major_process)
+                           <tbody>
+                            @foreach($major_processes as $major_process)
+
+                                @php
+                                    $policies = $major_process->policies;
+
+                                    $majorRowCount = $policies->sum(function ($policy) {
+                                        return max($policy->annexes->count(), 1);
+                                    });
+
+                                    $majorRendered = false;
+                                @endphp
+
+                                @foreach($policies as $policy)
+
                                     @php
-                                        $policies = $major_process->policies;
-                                        $policyCount = $policies->sum(function($policy) {
-                                            return max($policy->annexes->count(), 1); 
-                                        });
+                                        $subPolicies = $policy->annexes;
+                                        $subPolicyCount = max($subPolicies->count(), 1);
+                                        $policyRendered = false;
                                     @endphp
 
-                                    @foreach($policies as $policy)
-                                        @php
-                                            $subPolicies = $policy->annexes;
-                                            $subPolicyCount = max($subPolicies->count(), 1);
-                                        @endphp
-
-                                        @foreach($subPolicies as $index => $subPolicy)
+                                    @if($subPolicies->isNotEmpty())
+                                        @foreach($subPolicies as $subPolicy)
                                             <tr>
-                                                @if($loop->first && $loop->parent->first)
-                                                    <td rowspan="{{ $policyCount }}">
+                                                @if(!$majorRendered)
+                                                    <td rowspan="{{ $majorRowCount }}">
                                                         {{ $major_process->process->process_name }}
                                                     </td>
+                                                    @php $majorRendered = true; @endphp
                                                 @endif
 
-                                                @if($index == 0)
+                                                @if(!$policyRendered)
                                                     <td rowspan="{{ $subPolicyCount }}">
-                                                        {{ $policy->document->control_code ?? '' }} - {{ $policy->document->title ?? '' }}
+                                                        {{ $policy->document->control_code ?? '' }} -
+                                                        {{ $policy->document->title ?? '' }}
                                                     </td>
+                                                    @php $policyRendered = true; @endphp
                                                 @endif
 
                                                 <td>
-                                                    {{ $subPolicy->document->control_code ?? '' }} - {{ $subPolicy->document->title ?? '' }}
+                                                    {{ $subPolicy->document->control_code ?? '' }} -
+                                                    {{ $subPolicy->document->title ?? '' }}
                                                 </td>
 
-                                                @if($loop->first && $loop->parent->first)
-                                                    <td rowspan="{{ $policyCount }}">
-                                                        @if($major_process->status) <small class="label label-danger">Inactive</small>  @else <small class="label label-primary">Active</small> @endif
-                                                    </td>
-                                                    <td rowspan="{{ $policyCount }}">
+                                                @if($majorRendered && $loop->first && $loop->parent->first)
+                                                    <td rowspan="{{ $majorRowCount }}">
                                                         @if($major_process->status)
-                                                            <button class="btn btn-primary activate-major_process" id='{{$major_process->id}}' title="Activate"><i class="fa fa-check"></i></button>
+                                                            <small class="label label-danger">Inactive</small>
                                                         @else
-                                                            <button class="btn btn-warning" data-toggle="modal" 
+                                                            <small class="label label-primary">Active</small>
+                                                        @endif
+                                                    </td>
+                                                    <td rowspan="{{ $majorRowCount }}">
+                                                        @if($major_process->status)
+                                                            <button class="btn btn-primary activate-major_process" id="{{ $major_process->id }}">
+                                                                <i class="fa fa-check"></i>
+                                                            </button>
+                                                        @else
+                                                            <button class="btn btn-warning" data-toggle="modal"
                                                                 data-target="#editMajorProcessModal{{ $major_process->id }}">
                                                                 <i class="fa fa-pencil"></i>
                                                             </button>
-                                                            <button class="btn btn-danger deactivate-major_process" id='{{$major_process->id}}' title='Deactivate' ><i class="fa fa-trash"></i></button>
+                                                            <button class="btn btn-danger deactivate-major_process" id="{{ $major_process->id }}">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
                                                         @endif
                                                     </td>
                                                 @endif
                                             </tr>
                                         @endforeach
-
-                                        @if($subPolicies->isEmpty())
-                                            <tr>
-                                                @if($loop->first && $loop->parent->first)
-                                                    <td rowspan="{{ $policyCount }}">
-                                                        {{ $major_process->process->process_name }}
-                                                    </td>
-                                                @endif
-                                                <td>{{ $policy->document->control_code ?? '' }} - {{ $policy->document->title ?? '' }}</td>
-                                                <td>—</td>
-                                                @if($loop->first && $loop->parent->first)
-                                                    <td rowspan="{{ $policyCount }}">
-                                                        @if($major_process->status) <small class="label label-danger">Inactive</small>  @else <small class="label label-primary">Active</small> @endif
-                                                    </td>
-                                                    <td rowspan="{{ $policyCount }}">
-                                                        @if($major_process->status)
-                                                            <button class="btn btn-primary activate-major_process" id='{{$major_process->id}}' title="Activate"><i class="fa fa-check"></i></button>
-                                                        @else
-                                                            <button class="btn btn-warning" data-toggle="modal" 
+                                    @else
+                                        <tr>
+                                            @if(!$majorRendered)
+                                                <td rowspan="{{ $majorRowCount }}">
+                                                    {{ $major_process->process->process_name }}
+                                                </td>
+                                            @endif
+                                            <td>
+                                                {{ $policy->document->control_code ?? '' }} -
+                                                {{ $policy->document->title ?? '' }}
+                                            </td>
+                                            <td>—</td>
+                                            @if(!$majorRendered)
+                                                <td rowspan="{{ $majorRowCount }}">
+                                                    @if($major_process->status)
+                                                        <small class="label label-danger">Inactive</small>
+                                                    @else
+                                                        <small class="label label-primary">Active</small>
+                                                    @endif
+                                                </td>
+                                                <td rowspan="{{ $majorRowCount }}">
+                                                    @if($major_process->status)
+                                                        <button class="btn btn-primary activate-major_process"
+                                                                id="{{ $major_process->id }}">
+                                                            <i class="fa fa-check"></i>
+                                                        </button>
+                                                    @else
+                                                        <button class="btn btn-warning" data-toggle="modal"
                                                                 data-target="#editMajorProcessModal{{ $major_process->id }}">
-                                                                <i class="fa fa-pencil"></i>
-                                                            </button>
-                                                            <button class="btn btn-danger deactivate-major_process" id='{{$major_process->id}}' title='Deactivate' ><i class="fa fa-trash"></i></button>
-                                                        @endif
-                                                    </td>
-                                                @endif
-                                            </tr>
-                                        @endif
-                                    @endforeach
+                                                            <i class="fa fa-pencil"></i>
+                                                        </button>
+                                                        <button class="btn btn-danger deactivate-major_process"
+                                                                id="{{ $major_process->id }}">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    @endif
+                                                </td>
+
+                                                @php $majorRendered = true; @endphp
+                                            @endif
+                                        </tr>
+                                    @endif
+                                @endforeach
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -308,7 +340,7 @@
 
 
         if(e.target.classList.contains('removeSubBtn')) {
-            e.target.closest('div.d-flex').remove();
+            e.target.closest('table').remove();
         }
 
         if(e.target.classList.contains('removePolicyEditButton')) {
