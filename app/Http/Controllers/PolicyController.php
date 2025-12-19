@@ -38,9 +38,9 @@ class PolicyController extends Controller
 
             if (!$documentPolicyId) continue; 
 
-            if (MajorProcess::where('process_id', $processId)->exists()) {
-                return back()->with('error', 'Process ID already exists.');
-            }
+            // if (MajorProcess::where('process_id', $processId)->exists()) {
+            //     return back()->with('error', 'Process ID already exists.');
+            // }
 
             $major_process = new MajorProcess();
             $major_process->process_id = $processId;
@@ -134,13 +134,18 @@ class PolicyController extends Controller
                 }
             }
 
-            $deletePolicies = array_diff(
-                $existingPolicyIds,
-                array_filter($submittedPolicyIds) 
-            );
-            if ($deletePolicies) {
-                Policy::whereIn('id', $deletePolicies)->delete();
+            if (!empty($request->policy_row_id[$majorProcessId])) {
+                $submittedPolicyIds = $request->policy_row_id[$majorProcessId];
+            } else {
+                $submittedPolicyIds = [];
             }
+
+            $deletePolicies = Policy::where('process_id', $majorProcessId)
+                                    ->whereNotIn('id', $submittedPolicyIds)
+                                    ->pluck('id')
+                                    ->toArray();
+
+            Policy::whereIn('id', $deletePolicies)->delete();
         }
 
         return back()->with('success', 'Major process updated successfully');
