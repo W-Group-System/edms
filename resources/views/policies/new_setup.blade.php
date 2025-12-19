@@ -17,7 +17,7 @@
 
                         <div class="form-group mb-2">
                             <label>Process Name :</label>
-                            <select name="process_id[]" class="form-control form-control-sm cat">
+                            <select name="process_id[]" class="form-control form-control-sm cat" required>
                                 <option value=""></option>
                                 @foreach($processes as $process)
                                     <option value="{{$process->id}}">{{$process->process_name}}</option>
