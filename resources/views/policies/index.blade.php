@@ -14,7 +14,7 @@
                     <h5>Major Processes</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($major_processes)}}</h1>
+                    <h1 class="no-margins">{{ $major_processes->filter(fn($mp) => $mp->policies->isNotEmpty())->count() }}</h1>
                 </div>
             </div>
         </div>
@@ -24,7 +24,7 @@
                     <h5>Active</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($major_processes->where('status',null))}}</h1>
+                    <h1 class="no-margins">{{ $major_processes->where('status',null)->filter(fn($mp) => $mp->policies->isNotEmpty())->count()}}</h1>
                 </div>
             </div>
         </div>
