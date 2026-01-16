@@ -23,6 +23,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php $processNo = 1; @endphp
                             @foreach ( $department->process_rel as $proces)
                                 @foreach($proces->major_processes as $major_process)
                                     @php
@@ -41,8 +42,9 @@
                                                 <tr>
                                                     @if($loop->first && $loop->parent->first)
                                                         <td rowspan="{{ $policyCount }}">
-                                                            {{ $major_process->process->process_name }}
+                                                             {{ $processNo }}. {{ $major_process->process->process_name }}
                                                         </td>
+                                                        @php $processNo++; @endphp
                                                     @endif
 
                                                     @if($index == 0)
@@ -68,8 +70,9 @@
                                                 <tr>
                                                     @if($loop->first && $loop->parent->first)
                                                         <td rowspan="{{ $policyCount }}">
-                                                            {{ $major_process->process->process_name }}
+                                                            {{ $processNo }}.  {{ $major_process->process->process_name }}
                                                         </td>
+                                                        @php $processNo++; @endphp
                                                     @endif
                                                     <td>
                                                         <a href="{{url('view-document/'.$policy->document->id)}}"

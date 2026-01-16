@@ -30,48 +30,79 @@ class PolicyController extends Controller
         ));
     }
 
+    // public function new_policy(Request $request)
+    // {
+    //     $processId = $request->process_id[0];
+
+    //     foreach ($request->policy_id as $index => $documentPolicyId) {
+
+    //         if (!$documentPolicyId) continue; 
+
+    //         // if (MajorProcess::where('process_id', $processId)->exists()) {
+    //         //     return back()->with('error', 'Process ID already exists.');
+    //         // }
+
+    //         $major_process = new MajorProcess();
+    //         $major_process->process_id = $processId;
+    //         $major_process->save();
+
+
+    //         foreach ($request->policy_id as $index => $documentPolicyId) {
+
+    //             if (!$documentPolicyId) continue; 
+
+    //             $policy = new Policy;
+    //             $policy->process_id = $major_process->id;
+    //             $policy->policy_id  = $documentPolicyId;
+    //             $policy->save();
+
+    //             if (isset($request->sub_policy_id[$index])) {
+    //                 foreach ($request->sub_policy_id[$index] as $subDocumentId) {
+    //                     if (!$subDocumentId) continue;
+
+    //                     $sub = new Annex;
+    //                     $sub->policy_id   = $policy->id;   
+    //                     $sub->document_id = $subDocumentId;
+    //                     $sub->save();
+    //                 }
+    //             }
+    //         }
+
+    //     }
+
+    //     return back()->with('success', 'Saved successfully!');
+    // }
+
     public function new_policy(Request $request)
     {
         $processId = $request->process_id[0];
 
         foreach ($request->policy_id as $index => $documentPolicyId) {
 
-            if (!$documentPolicyId) continue; 
+            if (!$documentPolicyId) continue;
 
-            // if (MajorProcess::where('process_id', $processId)->exists()) {
-            //     return back()->with('error', 'Process ID already exists.');
-            // }
+            $policy = new Policy();
+            $policy->process_id = $processId; 
+            $policy->policy_id  = $documentPolicyId;
+            $policy->save();
 
-            $major_process = new MajorProcess();
-            $major_process->process_id = $processId;
-            $major_process->save();
+            if (!empty($request->sub_policy_id[$index])) {
+                foreach ($request->sub_policy_id[$index] as $subDocumentId) {
 
+                    if (!$subDocumentId) continue;
 
-            foreach ($request->policy_id as $index => $documentPolicyId) {
-
-                if (!$documentPolicyId) continue; 
-
-                $policy = new Policy;
-                $policy->process_id = $major_process->id;
-                $policy->policy_id  = $documentPolicyId;
-                $policy->save();
-
-                if (isset($request->sub_policy_id[$index])) {
-                    foreach ($request->sub_policy_id[$index] as $subDocumentId) {
-                        if (!$subDocumentId) continue;
-
-                        $sub = new Annex;
-                        $sub->policy_id   = $policy->id;   
-                        $sub->document_id = $subDocumentId;
-                        $sub->save();
-                    }
+                    $sub = new Annex();
+                    $sub->policy_id   = $policy->id;
+                    $sub->document_id = $subDocumentId;
+                    $sub->save();
                 }
             }
-
         }
 
         return back()->with('success', 'Saved successfully!');
     }
+
+
 
     public function new_policy_edit(Request $request)
     {
