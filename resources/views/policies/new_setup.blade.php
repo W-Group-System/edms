@@ -33,7 +33,7 @@
                                 <label>Policy :</label>
                                 <select name="policy_id[]" class="form-control form-control-sm cat">
                                     <option value=""></option>
-                                    @foreach($document_policies as $document)
+                                    @foreach($major_process->available_documents as $document)
                                         <option value="{{$document->id}}">{{$document->control_code}} - {{$document->title}}</option>
                                     @endforeach
                                 </select>
@@ -146,7 +146,7 @@
                     <td style="width:95%;">
                         <select name="sub_policy_id[${groupKey}][]" class="form-control form-control-sm cat">
                             <option value=""></option>
-                            @foreach($document_policies as $document)
+                            @foreach($major_process->available_documents as $document)
                                 <option value="{{$document->id}}">{{$document->control_code}} - {{$document->title}}</option>
                             @endforeach
                         </select>

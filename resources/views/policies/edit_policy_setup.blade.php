@@ -38,7 +38,7 @@
                                 <label>Policy :</label>
                                 <select name="policy_id[{{ $major_process->id }}][]" class="form-control form-control-sm cat">
                                     <option value=""></option>
-                                    @foreach($document_policies as $document)
+                                    @foreach($major_process->available_documents as $document)
                                         <option value="{{ $document->id }}" 
                                             {{ $policy->policy_id == $document->id ? 'selected' : '' }}>
                                             {{ $document->control_code }} - {{ $document->title }}
@@ -58,7 +58,7 @@
                                             <td style="width:95%;">
                                                 <select name="sub_policy_id[{{ $policy->id }}][]" class="form-control form-control-sm cat">
                                                     <option value=""></option>
-                                                    @foreach($document_policies as $document)
+                                                    @foreach($major_process->available_documents as $document)
                                                         <option value="{{ $document->id }}"
                                                             {{ $subPolicy->document_id == $document->id ? 'selected' : '' }}>
                                                             {{ $document->control_code }} - {{ $document->title }}
