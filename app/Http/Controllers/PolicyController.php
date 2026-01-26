@@ -13,10 +13,9 @@ class PolicyController extends Controller
 {
     public function index(Request $request)
     {
-         $major_processes = MajorProcess::with([
-            'process',
+         $major_processes = Process::with([
             'policies.annexes'
-        ])->get()->sortBy(fn ($mp) => $mp->process->department_id);
+        ])->get()->sortBy(fn ($mp) => $mp->department_id);
         $policies = Policy::get();
         $processes = Process::where('status', null)->get();
 
@@ -107,7 +106,7 @@ class PolicyController extends Controller
 
     public function new_policy(Request $request)
     {
-        $processId = $request->process_id[0];
+        $processId = $request->process_id;
 
         foreach ($request->policy_id as $index => $documentPolicyId) {
 
@@ -142,7 +141,10 @@ class PolicyController extends Controller
 
             $processId = $request->process_id[$majorProcessId] ?? null;
 
-            $existingPolicyIds = Policy::where('process_id', $processId)->pluck('id')->toArray();
+            $existingPolicyIds = Policy::where('process_id', $processId)
+                ->pluck('id')
+                ->toArray();
+
             $submittedPolicyIds = [];
 
             if (!empty($request->policy_id[$majorProcessId])) {
@@ -165,11 +167,14 @@ class PolicyController extends Controller
 
                     $submittedPolicyIds[] = $policy->id;
 
-                    // ---- Annexes ----
-                    $existingSubIds = $policy->annexes()->pluck('id')->toArray();
+                    $existingSubIds = $policy->annexes()
+                        ->pluck('id')
+                        ->toArray();
+
                     $submittedSubIds = [];
 
                     if (!empty($request->sub_policy_id[$policy->id])) {
+
                         foreach ($request->sub_policy_id[$policy->id] as $subIndex => $subDocId) {
 
                             if (!$subDocId) continue;
@@ -190,19 +195,25 @@ class PolicyController extends Controller
                         }
                     }
 
-                    Annex::whereIn('id', array_diff($existingSubIds, $submittedSubIds))->delete();
+                    $deleteSubIds = array_diff($existingSubIds, $submittedSubIds);
+                    if (!empty($deleteSubIds)) {
+                        Annex::whereIn('id', $deleteSubIds)->delete();
+                    }
                 }
             }
 
-            // ---- Delete removed policies ----
             $deletePolicies = array_diff($existingPolicyIds, $submittedPolicyIds);
 
-            Annex::whereIn('policy_id', $deletePolicies)->delete();
-            Policy::whereIn('id', $deletePolicies)->delete();
+            if (!empty($deletePolicies)) {
+                Annex::whereIn('policy_id', $deletePolicies)->delete();
+                Policy::whereIn('id', $deletePolicies)->delete();
+            }
         }
 
         return back()->with('success', 'Major process updated successfully');
     }
+
+
 
 
     public function deactivate(Request $request)
@@ -222,5 +233,30 @@ class PolicyController extends Controller
         return "success";
     }
 
+    public function getPoliciesByProcess($processId)
+    {
+        $process = Process::findOrFail($processId);
 
+        $usedPolicyDocIds = Policy::pluck('policy_id')->toArray();
+        $usedAnnexDocIds = Annex::pluck('document_id')->toArray();
+
+        $allUsedDocIds = array_unique(array_merge(
+            $usedPolicyDocIds,
+            $usedAnnexDocIds
+        ));
+        
+        $documents = Document::where('department_id', $process->department_id)
+            ->whereIn('category', [
+                'POLICY',
+                'PROCEDURE',
+                'DEPARTMENT MANUAL',
+                'ANNEX'
+            ])
+            ->whereNull('status')
+            ->whereNotIn('id', $allUsedDocIds)
+            ->orderBy('control_code')
+            ->get();
+
+        return response()->json($documents);
+    }
 }

@@ -20,7 +20,7 @@
                                 <option value=""></option>
                                 @foreach($processes as $process)
                                     <option value="{{ $process->id }}" 
-                                        {{ $major_process->process_id == $process->id ? 'selected' : '' }}>
+                                        {{ $major_process->id == $process->id ? 'selected' : '' }}>
                                         {{ $process->process_name }}
                                     </option>
                                 @endforeach

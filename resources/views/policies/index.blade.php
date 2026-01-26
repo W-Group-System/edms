@@ -87,7 +87,7 @@
                                             <tr>
                                                 @if(!$majorRendered)
                                                     <td rowspan="{{ $majorRowCount }}">
-                                                        {{ $major_process->process->process_name }}
+                                                        {{ $major_process->process_name }}
                                                     </td>
                                                     @php $majorRendered = true; @endphp
                                                 @endif
@@ -135,7 +135,7 @@
                                         <tr>
                                             @if(!$majorRendered)
                                                 <td rowspan="{{ $majorRowCount }}">
-                                                    {{ $major_process->process->process_name }}
+                                                    {{ $major_process->process_name }}
                                                 </td>
                                             @endif
                                             <td>

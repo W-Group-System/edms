@@ -88,7 +88,7 @@ class HomeController extends Controller
                 $copy_requests = CopyRequest::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->toArray())->get();
                 $documents = Document::whereIn('department_id',(auth()->user()->department_head)->pluck('id')->where('status',null)->toArray())->get();
                 $permits = Permit::with('company', 'department')->whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->get();
-                $company_policies = Document::with('department')->whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->whereIn('category',['POLICY','PROCEDURE','DEPARTMENT MANUAL','ANNEX'])->get();
+                $company_policies = Document::with('department')->whereIn('department_id',(auth()->user()->accountable_persons)->pluck('department_id')->toArray())->whereIn('category',['POLICY','PROCEDURE','DEPARTMENT MANUAL','ANNEX'])->where('status',null)->get();
            
             }
             elseif((auth()->user()->role == "Documents and Records Controller"))
@@ -108,7 +108,7 @@ class HomeController extends Controller
                 $copy_requests = CopyRequest::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->get();
                 $documents = Document::whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->where('status',null)->get();
                 $permits = Permit::with('company', 'department')->whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->get();
-                $company_policies = Document::with('department')->whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->whereIn('category',['POLICY','PROCEDURE','DEPARTMENT MANUAL','ANNEX'])->get();
+                $company_policies = Document::with('department')->whereIn('department_id',(auth()->user()->dco)->pluck('department_id')->toArray())->whereIn('category',['POLICY','PROCEDURE','DEPARTMENT MANUAL','ANNEX'])->where('status',null)->get();
             }
 
         }

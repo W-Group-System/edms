@@ -24,69 +24,74 @@
                         </thead>
                         <tbody>
                             @php $processNo = 1; @endphp
-                            @foreach ( $department->process_rel as $proces)
-                                @foreach($proces->major_processes as $major_process)
+                            @foreach($department->process_rel as $process)
+
+                                @php
+                                    $policies = $process->policies;
+
+                                    $processRowCount = $policies->sum(function ($policy) {
+                                        return max($policy->annexes->count(), 1);
+                                    });
+
+                                    $processRendered = false;
+                                @endphp
+
+                                @foreach($policies as $policy)
+
                                     @php
-                                        $policies = $major_process->policies;
-                                        $policyCount = $policies->sum(function($policy) {
-                                            return max($policy->annexes->count(), 1); 
-                                        });
+                                        $subPolicies     = $policy->annexes;
+                                        $subPolicyCount = max($subPolicies->count(), 1);
+                                        $policyRendered = false;
                                     @endphp
 
-                                    @foreach($policies as $policy)
-                                        @php
-                                            $subPolicies = $policy->annexes;
-                                            $subPolicyCount = max($subPolicies->count(), 1);
-                                        @endphp
-                                            @foreach($subPolicies as $index => $subPolicy)
-                                                <tr>
-                                                    @if($loop->first && $loop->parent->first)
-                                                        <td rowspan="{{ $policyCount }}">
-                                                             {{ $processNo }}. {{ $major_process->process->process_name }}
-                                                        </td>
-                                                        @php $processNo++; @endphp
-                                                    @endif
-
-                                                    @if($index == 0)
-                                                        <td rowspan="{{ $subPolicyCount }}">
-                                                            <a href="{{url('view-document/'.$policy->document->id)}}"
-                                                                target="_blank">
-                                                                {{ $policy->document->control_code }} -
-                                                                {{ $policy->document->title }}
-                                                            </a>
-                                                        </td>
-                                                    @endif
-
-                                                    <td>
-                                                        <a href="{{url('view-document/'.$subPolicy->document->id)}}"
-                                                            target="_blank">
-                                                            {{ $subPolicy->document->control_code ?? '' }} - {{ $subPolicy->document->title ?? '' }}
-                                                        </a>
+                                    @if($subPolicies->isNotEmpty())
+                                        @foreach($subPolicies as $subPolicy)
+                                            <tr>
+                                                @if(!$processRendered)
+                                                    <td rowspan="{{ $processRowCount }}">
+                                                        {{ $process->process_name }}
                                                     </td>
-                                                </tr>
-                                            @endforeach
+                                                    @php $processRendered = true; @endphp
+                                                @endif
 
-                                            @if($subPolicies->isEmpty())
-                                                <tr>
-                                                    @if($loop->first && $loop->parent->first)
-                                                        <td rowspan="{{ $policyCount }}">
-                                                            {{ $processNo }}.  {{ $major_process->process->process_name }}
-                                                        </td>
-                                                        @php $processNo++; @endphp
-                                                    @endif
-                                                    <td>
-                                                        <a href="{{url('view-document/'.$policy->document->id)}}"
-                                                            target="_blank">
-                                                            {{ $policy->document->control_code }} -
-                                                            {{ $policy->document->title }}
-                                                        </a>
+                                                @if(!$policyRendered)
+                                                    <td rowspan="{{ $subPolicyCount }}">
+                                                        {{ $policy->document->control_code ?? '' }} -
+                                                        {{ $policy->document->title ?? '' }}
                                                     </td>
-                                                    <td>—</td>
-                                                </tr>
-                                            @endif
+                                                    @php $policyRendered = true; @endphp
+                                                @endif
+
+                                                <td>
+                                                    {{ $subPolicy->document->control_code ?? '' }} -
+                                                    {{ $subPolicy->document->title ?? '' }}
+                                                </td>
+                                            </tr>
                                         @endforeach
-                                    @endforeach
+
+                                    @else
+                                        <tr>
+                                            @if(!$processRendered)
+                                                <td rowspan="{{ $processRowCount }}">
+                                                    {{ $process->process_name }}
+                                                </td>
+                                            @endif
+
+                                            <td>
+                                                {{ $policy->document->control_code ?? '' }} -
+                                                {{ $policy->document->title ?? '' }}
+                                            </td>
+
+                                            <td>—</td>
+
+                                            @if(!$processRendered)
+                                                @php $processRendered = true; @endphp
+                                            @endif
+                                        </tr>
+                                    @endif
                                 @endforeach
+                            @endforeach
+
                         </tbody>
                     </table>
                 </div>
