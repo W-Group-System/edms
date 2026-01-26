@@ -49,22 +49,29 @@
                                             <tr>
                                                 @if(!$processRendered)
                                                     <td rowspan="{{ $processRowCount }}">
-                                                        {{ $process->process_name }}
+                                                        {{ $processNo }}. {{ $process->process_name }}
                                                     </td>
                                                     @php $processRendered = true; @endphp
+                                                    @php $processNo++; @endphp
                                                 @endif
 
                                                 @if(!$policyRendered)
                                                     <td rowspan="{{ $subPolicyCount }}">
-                                                        {{ $policy->document->control_code ?? '' }} -
-                                                        {{ $policy->document->title ?? '' }}
+                                                        <a href="{{url('view-document/'.$policy->document->id)}}"
+                                                            target="_blank">
+                                                            {{ $policy->document->control_code }} -
+                                                            {{ $policy->document->title }}
+                                                        </a>
+
                                                     </td>
                                                     @php $policyRendered = true; @endphp
                                                 @endif
 
                                                 <td>
-                                                    {{ $subPolicy->document->control_code ?? '' }} -
-                                                    {{ $subPolicy->document->title ?? '' }}
+                                                    <a href="{{url('view-document/'.$subPolicy->document->id)}}"
+                                                        target="_blank">
+                                                        {{ $subPolicy->document->control_code ?? '' }} - {{ $subPolicy->document->title ?? '' }}
+                                                    </a>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -73,13 +80,18 @@
                                         <tr>
                                             @if(!$processRendered)
                                                 <td rowspan="{{ $processRowCount }}">
-                                                    {{ $process->process_name }}
+                                                    {{ $processNo }}. {{ $process->process_name }}
                                                 </td>
+                                                @php $processNo++; @endphp
                                             @endif
 
                                             <td>
-                                                {{ $policy->document->control_code ?? '' }} -
-                                                {{ $policy->document->title ?? '' }}
+                                                <a href="{{url('view-document/'.$policy->document->id)}}"
+                                                    target="_blank">
+                                                    {{ $policy->document->control_code }} -
+                                                    {{ $policy->document->title }}
+                                                </a>
+
                                             </td>
 
                                             <td>—</td>
