@@ -152,7 +152,7 @@
                             @if(optional($request->preAssessment)->status == "Pending")
                                 <div class='row'>
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                        {{optional($request->preAssessment->approvers->user)->name }}
+                                        {{optional(optional($request->preAssessment->approvers)->user)->name }}
                                     </div>
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
                                         {{optional($request->preAssessment->approvers)->status}}
