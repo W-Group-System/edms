@@ -30,7 +30,8 @@ class PolicyController extends Controller
             'POLICY',
             'PROCEDURE',
             'DEPARTMENT MANUAL',
-            'ANNEX'
+            'ANNEX',
+            'WORK INSTRUCTION'
         ])
         ->whereNull('status')
         ->get();
@@ -250,7 +251,8 @@ class PolicyController extends Controller
                 'POLICY',
                 'PROCEDURE',
                 'DEPARTMENT MANUAL',
-                'ANNEX'
+                'ANNEX',
+                'WORK INSTRUCTION'
             ])
             ->whereNull('status')
             ->whereNotIn('id', $allUsedDocIds)
