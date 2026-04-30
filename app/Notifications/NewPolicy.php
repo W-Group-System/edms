@@ -60,7 +60,13 @@ class NewPolicy extends Notification
             ->line('Type of Request : '.$this->typedata)
             ->line(new HtmlString('<span><i>Please note that a filled-out <a href="https://edms.wsystem.online/document_attachments/FR-BPD-015%20Acknowledgment%20Form-lc.pdf" target="_blank">WGI-FR-BPD-003 Acknowledgement Form</a> shall be sent to BPD within 30 days after receipt of this email as proof of roll-out</i></span>'))
             
-            ->action('PDF File', url($this->copy_request->pdf_copy))
+            // ->action('PDF File', url($this->copy_request->pdf_copy))
+            ->action(
+                'PDF File',
+                $this->copy_request->pdf_copy
+                    ? url($this->copy_request->pdf_copy)
+                    : '#'
+            )
             ->line('Thank you for using our application!');
     }
 
