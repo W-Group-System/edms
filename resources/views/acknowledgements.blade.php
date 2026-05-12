@@ -1,6 +1,7 @@
 @extends('layouts.header')
 @section('css')
 <link href="{{ asset('login_css/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+<link href="{{ asset('login_css/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
 @endsection
 @section('content')
 
@@ -57,6 +58,9 @@
                                     <th>Type</th>
                                     <th>Requested By</th>
                                     <th>Status</th>
+                                    @if($requests->where('user_id', auth()->user()->id)->isNotEmpty())
+                                        <th>Acknowledge</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -158,6 +162,14 @@
                                                             @endif
                                                             {{$request->status}}</span>
                                         </td>
+                                        @if($requests->where('user_id', auth()->user()->id)->isNotEmpty())
+                                            <td>
+                                                <button class="btn btn-sm btn-success acknowledge_request"
+                                                    id="{{ $request->id }}">
+                                                    <i class="fa fa-thumbs-up"></i>
+                                                </button>
+                                            </td>
+                                        @endif
                                     </tr>
                                     @include('view_change_request')
                                     @include('upload')
@@ -178,8 +190,41 @@
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
+<script src="{{ asset('login_css/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
+
 <script>
     $(document).ready(function(){
+
+        $('.acknowledge_request').click(function () {
+        
+        var id = this.id;
+            swal({
+                title: "Are you sure?",
+                text: "This Request will be Acknowledged!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, Acknowledge it!",
+                closeOnConfirm: false
+            }, function (){
+                $.ajax({
+                    dataType: 'json',
+                    type:'POST',
+                    url:  '{{url("acknowledge_request")}}',
+                    data:{id:id},
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                }).done(function(data){
+                    console.log(data);
+                    swal("Acknowledged!", "Request is now Acknowledged.", "success");
+                    location.reload();
+                }).fail(function(data)
+                {
+                    
+                    swal("Acknowledged!", "Request is now Acknowledged.", "success");
+                location.reload();
+                });
+            });
+        });
         
 
         $('.locations').chosen({width: "100%"});
@@ -207,7 +252,6 @@
             ]
 
         });
-
     });
 
 </script>

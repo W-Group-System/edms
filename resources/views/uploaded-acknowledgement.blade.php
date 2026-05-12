@@ -52,6 +52,7 @@
                                     <th>Requested By</th>
                                     <th>Date Uploaded</th>
                                     <th>Status</th>
+                                    <th>Acknowledged By</th>
                                 </tr>
                             </thead>
                         <tbody>
@@ -96,6 +97,7 @@
                                         @else<span class='label label-success'>
                                             @endif
                                             {{$request->status}}</span>  </td>
+                                        <td>{{ $request->acknowledgement->user->name }}</td>
                                     </tr>
                                     @include('view_change_request')
                                     @include('view_upload')
