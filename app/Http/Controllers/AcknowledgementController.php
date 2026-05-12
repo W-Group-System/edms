@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use App\ChangeRequest;
 use App\Acknowledgement;
-
+use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
 
@@ -79,6 +79,30 @@ class AcknowledgementController extends Controller
         Alert::success('Successfully Uploaded')->persistent('Dismiss');
         return back();
 
+    }
+
+    public function aknowledge(Request $request)
+    {
+        $upload = new Acknowledgement;
+        $upload->change_request_id = $request->id;
+        $upload->user_id = auth()->user()->id;
+        $upload->save();
+        Alert::success('Successfully Acknowledged')->persistent('Dismiss');
+        return back();
+    }
+
+    public function autoAcknowledgeRequests()
+    {
+        $requests = ChangeRequest::where('status', 'Approved')
+            ->where('updated_at', '<=', Carbon::now()->subDays(3))
+            ->get();
+
+        foreach ($requests as $request) {
+            $auto = new Acknowledgement;
+            $auto->change_request_id = $request->id;
+            $auto->user_id = $request->user_id;
+            $auto->save();
+        }
     }
     public function editUpload(Request $request)
     {

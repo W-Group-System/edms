@@ -14,20 +14,22 @@
             </div>
             
                 <div class="modal-body">
+                    @if($request->acknowledgement->file)
+                        <div class='row '>
+                            <div class='col-md-12'>
+                            Attachment : <a href="{{url($request->acknowledgement->file)}}" target='_blank'><i class="fa fa-file-text-o"></i> </a>
+                            <a href="#" class="text-danger" data-target="#upload_acknowledgement{{$request->id}}" data-toggle="modal" data-dismiss="modal"><i class="fa fa-edit"></i></a>
+                            </div>
+                        </div>
+                    @endif
                     <div class='row '>
                         <div class='col-md-12'>
-                           Attachment : <a href="{{url($request->acknowledgement->file)}}" target='_blank'><i class="fa fa-file-text-o"></i> </a>
-                           <a href="#" class="text-danger" data-target="#upload_acknowledgement{{$request->id}}" data-toggle="modal" data-dismiss="modal"><i class="fa fa-edit"></i></a>
+                           Date Uploaded/Acknowledged : {{date('F d, Y', strtotime($request->acknowledgement->created_at))}} </a>
                         </div>
                     </div>
                     <div class='row '>
                         <div class='col-md-12'>
-                           Date Uploaded : {{date('F d, Y', strtotime($request->acknowledgement->created_at))}} </a>
-                        </div>
-                    </div>
-                    <div class='row '>
-                        <div class='col-md-12'>
-                          Uploaded By : {{$request->acknowledgement->user->name}} </a>
+                          Uploaded/Acknowledged By : {{$request->acknowledgement->user->name}} </a>
                         </div>
                     </div>
                   
