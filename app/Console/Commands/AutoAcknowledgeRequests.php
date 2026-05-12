@@ -45,6 +45,15 @@ class AutoAcknowledgeRequests extends Command
             ->get();
 
         foreach ($requests as $request) {
+
+            $exists = Acknowledgement::where('change_request_id', $request->id)
+                ->where('user_id', $request->user_id)
+                ->exists();
+
+            if ($exists) {
+                continue;
+            }
+
             $auto = new Acknowledgement;
             $auto->change_request_id = $request->id;
             $auto->user_id = $request->user_id;
