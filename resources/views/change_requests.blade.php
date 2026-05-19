@@ -160,7 +160,7 @@
                                         // {
                                             if ($request->preAssessment != null)
                                             {
-                                                if ($request->preAssessment->status == 'Approved')
+                                                if ($request->preAssessment->status == 'Approved' && $request->dco_approved != null)
                                                 {
                                                     $target = date('Y-m-d', strtotime("+20 days", strtotime($request->dco_approved)));
                                                 }
@@ -202,7 +202,7 @@
                                         // {
                                             if ($request->preAssessment != null)
                                             {
-                                                if ($request->preAssessment->status == 'Approved')
+                                                if ($request->preAssessment->status == 'Approved' && $request->dco_approved != null)
                                                 {
                                                     $target = date('Y-m-d', strtotime("+20 days", strtotime($request->dco_approved)));
                                                 }
