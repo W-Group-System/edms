@@ -13,6 +13,7 @@ use App\PreAssessment;
 use App\PreAssessmentApprover;
 use App\RequestApprover;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -206,7 +207,8 @@ class PreAssessmentController extends Controller
             $preAssessment->save();
 
             $changeRequest = ChangeRequest::where('pre_assessment_id', $preAssessment->id)->first();
-            
+            $changeRequest->dco_approved = Carbon::now();
+            $changeRequest->save();
             $departmentApprover = DepartmentApprover::where('department_id', $preAssessment->department_id)->get();
             foreach($departmentApprover as $approver)
             {
