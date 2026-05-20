@@ -152,17 +152,18 @@
                                         // {
                                         //     $target = date('Y-m-d');
                                         // }
-                                        // if ($request->department_head_approved != null)
-                                        // {
-                                        //     $target = date('Y-m-d', strtotime("+7 days", strtotime($request->department_head_approved)));
-                                        // }
-                                        // else
-                                        // {
+                                        if ($request->department_head_approved != null)
+                                        {
+                                            $target = date('Y-m-d', strtotime("+7 days", strtotime($request->department_head_approved)));
+                                        }
+                                        else
+                                        {
                                             if ($request->preAssessment != null)
                                             {
                                                 if ($request->preAssessment->status == 'Approved' && $request->dco_approved != null)
                                                 {
-                                                    $target = date('Y-m-d', strtotime("+20 days", strtotime($request->dco_approved)));
+                                                    $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at)));
+                                                    // $target = "";
                                                 }
                                                 else
                                                 {
@@ -174,7 +175,7 @@
                                                 // For old data that does not have pre assessment
                                                 $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at))); 
                                             }
-                                        // }
+                                        }
                                     }
                                 @endphp
                             @else
@@ -194,12 +195,12 @@
                                         // {
                                         //     $target = date('Y-m-d');
                                         // }
-                                        // if ($request->department_head_approved != null)
-                                        // {
-                                        //     $target = date('Y-m-d', strtotime("+30 day", strtotime($request->department_head_approved))); 
-                                        // }
-                                        // else
-                                        // {
+                                        if ($request->department_head_approved != null)
+                                        {
+                                            $target = date('Y-m-d', strtotime("+30 day", strtotime($request->department_head_approved))); 
+                                        }
+                                        else
+                                        {
                                             if ($request->preAssessment != null)
                                             {
                                                 if ($request->preAssessment->status == 'Approved' && $request->dco_approved != null)
@@ -216,7 +217,7 @@
                                                 // For old data that does not have pre assessment
                                                 $target = date('Y-m-d', strtotime("+1 month", strtotime($request->created_at))); 
                                             }
-                                        // }
+                                        }
                                     } 
                                 @endphp
                             @endif
