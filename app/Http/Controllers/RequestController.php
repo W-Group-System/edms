@@ -982,7 +982,7 @@ class RequestController extends Controller
             }
             elseif((auth()->user()->role == "Department Head") || auth()->user()->role == "Business Process Manager")
             {
-                    $copyRequest->department_head_approved = Carbon::now();
+                    // $copyRequest->department_head_approved = Carbon::now();
                     $copyRequest->save();            
             }
             if($copyApprover == null)
