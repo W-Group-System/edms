@@ -20,7 +20,7 @@
                     <div class='row'>
                         <div class='col-md-12'>
                             Name :
-                            <input type="text" class="form-control-sm form-control "  value="{{$user->name}}" readonly  name="name" required/>
+                            <input type="text" class="form-control-sm form-control "  value="{{$user->name}}"  name="name" required/>
                         </div>
                         <div class='col-md-12'>
                             Email :
