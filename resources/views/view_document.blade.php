@@ -306,7 +306,7 @@
                                                 <td>{{date('M d Y',strtotime($change_req->created_at))}}</td>
                                                 <td>{{$change_req->user->name}}</td>
                                                 <td>{{$change_req->department->name}}</td>
-                                                <td>{{date('M d, Y',strtotime($change_req->effective_date))}}</td>
+                                                <td> {{ $change_req->effective_date ? \Carbon\Carbon::parse($change_req->effective_date)->format('M d, Y') : '' }}</td>
                                                 <td>{{$change_req->type_of_document}}</td>
                                                 <td>@if($change_req->status == "Pending")
                                                     <span class='label label-warning'>
