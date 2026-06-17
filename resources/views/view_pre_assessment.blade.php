@@ -152,7 +152,7 @@
                                         <select name="action" id="action" class="form-control cat" required>
                                             <option value=""></option>
                                             <option value="Approved">Approved</option>
-                                            <option value="Declined">Declined</option>
+                                            <option value="Pre-Assessment Returned">Return</option>
                                         </select>
                                     </div>
                                     <div class='col-md-8'>
@@ -172,7 +172,7 @@
                                     <select name="action" id="action" class="form-control cat" required>
                                         <option value=""></option>
                                         <option value="Approved">Approved</option>
-                                        <option value="Declined">Declined</option>
+                                        <option value="Returned">Return</option>
                                     </select>
                                 </div>
                                 <div class='col-md-8'>

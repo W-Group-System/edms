@@ -9,6 +9,7 @@ use App\DepartmentApprover;
 use App\DepartmentDco;
 use App\DocumentType;
 use App\Notifications\DeclinePreAssessmentNotification;
+use App\Notifications\ReturnedPreAssessmentNotification;
 use App\PreAssessment;
 use App\PreAssessmentApprover;
 use App\RequestApprover;
@@ -63,6 +64,12 @@ class PreAssessmentController extends Controller
                     $query->where('user_id', $loggedInUserId);
                 })
                 ->whereRaw("DATE_ADD(created_at, INTERVAL 10 DAY) < CURDATE()")
+                ->count();
+
+            $returnedCount = PreAssessment::where('status', 'Pre-Assessment Returned')
+                ->whereHas('approvers', function ($query) use ($loggedInUserId) {
+                    $query->where('user_id', $loggedInUserId);
+                })
                 ->count();
         } else {
             $pendingCount = PreAssessment::where('status', 'Pending')->count();
@@ -122,6 +129,7 @@ class PreAssessmentController extends Controller
                 'approvedCount' => $approvedCount,
                 'notDelayedCount' => $notDelayedCount,
                 'delayedCount' => $delayedCount,
+                'returnedCount' => isset($returnedCount)?$returnedCount:0
             )
         );
     }
@@ -247,6 +255,22 @@ class PreAssessmentController extends Controller
             
             $user = User::where('id', $preAssessment->user_id)->first();
             $user->notify(new DeclinePreAssessmentNotification($preAssessment->title, $preAssessment->request_type, $preAssessmentApprover->remarks));
+        }else{
+            $preAssessmentApprover = PreAssessmentApprover::where('pre_assessment_id', $id)->first();
+            $preAssessmentApprover->status = "Pre-Assessment Returned";
+            $preAssessmentApprover->remarks = $request->remarks;
+            $preAssessmentApprover->save();
+
+            $preAssessment->status = $request->action;
+            $preAssessment->save();
+            
+            $changeRequest = ChangeRequest::where('pre_assessment_id', $preAssessment->id)->first();
+            $changeRequest->status = "Pre-Assessment Returned";
+            $changeRequest->level = 1;
+            $changeRequest->save();
+            
+            $user = User::where('id', $preAssessment->user_id)->first();
+            $user->notify(new ReturnedPreAssessmentNotification($preAssessment->title, $preAssessment->request_type, $preAssessmentApprover->remarks));
         }
 
         Alert::success('Successfully Submitted')->persistent('Dismiss');

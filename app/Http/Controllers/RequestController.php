@@ -184,7 +184,7 @@ class RequestController extends Controller
                                 $q->where('status', 'Approved');
                             })->orWhereDoesntHave('preAssessment');
                         });
-                } elseif (in_array($request->status, ['Approved', 'Declined'])) {
+                } elseif (in_array($request->status, ['Approved', 'Declined', 'Pre-Assessment Returned'])) {
                     $q->where('status', $request->status);
                 } elseif (in_array($request->status, ['NotDelayed', 'Delayed'])) {
                     $q->where('status', 'Pending')
@@ -254,7 +254,7 @@ class RequestController extends Controller
         })->count();
         if (auth()->user()->role == "User") {
             $requestsCount = ChangeRequest::whereHas('preAssessment', function ($q) {
-                $q->where('status', 'Approved');
+                $q->whereIn('status', ['Approved','Pre-Assessment Returned']);
             })
             ->orWhereDoesntHave('preAssessment')
             ->get();
@@ -281,6 +281,10 @@ class RequestController extends Controller
         
             $delayedCount = $requestsCount->filter(function ($request) {
                 return $request->status == 'Pending' && $request->target < date('Y-m-d') && $request->user_id == auth()->user()->id;
+            })->count();
+
+            $returnedCount = $requestsCount->filter(function ($request) {
+                return $request->status == 'Pre-Assessment Returned' && $request->user_id == auth()->user()->id;
             })->count();
         }         
         else if (auth()->user()->role == "Document Control Officer") {
@@ -385,6 +389,8 @@ class RequestController extends Controller
                                 $q->where('status', 'Approved');
                             })->orWhereDoesntHave('preAssessment');
                         });
+                } elseif ($request->status == 'Pre-Assessment Returned') {
+                    $q->where('status', 'Pre-Assessment Returned');
                 }
                 })
                 ->orderBy('id', 'desc')
@@ -417,7 +423,7 @@ class RequestController extends Controller
             $pre_assessment_count = $requests->filter(function ($value) {
                 return optional($value->preAssessment)->status == "Pending";
             })->count();
-
+        
         } else if (auth()->user()->role == "Document Control Officer") {
             $requests = ChangeRequest::whereIn('department_id', (auth()->user()->dco)->pluck('department_id')->toArray());
     
@@ -567,7 +573,8 @@ class RequestController extends Controller
             'approvedCount' => $approvedCount,
             'notDelayedCount' => $notDelayedCount,
             'delayedCount' => $delayedCount,
-            'pre_assessment_approvers' => $pre_assessment_approvers
+            'pre_assessment_approvers' => $pre_assessment_approvers,
+            'returnedCount' => isset($returnedCount)?$returnedCount:0
         ));
     }
     public function removeApprover()
@@ -868,6 +875,119 @@ class RequestController extends Controller
         {
             $preAssessmentApprover = new PreAssessmentApprover;
             $preAssessmentApprover->pre_assessment_id = $preAssessment->id;
+            $preAssessmentApprover->user_id = $dco->user_id;
+            $preAssessmentApprover->status = "Pending";
+            $preAssessmentApprover->start_date = date('Y-m-d');
+            $preAssessmentApprover->save();
+
+            $approvedRequestsNotif = User::where('id',$dco->user_id)->first();
+
+            $approvedRequestsNotif->notify(new NewPreAssessment($preAssessment, "Pre-Assessment Approval"));
+        }
+
+        Alert::success('Successfully Submitted')->persistent('Dismiss');
+        return redirect('/change-requests');
+        
+    }
+
+    public function update_request(Request $request, $id)
+    {
+        //
+        // dd($request->all());
+        $request->validate([
+            'supporting_document' => 'mimes:pdf',
+            // 'category' => 'required',
+            // 'reason_for_new_request' => 'required'
+        ]);
+
+        $preAssessment = PreAssessment::find($id);
+        $preAssessment->request_type = $request->request_type;
+        $preAssessment->effective_date = $request->effective_date;
+        $preAssessment->department_id = $request->department;
+        $preAssessment->user_id = auth()->user()->id;
+        $preAssessment->type_of_document = $request->category;
+        $preAssessment->reason_for_changes = $request->reason_for_new_request;
+        $preAssessment->change_request = $request->description;
+        $preAssessment->supporting_documents = $request->supporting_document;
+        $preAssessment->link_draft = $request->draft_link;
+        $preAssessment->title = $request->title;
+        $preAssessment->company_id = $request->company;
+        $preAssessment->status = "Pending";
+
+        if($request->has('soft_copy'))
+        {
+            $attachment = $request->file('soft_copy');
+        
+            $name = time() . '_' . $attachment->getClientOriginalName();
+            $attachment->move(public_path() . '/pre_assessment_attachments/', $name);
+            $file_name = '/pre_assessment_attachments/' . $name;
+            $preAssessment->soft_copy = $file_name;
+        }
+        if($request->has('pdf_copy'))
+        {
+            $attachment = $request->file('pdf_copy');
+            $name = time() . '_' . $attachment->getClientOriginalName();
+            $attachment->move(public_path() . '/pre_assessment_attachments/', $name);
+            $file_name = '/pre_assessment_attachments/' . $name;
+            $preAssessment->pdf_copy = $file_name;
+        }
+        if($request->has('fillable_copy'))
+        {
+            $attachment = $request->file('fillable_copy');
+            $name = time() . '_' . $attachment->getClientOriginalName();
+            $attachment->move(public_path() . '/pre_assessment_attachments/', $name);
+            $file_name = '/pre_assessment_attachments/' . $name;
+            $preAssessment->fillable_copy = $file_name;
+        }
+        if($request->has('supporting_document'))
+        {
+            $attachment = $request->file('supporting_document');
+            $name = time() . '_' . $attachment->getClientOriginalName();
+            $attachment->move(public_path() . '/pre_assessment_attachments/', $name);
+            $file_name = '/pre_assessment_attachments/' . $name;
+            $preAssessment->supporting_documents = $file_name;
+        }
+
+        $preAssessment->save();
+
+        $changeRequest = ChangeRequest::where('pre_assessment_id',$preAssessment->id)->first();
+        $changeRequest->request_type = $request->request_type;
+        $changeRequest->effective_date = $request->effective_date;
+        $changeRequest->department_id = $request->department;
+        $changeRequest->company_id = $request->company;
+        $changeRequest->title = $request->title;
+        $changeRequest->user_id = auth()->user()->id;
+        $changeRequest->type_of_document = $request->category;
+        $changeRequest->change_request = $request->description;
+        $changeRequest->link_draft = $request->draft_link;
+        $changeRequest->status = "Pending";
+        $changeRequest->level = 1;
+        $changeRequest->reason_for_changes = $request->reason_for_new_request;
+        if($request->has('soft_copy'))
+        {
+            $changeRequest->soft_copy = $preAssessment->soft_copy;
+        }
+        if($request->has('pdf_copy'))
+        {
+            $changeRequest->pdf_copy = $preAssessment->pdf_copy;
+        }
+        if($request->has('fillable_copy'))
+        {
+            $changeRequest->fillable_copy = $preAssessment->fillable_copy;
+        }
+        if($request->has('supporting_document'))
+        {
+            $changeRequest->supporting_documents = $preAssessment->supporting_documents ;
+        }
+        
+        $changeRequest->save();
+
+        $user = User::where('role', 'Document Control Officer')->where('status', null)->pluck('id')->toArray();
+        $dco = DepartmentDco::where('department_id', auth()->user()->department_id)->whereIn('user_id', $user)->first();
+
+        if ($dco != null)
+        {
+            $preAssessmentApprover = PreAssessmentApprover::where('pre_assessment_id',$preAssessment->id)->first();
             $preAssessmentApprover->user_id = $dco->user_id;
             $preAssessmentApprover->status = "Pending";
             $preAssessmentApprover->start_date = date('Y-m-d');
