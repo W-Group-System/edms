@@ -19,7 +19,7 @@
        
                 {{ csrf_field() }}
                 <div class="modal-body">
-                        <input type="hidden" class="form-control-sm form-control " name="request_type" value='New'  />
+                        <input type="hidden" class="form-control-sm form-control " name="request_type" value="{{ $request->request_type }}"  />
                     
                         <div class='row '>
                             <div class='col-md-12'>

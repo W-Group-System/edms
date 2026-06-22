@@ -901,7 +901,7 @@ class RequestController extends Controller
         ]);
 
         $preAssessment = PreAssessment::find($id);
-        $preAssessment->request_type = $request->request_type;
+        // $preAssessment->request_type = $request->request_type;
         $preAssessment->effective_date = $request->effective_date;
         $preAssessment->department_id = $request->department;
         $preAssessment->user_id = auth()->user()->id;
@@ -951,7 +951,7 @@ class RequestController extends Controller
         $preAssessment->save();
 
         $changeRequest = ChangeRequest::where('pre_assessment_id',$preAssessment->id)->first();
-        $changeRequest->request_type = $request->request_type;
+        // $changeRequest->request_type = $request->request_type;
         $changeRequest->effective_date = $request->effective_date;
         $changeRequest->department_id = $request->department;
         $changeRequest->company_id = $request->company;
