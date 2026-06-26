@@ -108,6 +108,45 @@
                             <textarea name='description' rows="5" cols="100" charswidth="23" class="form-control-sm form-control " required>{!!nl2br(e($request->change_request))!!}</textarea>
                         </div>
                     </div>
+
+                    @if($request->request_type == "Revision")
+                    <br>
+                        <div class='row'>
+                            <div class='col-md-12 '>
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                        Reason/s for Change
+                                    </div>
+                                    <div class="panel-body">
+                                        {!!nl2br(e($request->change_request))!!}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='row '>
+                            <div class='col-md-6 '>
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                        From (Indicate clause)
+                                    </div>
+                                    <div class="panel-body">
+                                        {!! nl2br(e($request->indicate_clause)) !!}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-md-6'>
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                        To (Indicate the changes)
+                                    </div>
+                                    <div class="panel-body">
+                                        {!! nl2br(e($request->indicate_changes)) !!}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    
                     @if((auth()->user()->role == "Document Control Officer"))
                         <div class='row'>
                             <div class='col-md-4'>
