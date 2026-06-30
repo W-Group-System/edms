@@ -90,6 +90,21 @@
             </div>
         </div>
     </div>
+    <div class="col-lg-2">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Pre-Assessment Returned</h5>
+            </div>
+            <div class="ibox-content">
+                <form action="" method="get">
+                    <input type="hidden" name="status" value="Pre-Assessment Returned">
+                    <h1 class="no-margins">
+                        <input type="submit" class="text-success" value="{{ $returnedCount }}"  style="background: none; border: none;">
+                    </h1>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
     <div class='row'>
         <div class="col-lg-12">
@@ -225,11 +240,13 @@
                                         
                                         <td><a href="#"  data-target="#view_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a>
                                             @if((auth()->user()->role == "Document Control Officer") || (auth()->user()->role == "Administrator"))
-                                            @if($request->status == "Pending")
-                                            @if($request->request_type == "Revision")
-                                            <a href="#"  data-target="#edit_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-warning'><i class="fa fa-edit"></i></a>
-                                            @endif
-                                            @endif
+                                                @if($request->status == "Pending")
+                                                    @if($request->request_type == "Revision")
+                                                        <a href="#"  data-target="#edit_request{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-warning'><i class="fa fa-edit"></i></a>
+                                                    @endif
+                                                @endif
+                                            @elseif($request->status == "Pre-Assessment Returned")
+                                                <a href="#"  data-target="#updateRequest{{$request->pre_assessment_id}}" data-toggle="modal" class='btn btn-sm btn-warning'><i class="fa fa-edit"></i></a>
                                             @endif
                                         </td>
                                         <td>
@@ -293,6 +310,8 @@
                                                     <span class='label label-info'>    
                                                 @elseif($request->status ==  "Declined")
                                                         <span class='label label-warning'>
+                                                @elseif($request->status ==  "Pre-Assessment Returned")
+                                                        <span class='label label-warning'>
                                                 @else<span class='label label-success'>
                                                 @endif
 
@@ -304,6 +323,7 @@
                                     </tr>
                                     @include('view_change_request')
                                     @include('edit_change_request')
+                                    @include('update_change_request')
                                 @endforeach
                             
                         </tbody>
