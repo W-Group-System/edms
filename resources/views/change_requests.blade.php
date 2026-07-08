@@ -150,7 +150,7 @@
                             @endphp
                             @foreach($requests as $request)
                             
-                            @if(($request->type_of_document == "FORM") || ($request->type_of_document == "ANNEX") ||($request->type_of_document == "TEMPLATE"))
+                            @if(($request->type_of_document == "FORM") ||($request->type_of_document == "TEMPLATE"))
                                 @php
                                     $date_push = date('Y-m-d', strtotime('2024-08-22'));
                                     if ($date_push > date('Y-m-d', strtotime($request->created_at)))
@@ -183,6 +183,40 @@
                                                 else
                                                 {
                                                     $target = date('Y-m-d', strtotime("+10 days", strtotime($request->preAssessment->created_at)));
+                                                }
+                                            }
+                                            else
+                                            {
+                                                // For old data that does not have pre assessment
+                                                $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at))); 
+                                            }
+                                        }
+                                    }
+                                @endphp
+                            @elseif ($request->type_of_document == "ANNEX")
+                                @php
+                                    $date_push = date('Y-m-d', strtotime('2024-08-22'));
+                                    if ($date_push > date('Y-m-d', strtotime($request->created_at)))
+                                    {
+                                        $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at))); 
+                                    }
+                                    else
+                                    {
+                                        if ($request->department_head_approved != null)
+                                        {
+                                            $target = date('Y-m-d', strtotime("+7 days", strtotime($request->department_head_approved)));
+                                        }
+                                        else
+                                        {
+                                            if ($request->preAssessment != null)
+                                            {
+                                                if ($request->preAssessment->status == 'Approved' && $request->dco_approved != null)
+                                                {
+                                                    $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at)));
+                                                }
+                                                else
+                                                {
+                                                    $target = date('Y-m-d', strtotime("+20 days", strtotime($request->preAssessment->created_at)));
                                                 }
                                             }
                                             else
