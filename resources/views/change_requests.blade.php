@@ -198,13 +198,13 @@
                                     $date_push = date('Y-m-d', strtotime('2024-08-22'));
                                     if ($date_push > date('Y-m-d', strtotime($request->created_at)))
                                     {
-                                        $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at))); 
+                                        $target = date('Y-m-d', strtotime("+20 days", strtotime($request->created_at))); 
                                     }
                                     else
                                     {
                                         if ($request->department_head_approved != null)
                                         {
-                                            $target = date('Y-m-d', strtotime("+7 days", strtotime($request->department_head_approved)));
+                                            $target = date('Y-m-d', strtotime("+20 days", strtotime($request->department_head_approved)));
                                         }
                                         else
                                         {
@@ -212,7 +212,7 @@
                                             {
                                                 if ($request->preAssessment->status == 'Approved' && $request->dco_approved != null)
                                                 {
-                                                    $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at)));
+                                                    $target = date('Y-m-d', strtotime("+20 days", strtotime($request->created_at)));
                                                 }
                                                 else
                                                 {
@@ -222,7 +222,7 @@
                                             else
                                             {
                                                 // For old data that does not have pre assessment
-                                                $target = date('Y-m-d', strtotime("+7 days", strtotime($request->created_at))); 
+                                                $target = date('Y-m-d', strtotime("+20 days", strtotime($request->created_at))); 
                                             }
                                         }
                                     }
