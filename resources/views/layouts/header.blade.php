@@ -182,18 +182,72 @@
                         </ul>
                     </li>
                     @endif
-                    <li class="@if(Request::is('memorandum')) active @endif" data-toggle="tooltip" data-placement="right" title="Memorandum">
-                        <a href="{{url('memorandum')}}">
-                            <i class="fa fa-sticky-note"></i>
-                            <span class="nav-label">Memorandum</span>
-                        </a>
-                    </li>
-                    <li class="@if(Request::is('supporting_document')) active @endif" data-toggle="tooltip" data-placement="right" title="Supporting Documents">
-                        <a href="{{url('supporting_document')}}">
-                            <i class="fa fa-file"></i>
-                            <span class="nav-label">Supporting Documents</span>
-                        </a>
-                    </li>
+                    
+                    <!-- Memorandum link -->
+                    @if ((auth()->user()->role == 'Administrator') || auth()->user()->role == 'Document Control Officer')
+                        <li class="{{Route::current()->getName() == 'memorandum' ? 'active' : ''}}" data-toggle="tooltip" data-placement="right" title="Memorandum">
+                            <a href="#"><i class="fa fa-sticky-note"></i> 
+                                <span class="nav-label">Memorandum</span><span class="fa arrow"></span>
+                            </a>
+                            <ul class="nav nav-second-level collapse">
+                                <li> 
+                                    <a href="{{url('memorandum')}}">
+                                        <i class="fa fa-sticky-note"></i>
+                                        <span class="nav-label">Files</span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{{url('for-approval-memorandum')}}">
+                                    <i class="fa fa-check-square-o"></i>
+                                    <span class="nav-label">For Approval</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @else
+                        <!--old structure before i add the dropdown menu  -->
+                        <li class="@if(Request::is('memorandum')) active @endif" data-toggle="tooltip" data-placement="right" title="Memorandum">
+                            <a href="{{url('memorandum')}}">
+                                <i class="fa fa-sticky-note"></i>
+                                <span class="nav-label">Memorandum</span>
+                            </a>
+                        </li>
+                        <!-- End old memorandum link -->
+                    @endif
+
+                    <!-- Supporting document -->
+                    @if ((auth()->user()->role == 'Administrator') || auth()->user()->role == 'Document Control Officer')
+                        <li class="{{Route::current()->getName() == 'supporting_document' ? 'active' : ''}}" data-toggle="tooltip" data-placement="right" title="Supporint Documents">
+                            <a href="#"><i class="fa fa-file"></i>
+                                <span class="nav-label">Supporting Files</span><span class="fa arrow"></span>
+                            </a>
+                            <ul class="nav nav-second-level collapse">
+                                <li> 
+                                    <a href="{{url('supporting_document')}}">
+                                        <i class="fa fa-sticky-note"></i>
+                                        <span class="nav-label">Files</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="for-approval-supporting-documents">
+                                    <i class="fa fa-check-square-o"></i>
+                                    <span class="nav-label">For Approval</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @else
+                        <li class="@if(Request::is('supporting_document')) active @endif" data-toggle="tooltip" data-placement="right" title="Supporting Documents">
+                            <a href="{{url('supporting_document')}}">
+                                <i class="fa fa-file"></i>
+                                <span class="nav-label">Supporting Documents</span>
+                            </a>
+                        </li>
+                    @endif
+                    <!--End supporting -->
+
+                    
                 </ul>
             </div>
         </nav>

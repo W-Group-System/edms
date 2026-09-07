@@ -120,12 +120,17 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('update_memorandum/{id}', 'MemorandumController@update');
         Route::post('update_status/{id}', 'MemorandumController@updateStatus');
         Route::post('delete_memo', 'MemorandumController@destroy');
+        
+        Route::post('approve_memorandum/{id}', 'MemorandumController@approveMemorandum')->name('approvedMemorandum');
+        Route::get('for-approval-memorandum', 'MemorandumController@forApproval')->name('forApprovalMemorandum');
 
         // Supporting Documents
         Route::get('supporting_document', 'SupportingDocumentController@index');
         Route::post('store_supporting_document', 'SupportingDocumentController@store');
         Route::post('destroy_supporting_document', 'SupportingDocumentController@destroy');
 
+        Route::get('for-approval-supporting-documents', 'SupportingDocumentController@forApprovalSupporting');
+        Route::post('approve_supporting/{id}', 'SupportingDocumentController@approvedSupporting')->name('approvedSupportingDocs');
         // Masterlist Internal Documents
         Route::get('masterlist-internal-documents','MasterlistInternalDocumentController@index');
 
