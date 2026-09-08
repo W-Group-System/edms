@@ -67,6 +67,7 @@ class SupportingDocumentController extends Controller
         $supporting_documents->file = '/supporting_documents/'.$name;
         $supporting_documents->supporting_docs = $request->supporting_documents;
         $supporting_documents->others = $request->others;
+        $supporting_documents->status = "Pending";
 
         $supporting_documents->save();
 
@@ -88,7 +89,7 @@ class SupportingDocumentController extends Controller
 
         $supporting_documents_company->company_id = auth()->user()->company_id;
         $supporting_documents_company->supporting_document_id = $supporting_documents->id;
-        $supporting_documents_company->final_status = 'Pending';
+        // $supporting_documents_company->final_status = 'Pending';
 
         $supporting_documents_company->save();
 
@@ -159,7 +160,7 @@ class SupportingDocumentController extends Controller
 
 
         if (auth()->user()->role == "Document Control Officer") {
-            $query->whereHas('supporting_company_dept', function($q) {
+            $query->whereHas('supporting_document_company', function($q) {
                 $q->where('company_id', auth()->user()->company_id);
             });
         }
