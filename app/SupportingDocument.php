@@ -21,4 +21,13 @@ class SupportingDocument extends Model implements Auditable
     {
         return $this->hasMany(SupportingDocumentsDepartment::class);
     }
+    // Added
+    public function supporting_document_company()
+    {
+        return $this->hasMany(
+            SupportingDocumentsCompany::class,
+            'supporting_document_id'
+        );
+    }
+
 }

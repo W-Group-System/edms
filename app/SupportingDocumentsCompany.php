@@ -4,13 +4,18 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SupportingDocumentsDepartment extends Model
+class SupportingDocumentsCompany extends Model
 {
-    public function department()
+    //
+
+   public function company()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(
+            Company::class,
+            'company_id'
+        );
     }
-    // Added
+
     public function supportingDocument()
     {
         return $this->belongsTo(

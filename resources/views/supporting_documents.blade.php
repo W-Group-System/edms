@@ -14,7 +14,9 @@
                         <h5>Supporting Documents</h5>
                     </div>
                     <div class="ibox-content">
-                        <h1 class="no-margins">0</h1>
+                        <h1 class="no-margins">
+                            {{ $supporting_documents->count() }}
+                        </h1>
                     </div>
                 </div>
             </div>

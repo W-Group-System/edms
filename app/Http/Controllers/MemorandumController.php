@@ -20,13 +20,23 @@ class MemorandumController extends Controller
         // $documents = Document::where('department_id', auth()->user()->department_id)->where('category', 'POLICY')->get();
         $documents = Document::whereIn('category', ['POLICY', 'PROCEDURE'])->get();
         $memos = Memorandum::get();
+        $memos = Memorandum::where('final_status', NULL)
+                        ->orWhere('final_status', 'Approved')
+                        ->get();
+                
+        //            ->get();
+
+        // Private memos are not visible to any users
         if((auth()->user()->role == 'User' && auth()->user()->audit_role == null) || (auth()->user()->role == 'Department Head' && auth()->user()->audit_role == null))
         {
             $memos = Memorandum::where('department_id', auth()->user()->department_id)->orWhere('status', 'Public')->get();
         }
         
         return view('memorandum', compact('documents', 'memos'));
+        // dd($memos);
     }
+
+    
 
     /**
      * Show the form for creating a new resource.
@@ -49,6 +59,7 @@ class MemorandumController extends Controller
         // dd($request->all());
         $memo = new Memorandum();
         $memo->department_id = auth()->user()->department_id;
+        $memo->company_id = auth()->user()->company_id;
         $memo->memo_number = $request->memo_number;
         $memo->title = $request->title;
         $memo->released_date = $request->released_date;
@@ -62,7 +73,9 @@ class MemorandumController extends Controller
         $file = '/memorandum_files/'.$name;
 
         $memo->file_memo = $file;
-        $memo->status = 'Private';
+        // $memo->status = 'Private';
+        // $memo->status = 'For approval';
+        $memo->final_status = 'Pending';
         $memo->save();
 
         if($request->has('document'))
@@ -169,5 +182,42 @@ class MemorandumController extends Controller
         $memo->save();
 
         return back();
+    }
+
+    public function approveMemorandum(Request $request, $id)
+    {
+        $memo = Memorandum::findOrFail($id);
+        
+        $memo->status = ($request->status === 'Approved') ? $request->visibility : 'Private'; 
+        $memo->final_status = $request->status;
+        $memo->approved_by = auth()->user()->name;
+        $memo->remarks = $request->memo_comment;
+
+        $memo->save();
+
+        // FIXED: Space added between 'Successfully ' and $request->status
+        Alert::success('Successfully ' . $request->status)->persistent('Dismiss');
+        return back();
+    }
+
+    public function forApproval()
+    {
+        $documents = Document::whereIn('category', ['POLICY', 'PROCEDURE'])->get();
+
+        $query = Memorandum::query();
+
+        $query->where(function($q) {
+            $q->where('final_status', 'Pending')
+            ->orWhere('final_status', 'Declined');
+           
+        });
+
+        if (auth()->user()->role == 'Document Control Officer') {
+            $query->where('company_id', auth()->user()->company_id);
+        }
+
+        $memos = $query->get();
+
+        return view('for-approval-memorandum', compact('memos', 'documents'));
     }
 }

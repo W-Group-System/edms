@@ -57,12 +57,30 @@
                                             <td>
                                                 {{-- <button type="button" class="btn btn-sm btn-info" title="View" data-toggle="modal" data-target="#view{{$memo->id}}">
                                                     <i class="fa fa-eye"></i>
-                                                </button> --}}
+                                                </button> --}}`
+                                                
                                                 @if($memo->department_id == auth()->user()->department_id)
                                                 <button type="button" class="btn btn-sm btn-warning" title="Edit" data-toggle="modal" data-target="#edit{{$memo->id}}">
                                                     <i class="fa fa-pencil-square-o"></i>
                                                 </button>
                                                 @endif
+
+                                                @if (
+                                                    (auth()->user()->role == 'Document Control Officer' || auth()->user()->role == 'Administrator')
+                                                    && $memo->status != 'Public'
+                                                    && $memo->status != 'Private'
+                                                    && $memo->status != 'Declined'
+                                                    && $memo->status != 'Approved'
+                                                )
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-primary"
+                                                            title="Approved"
+                                                            data-toggle="modal"
+                                                            data-target="#approved{{ $memo->id }}">
+                                                        <i class="fa fa-check"></i>
+                                                    </button>
+                                                @endif
+                                                
                                                 @if(auth()->user()->role == 'Document Control Officer')
                                                 {{-- <form method="POST" action="{{ url('delete_memo/'.$memo->id) }}" onsubmit="show()">
                                                     @csrf
@@ -71,8 +89,8 @@
                                                 <button type="button" class="btn btn-sm btn-danger deleteMemo" id="{{ $memo->id }}">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
-                                                
                                                 @endif
+            
                                             </td>
                                             <td>
                                                 @if(auth()->user()->role == 'Document Control Officer' || auth()->user()->role == 'Administrator')
@@ -109,6 +127,7 @@
                                         </tr>
 
                                         @include('edit_memorandum')
+                                        @include('approved_memorandum')
                                         {{-- @include('view_memorandum') --}}
                                     @endforeach
                                 </tbody>
