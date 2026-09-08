@@ -111,10 +111,11 @@
                         <!-- Comments -->
                         <div class="col-md-12 form-group" style="margin-top: 10px;">
                             <label for="supporting_comment_{{ $supporting_document->id }}" class="control-label">
-                                Comments <span class="text-muted" style="font-weight: normal; font-style: italic;">(Optional)</span>
+                                Remarks <span class="text-danger">*</span>
                             </label>
                             <textarea class="form-control"
                                     name="supporting_comment"
+                                    required
                                     placeholder="Leave a comment here..."
                                     id="supporting_comment_{{ $supporting_document->id }}"
                                     rows="3"></textarea>

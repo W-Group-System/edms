@@ -16,21 +16,50 @@ class SupportingDocumentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // public function index()
+    // {
+    //     $supporting_documents = SupportingDocument::where(function($q) {
+    //         $q->whereIn('status', ['Approved', 'Declined'])
+    //         ->orWhereNull('status');
+    //     })
+    //     ->get();
+    //     if ((auth()->user()->role == "User" || auth()->user()->role == "Department Head") && auth()->user()->audit_role == null)
+    //     {
+    //         $supporting_documents = SupportingDocument::whereHas('supporting_document_dept', function($q) {
+    //                 $q->where('department_id', auth()->user()->department_id);
+    //             })
+    //             ->get();
+    //     }
+    //     $departments = Department::whereNull('status')->get();
+
+    //     return view('supporting_documents', compact('supporting_documents','departments'));
+    // }
     public function index()
     {
-        $supporting_documents = SupportingDocument::where('status', 'Approved')
-                        ->orWhere('status', NULL)
-                        ->get();
-        if ((auth()->user()->role == "User" || auth()->user()->role == "Department Head") && auth()->user()->audit_role == null)
-        {
-            $supporting_documents = SupportingDocument::whereHas('supporting_document_dept', function($q) {
-                    $q->where('department_id', auth()->user()->department_id);
-                })
-                ->get();
+        $query = SupportingDocument::query();
+
+    
+        $query->where(function($q) {
+            $q->where(function($sub) {
+                $sub->where('status', 'Approved')
+                    ->orWhereNull('status');
+            })->orWhere(function($sub) {
+                $sub->where('status', 'Declined')
+                    ->where('uploaded_by', auth()->id());
+            });
+        });
+
+        
+        if (in_array(auth()->user()->role, ['User', 'Department Head']) && is_null(auth()->user()->audit_role)) {
+            $query->whereHas('supporting_document_dept', function($q) {
+                $q->where('department_id', auth()->user()->department_id);
+            });
         }
+
+        $supporting_documents = $query->get();
         $departments = Department::whereNull('status')->get();
 
-        return view('supporting_documents', compact('supporting_documents','departments'));
+        return view('supporting_documents', compact('supporting_documents', 'departments'));
     }
 
     /**
