@@ -14,17 +14,13 @@ class AddNewColumnToMemorandumsTable extends Migration
     public function up()
     {
         Schema::table('memorandums', function (Blueprint $table) {
-            if (!Schema::hasColumn('memorandums', 'company_id')) {
-                $table->unsignedBigInteger('company_id')->nullable();
-            }
-
-            if (!Schema::hasColumn('memorandums', 'remarks')) {
-                $table->string('remarks')->nullable();
-            }
+            $table->string('company_id')->nullable();
+            $table->string('remarks')->nullable();
+            $table->string('final_status')->nullable();
+            $table->string('approved_by')->nullable();
 
         });
     }
-
 
     /**
      * Reverse the migrations.
@@ -34,15 +30,7 @@ class AddNewColumnToMemorandumsTable extends Migration
     public function down()
     {
         Schema::table('memorandums', function (Blueprint $table) {
-            if (Schema::hasColumn('memorandums', 'company_id')) {
-                $table->dropColumn('company_id');
-            }
-
-            if (Schema::hasColumn('memorandums', 'remarks')) {
-                $table->dropColumn('remarks');
-            }
-
-          
+            $table->dropColumn(['company_id','remarks','final_status', 'approved_by',]);
         });
     }
 }
