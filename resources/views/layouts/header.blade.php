@@ -193,7 +193,7 @@
                                 <li> 
                                     <a href="{{url('memorandum')}}">
                                         <i class="fa fa-sticky-note"></i>
-                                        Files
+                                        For upload
                                     </a>
                                 </li>
 
@@ -227,7 +227,7 @@
                                 <li> 
                                     <a href="{{url('supporting_document')}}">
                                         <i class="fa fa-sticky-note"></i>
-                                        Files
+                                        For upload
                                     </a>
                                 </li>
                                 <li>
