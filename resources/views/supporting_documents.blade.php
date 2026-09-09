@@ -11,11 +11,23 @@
             <div class="col-lg-3">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Supporting Documents</h5>
+                        <h5>Approved Supporting Documents</h5>
                     </div>
                     <div class="ibox-content">
                         <h1 class="no-margins">
-                            {{ $supporting_documents->count() }}
+                            {{ $supporting_documents->filter(fn($doc) => $doc->status == 'Approved' || is_null($doc->status))->count() }}
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Declined Supporting Documents</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">
+                            {{ $supporting_documents->filter(fn($doc) => $doc->status == 'Declined')->count() }}
                         </h1>
                     </div>
                 </div>
@@ -35,6 +47,18 @@
                             </button>
                             {{-- @endif --}}
                         </h5>
+
+                        {{-- DROPDOWN FILTER START --}}
+                        <div class="ibox-tools">
+                            <form method="GET" action="" id="filterForm" style="display: inline-block; width: 150px;">
+                                <select name="status_filter" id="status_filter" class="form-control input-sm" onchange="this.form.submit()">
+                                    <option value="">All Status</option>
+                                    <option value="Approved" {{ request('status_filter') == 'Approved' ? 'selected' : '' }}>Approved</option>
+                                    <option value="Declined" {{ request('status_filter') == 'Declined' ? 'selected' : '' }}>Declined</option>
+                                </select>
+                            </form>
+                        </div>
+                        {{-- DROPDOWN FILTER END --}}
                     </div>
                     <div class="ibox-content">
                         <div class="table table-responsive">
@@ -47,15 +71,38 @@
                                         <th>Title</th>
                                         <th>Uploaded By</th>
                                         <th>Attachment</th>
+                                        <th>Remarks</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($supporting_documents as $supporting_document)
+
+                                        {{-- Filter collection loop check --}}
+                                        @if(request('status_filter'))
+                                            @php
+                                                $filter = request('status_filter');
+                                                $isApproved = ($supporting_document->status == 'Approved' || is_null($supporting_document->status));
+                                                
+                                                if ($filter == 'Approved' && !$isApproved) {
+                                                    continue;
+                                                }
+                                                if ($filter == 'Declined' && $supporting_document->status != 'Declined') {
+                                                    continue;
+                                                }
+                                            @endphp
+                                        @endif
+
                                         <tr>
                                             <td>
-                                                <button type="button" class="btn btn-sm btn-danger deleteSuppDocs" id="{{ $supporting_document->id }}">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
+                                                @if($supporting_document->status != 'Declined')
+                                                    <button type="button" class="btn btn-sm btn-danger deleteSuppDocs" id="{{ $supporting_document->id }}">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                 @else
+                                                    <span class="text-muted" style="font-size: 11px; font-style: italic;">-</span>
+                                                @endif
+                                               
                                             </td>
                                             <td>
                                                 @if($supporting_document->others)
@@ -77,6 +124,24 @@
                                                     <i class="fa fa-file"></i>
                                                 </a>
                                             </td>
+                                           <td>
+                                                @if($supporting_document->status == 'Declined')
+                                                    <span class="text-danger">{{ $supporting_document->remarks ?? 'N/A' }}</span>
+                                                @else
+                                                    <span class="text-muted">-</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($supporting_document->status == 'Declined')
+                                                    <span class="label label-danger">
+                                                        Declined
+                                                    </span>
+                                                @else
+                                                    <span class="label label-success">
+                                                        {{ $supporting_document->status ?? 'Approved' }}
+                                                    </span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -96,12 +161,6 @@
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
 <script src="{{ asset('login_css/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
 <script>
-    // function updateStatus(id)
-    // {
-    //     $('#updateStatusForm'+id).submit()
-        
-    // }
-
     $(document).ready(function(){
         $(".cat").chosen({width:"100%"})
 
@@ -166,9 +225,8 @@
                     location.reload();
                 }).fail(function(data)
                 {
-                    
                     swal("Deleted!", "Supporting Document is now deleted.", "success");
-                location.reload();
+                    location.reload();
                 });
             });
         });

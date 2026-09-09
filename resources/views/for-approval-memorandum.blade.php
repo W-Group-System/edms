@@ -80,6 +80,7 @@
                                     <th>Uploaded By</th>
                                     <th>Align Policy</th>
                                     <th>Attachment</th>
+                                    <th>Remarks</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -147,6 +148,13 @@
                                     </td>
 
                                     <td>
+                                        @if($memo->final_status == 'Declined')
+                                            <span class="text-danger">{{ $memo->remarks ?? 'N/A' }}</span>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+                                    <td>
                                         @if($memo->status == 'Private' || $memo->status == 'Declined' || $memo->final_status == 'Declined')
                                             <span class="label label-danger">
                                                 Declined
@@ -157,6 +165,7 @@
                                             </span>
                                         @endif
                                     </td>
+                                    
 
                                 </tr>
                                 

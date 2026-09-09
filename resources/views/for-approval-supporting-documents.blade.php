@@ -73,7 +73,9 @@
                                         <th>Title</th>
                                         <th>Uploaded By</th>
                                         <th>Attachment</th>
+                                        <th>Remarks</th>
                                         <th>Status</th>
+                                        
                                 </tr>
                             </thead>
 
@@ -89,6 +91,8 @@
                                     @endif
                                     <tr>
                                         <td>
+
+                                       @if($supporting_document->status == 'Pending')
                                             <button type="button"
                                                 class="btn btn-sm btn-primary"
                                                 title="Approved"
@@ -96,12 +100,16 @@
                                                 data-target="#approved{{ $supporting_document->id }}">
                                                 <i class="fa fa-check"></i>
                                             </button>
+                                        @else
+                                            <span class="text-muted" style="font-size: 11px; font-style: italic;">Processed</span>
+                                        @endif
+                                           
                                         </td>
                                         <td>
                                             @if($supporting_document->others)
-                                            {{ $supporting_document->supporting_docs }} - {{ $supporting_document->others }} 
+                                                {{ $supporting_document->supporting_docs }} - {{ $supporting_document->others }} 
                                             @else
-                                            {{ $supporting_document->supporting_docs }}
+                                                {{ $supporting_document->supporting_docs }}
                                             @endif
                                         </td>
                                         <td>
@@ -119,15 +127,23 @@
                                         </td>
                                         <td>
                                             @if($supporting_document->status == 'Declined')
+                                                <span class="text-danger">{{ $supporting_document->remarks ?? 'N/A' }}</span>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($supporting_document->status == 'Declined')
                                                 <span class="label label-danger">
                                                     Declined
                                                 </span>
                                             @else
-                                                <span class="label label-primary">
+                                                <span class="label label-warning">
                                                     {{ $supporting_document->status ?? 'Pending' }}
                                                 </span>
                                             @endif
                                         </td>
+                                        
                                     </tr>
                                     <!-- Modal -->
                                     @include('approved_supporting_documents')

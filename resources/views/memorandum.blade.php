@@ -11,11 +11,22 @@
             <div class="col-lg-3">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Memorandum</h5>
+                        <h5>Approved Memorandum</h5>
                     </div>
                     <div class="ibox-content">
-                        <h1 class="no-margins">{{count($memos)}}</h1>
+                        <h1 class="no-margins">{{ $memos->filter(fn($doc) => $doc->final_status == 'Approved' || is_null($doc->final_status))->count() }}</h1>
                     </div>
+                </div>
+            </div>
+            <div class="col-lg-3"> 
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Declined Memorandum</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">{{ $memos->filter(fn($doc) => $doc->final_status == 'Declined' && $doc->uploaded_by == auth()->id())->count() }}</h1>
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -33,7 +44,21 @@
                             </button>
                             {{-- @endif --}}
                         </h5>
+
+                         
+                    {{-- DROPDOWN FILTER START --}}
+                    <div class="ibox-tools">
+                        <form method="GET" action="" id="filterForm" style="display: inline-block; width: 150px;">
+                            <select name="status_filter" id="status_filter" class="form-control input-sm" onchange="this.form.submit()">
+                                <option value="">All Status</option>
+                                <option value="Approved" {{ request('status_filter') == 'Approved' ? 'selected' : '' }}>Approved</option>
+                                <option value="Declined" {{ request('status_filter') == 'Declined' ? 'selected' : '' }}>Declined</option>
+                            </select>
+                        </form>
                     </div>
+                    {{-- DROPDOWN FILTER END --}}
+                    </div>
+                    
                     <div class="ibox-content">
                         <div class="table table-responsive">
                             <table class="table table-striped table-bordered table-hover tables" >
@@ -48,65 +73,68 @@
                                         <th>Uploaded By</th>
                                         <th>Align Policy</th>
                                         <th>Attachment</th>
+                                        <th>Remarks</th>
+                                        <th>Visibility</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($memos as $memo)
+
+                                        {{-- Filter collection loop check --}}
+                                        @if(request('status_filter'))
+                                            @php
+                                                $filter = request('status_filter');
+                                                $isApproved = ($memo->final_status == 'Approved' || is_null($memo->final_status));
+                                                
+                                                if ($filter == 'Approved' && !$isApproved) {
+                                                    continue;
+                                                }
+                                                if ($filter == 'Declined' && $memo->final_status != 'Declined') {
+                                                    continue;
+                                                }
+                                            @endphp
+                                        @endif
+
                                         <tr>
                                             <td>
-                                                {{-- <button type="button" class="btn btn-sm btn-info" title="View" data-toggle="modal" data-target="#view{{$memo->id}}">
-                                                    <i class="fa fa-eye"></i>
-                                                </button> --}}`
-                                                
-                                                @if($memo->department_id == auth()->user()->department_id)
-                                                <button type="button" class="btn btn-sm btn-warning" title="Edit" data-toggle="modal" data-target="#edit{{$memo->id}}">
-                                                    <i class="fa fa-pencil-square-o"></i>
-                                                </button>
-                                                @endif
-
-                                                @if (
-                                                    (auth()->user()->role == 'Document Control Officer' || auth()->user()->role == 'Administrator')
-                                                    && $memo->status != 'Public'
-                                                    && $memo->status != 'Private'
-                                                    && $memo->status != 'Declined'
-                                                    && $memo->status != 'Approved'
-                                                )
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-primary"
-                                                            title="Approved"
-                                                            data-toggle="modal"
-                                                            data-target="#approved{{ $memo->id }}">
-                                                        <i class="fa fa-check"></i>
+                                                @if($memo->final_status != 'Declined')
+                                                    {{-- <button type="button" class="btn btn-sm btn-info" title="View" data-toggle="modal" data-target="#view{{$memo->id}}">
+                                                        <i class="fa fa-eye"></i>
+                                                    </button> --}}
+                                                    
+                                                    @if($memo->department_id == auth()->user()->department_id)
+                                                    <button type="button" class="btn btn-sm btn-warning" title="Edit" data-toggle="modal" data-target="#edit{{$memo->id}}">
+                                                        <i class="fa fa-pencil-square-o"></i>
                                                     </button>
+                                                    @endif
+                                                    
+                                                    @if(auth()->user()->role == 'Document Control Officer')
+                                                    <button type="button" class="btn btn-sm btn-danger deleteMemo" id="{{ $memo->id }}">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                    @endif
+                                                @else
+                                                    <span class="text-muted" style="font-size: 11px; font-style: italic;">-</span>
                                                 @endif
-                                                
-                                                @if(auth()->user()->role == 'Document Control Officer')
-                                                {{-- <form method="POST" action="{{ url('delete_memo/'.$memo->id) }}" onsubmit="show()">
-                                                    @csrf
-
-                                                </form> --}}
-                                                <button type="button" class="btn btn-sm btn-danger deleteMemo" id="{{ $memo->id }}">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                                @endif
-            
                                             </td>
                                             <td>
                                                 @if(auth()->user()->role == 'Document Control Officer' || auth()->user()->role == 'Administrator')
                                                     <form method="POST" action="{{url('update_status/'.$memo->id)}}" onsubmit="show()" id="updateStatusForm{{$memo->id}}">
                                                         @csrf 
 
-                                                        <input type="checkbox" name="status" class="form-check" onchange="updateStatus({{$memo->id}})" value="Public" @if($memo->status == 'Public') checked @endif>
+                                                        <input type="checkbox" name="status" class="form-check" onchange="updateStatus({{$memo->id}})" value="Public" 
+                                                            @if($memo->status == 'Public') checked @endif
+                                                            @if($memo->final_status == 'Declined') disabled @endif>
                                                     </form>
                                                 @endif
                                             </td>
 
-                                            <td>{{$memo->department->name}}</td>
+                                            <td>{{$memo->department->name ?? 'N/A'}}</td>
                                             <td>{{$memo->memo_number}}</td>
                                             <td>{{$memo->title}}</td>
                                             <td>{{date('M d Y', strtotime($memo->released_date))}}</td>
-                                            <td>{{$memo->user->name}}</td>
+                                            <td>{{$memo->user->name ?? 'N/A'}}</td>
                                             <td>
                                                 @foreach ($memo->memorandum_document as $memo_docs)
                                                     <a href="{{url('view-document/'.$memo_docs->document->id)}}">{{$memo_docs->document->control_code}}</a> <br>
@@ -118,12 +146,31 @@
                                                 </a>
                                             </td>
                                             <td>
+                                                @if($memo->final_status == 'Declined')
+                                                    <span class="text-danger">{{ $memo->remarks ?? 'N/A' }}</span>
+                                                @else
+                                                    <span class="text-muted">-</span>
+                                                @endif
+                                            </td>
+                                            <td>
                                                 @if($memo->status == 'Private')
                                                     <span class="label label-danger">Private</span>
                                                 @else
-                                                    <span class="label label-primary">Public</span>
+                                                    <span class="label label-success">Public</span>
                                                 @endif
                                             </td>
+                                            <td>
+                                                @if($memo->final_status == 'Declined')
+                                                    <span class="label label-warning">
+                                                        Declined
+                                                    </span>
+                                                @else
+                                                    <span class="label label-primary">
+                                                        {{ $memo->final_status ?? 'Approved' }}
+                                                    </span>
+                                                @endif
+                                            </td> 
+                                           
                                         </tr>
 
                                         @include('edit_memorandum')

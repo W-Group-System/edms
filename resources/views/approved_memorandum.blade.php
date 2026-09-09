@@ -95,10 +95,11 @@
                         <!-- Comments -->
                         <div class="col-md-12 form-group" style="margin-top: 10px;">
                             <label for="memo_comment_{{ $memo->id }}" class="control-label">
-                                Comments <span class="text-muted" style="font-weight: normal; font-style: italic;">(Optional)</span>
+                                Remarks <span class="text-danger">*</span>
                             </label>
                             <textarea class="form-control"
                                     name="memo_comment"
+                                    required
                                     placeholder="Leave a comment here..."
                                     id="memo_comment_{{ $memo->id }}"
                                     rows="3"></textarea>

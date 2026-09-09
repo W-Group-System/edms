@@ -15,25 +15,51 @@ class MemorandumController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // public function index()
+    // {
+    //     // $documents = Document::where('department_id', auth()->user()->department_id)->where('category', 'POLICY')->get();
+    //     $documents = Document::whereIn('category', ['POLICY', 'PROCEDURE'])->get();
+    //     $memos = Memorandum::get();
+    //     $memos = Memorandum::where('final_status', NULL)
+    //                     ->orWhere('final_status', 'Approved')
+    //                     ->get();
+                
+    //     //            ->get();
+
+    //     // Private memos are not visible to any users
+    //     if((auth()->user()->role == 'User' && auth()->user()->audit_role == null) || (auth()->user()->role == 'Department Head' && auth()->user()->audit_role == null))
+    //     {
+    //         $memos = Memorandum::where('department_id', auth()->user()->department_id)->orWhere('status', 'Public')->get();
+    //     }
+        
+    //     return view('memorandum', compact('documents', 'memos'));
+    //     // dd($memos);
+    // }
     public function index()
     {
-        // $documents = Document::where('department_id', auth()->user()->department_id)->where('category', 'POLICY')->get();
         $documents = Document::whereIn('category', ['POLICY', 'PROCEDURE'])->get();
-        $memos = Memorandum::get();
-        $memos = Memorandum::where('final_status', NULL)
-                        ->orWhere('final_status', 'Approved')
-                        ->get();
-                
-        //            ->get();
+        $query = Memorandum::query();
 
-        // Private memos are not visible to any users
-        if((auth()->user()->role == 'User' && auth()->user()->audit_role == null) || (auth()->user()->role == 'Department Head' && auth()->user()->audit_role == null))
-        {
-            $memos = Memorandum::where('department_id', auth()->user()->department_id)->orWhere('status', 'Public')->get();
-        }
         
+        $query->where(function($q) {
+            $q->whereIn('final_status', ['Approved'])
+              ->orWhereNull('final_status')
+              ->orWhere(function($sub) {
+                  $sub->where('final_status', 'Declined')
+                        ->where('uploaded_by', auth()->id());
+              });
+        });
+
+        if ((auth()->user()->role == 'User' && auth()->user()->audit_role == null) || (auth()->user()->role == 'Department Head' && auth()->user()->audit_role == null)) {
+            $query->where(function($q) {
+                $q->where('department_id', auth()->user()->department_id)
+                  ->orWhere('status', 'Public');
+            });
+        }
+
+        $memos = $query->get();
+
         return view('memorandum', compact('documents', 'memos'));
-        // dd($memos);
     }
 
     
