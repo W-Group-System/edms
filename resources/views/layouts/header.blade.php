@@ -193,16 +193,17 @@
                                 <li> 
                                     <a href="{{url('memorandum')}}">
                                         <i class="fa fa-sticky-note"></i>
-                                        <span class="nav-label">Files</span>
+                                        For upload
                                     </a>
                                 </li>
 
                                 <li>
                                     <a href="{{url('for-approval-memorandum')}}">
                                     <i class="fa fa-check-square-o"></i>
-                                    <span class="nav-label">For Approval</span>
+                                    For Approval
                                     </a>
                                 </li>
+                                
                             </ul>
                         </li>
                     @else
@@ -210,7 +211,7 @@
                         <li class="@if(Request::is('memorandum')) active @endif" data-toggle="tooltip" data-placement="right" title="Memorandum">
                             <a href="{{url('memorandum')}}">
                                 <i class="fa fa-sticky-note"></i>
-                                <span class="nav-label">Memorandum</span>
+                                Memorandum
                             </a>
                         </li>
                         <!-- End old memorandum link -->
@@ -226,13 +227,13 @@
                                 <li> 
                                     <a href="{{url('supporting_document')}}">
                                         <i class="fa fa-sticky-note"></i>
-                                        <span class="nav-label">Files</span>
+                                        For upload
                                     </a>
                                 </li>
                                 <li>
                                     <a href="for-approval-supporting-documents">
                                     <i class="fa fa-check-square-o"></i>
-                                    <span class="nav-label">For Approval</span>
+                                    For Approval
                                     </a>
                                 </li>
                             </ul>
@@ -241,7 +242,7 @@
                         <li class="@if(Request::is('supporting_document')) active @endif" data-toggle="tooltip" data-placement="right" title="Supporting Documents">
                             <a href="{{url('supporting_document')}}">
                                 <i class="fa fa-file"></i>
-                                <span class="nav-label">Supporting Documents</span>
+                                Supporting Documents
                             </a>
                         </li>
                     @endif
