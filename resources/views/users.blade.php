@@ -42,7 +42,47 @@
         
     </div>
     <div class='row'>
-        <div class="col-lg-12">
+        <div class="col-lg-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Approved Account Requests</h5>
+                  
+                </div>
+                <div class="ibox-content">
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover tables" >
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Company</th>
+                                <th>Department</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($users->where('status', 'New Account' ) as $approved_requests)
+                            <tr>
+                                <td>{{$approved_requests->name}}</td>
+                                <td>{{$approved_requests->email}}</td>
+                                <td>{{$approved_requests->company->name}}</td>
+                                <td>{{optional($approved_requests->department)->name}}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info"  title='Edit' data-target="#editNewUserAccount{{$approved_requests->id}}" data-toggle="modal"><i class="fa fa-edit"></i></button>
+                                </td>
+                            </tr>
+                            @include('edit_new_account') 
+                            @endforeach
+                        </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Users <button class="btn btn-success "  data-target="#new_account" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New Account</button></h5>
@@ -67,7 +107,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($users as $user)
+                            @foreach($users->where('status',"!=","New Account") as $user)
                             <tr>
                                 <td>{{$user->name}}</td>
                                 <td>{{$user->email}}</td>

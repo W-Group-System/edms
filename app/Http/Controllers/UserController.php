@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\AccountRequest;
 use App\User;
 use App\Company;
 use App\Department;
 use App\UserDepartment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class UserController extends Controller
@@ -144,4 +147,115 @@ class UserController extends Controller
         }
         
     }
+
+    public function request_aacount() {
+
+        // if((auth()->user()->role == "User") || (auth()->user()->role == "Department Head"))
+        // {
+            $account_requests = AccountRequest::where('department_id', auth()->user()->department_id)
+                ->where('request_by', auth()->user()->id)->get();
+        // } 
+        // elseif ((auth()->user()->role == "Business Process Manager") || auth()->user()->role == "Administrator") {
+        //     $account_requests = AccountRequest::where('status',"!=", "Cancelled")->get();
+        // }
+        $roles = $this->roles();
+        return view('account_request.account_requests', array(
+            'account_requests' => $account_requests,
+        ));
+    }
+
+    public function store_request_account(Request $request)
+    {
+        $new_account = new AccountRequest;
+        $new_account->name = $request->name;
+        $new_account->email = $request->email;
+        $new_account->company_id = $request->company;
+        $new_account->department_id = $request->department;
+        $new_account->reason = $request->reason;
+        $new_account->position = $request->position;
+        $new_account->request_by = auth()->user()->id;
+        $new_account->status = "Pending";
+        $new_account->save();
+        Alert::success('Successfully Store')->persistent('Dismiss');
+        return back();
+    }
+
+    public function cancel(Request $request)
+    {
+        $cancelRequest = AccountRequest::findOrFail($request->id);
+        $cancelRequest->status = "Cancelled";
+        $cancelRequest->save();
+
+        Alert::success('Successfully Cancelled')->persistent('Dismiss');
+        return back();
+    }
+
+    public function forApproval() {
+
+        if ((auth()->user()->role == "Business Process Manager") || auth()->user()->role == "Administrator") {
+            $account_requests = AccountRequest::where('status',"!=", "Cancelled")->get();
+        } else {
+            return response("You don't have permission to access this", 403);
+        }
+        return view('account_request.account_request_approval', array(
+            'account_requests' => $account_requests,
+        ));
+    }
+    public function approve_request_account(Request $request, $id)
+    {
+        $approveAccount = AccountRequest::findOrFail($id);
+        $approveAccount->status = $request->status;
+        $approveAccount->approver_remarks = $request->approver_remarks;
+        $approveAccount->save();
+
+        if ($request->status == "Approved") {
+            $new_account = new User;
+            $new_account->name = $request->name;
+            $new_account->email = $request->email;
+            $new_account->company_id = $request->company;
+            $new_account->department_id = $request->department;
+            $new_account->status = "New Account";
+            $new_account->account_request_id = $id;
+            $new_account->password = Hash::make(Str::random(10));
+            $new_account->save();
+        }
+        Alert::success('Successfully Updated')->persistent('Dismiss');
+        return back();
+    }
+
+    public function edit_new_account(Request $request, $id)
+    {
+
+        $this->validate($request, [
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        $account = User::where('id', $id)->first();
+        $account->name = $request->name;
+        $account->email = $request->email;
+        $account->company_id = $request->company;
+        $account->department_id = $request->department;
+        $account->role = $request->role;
+        $account->status = "";
+        $account->password = bcrypt($request->password);
+        $account->save();
+
+        $share_department = UserDepartment::where('user_id',$id)->delete();
+        if($request->share_department)
+        {
+            foreach($request->share_department as $d)
+            {
+                $department = new UserDepartment;
+                $department->user_id = $id;
+                $department->department_id = $d;
+                $department->created_by = auth()->user()->id;
+                $department->save();
+            }
+        }
+      
+
+        Alert::success('Successfully Updated')->persistent('Dismiss');
+        return back();
+    }
+    
 }

@@ -211,7 +211,7 @@
                         <li class="@if(Request::is('memorandum')) active @endif" data-toggle="tooltip" data-placement="right" title="Memorandum">
                             <a href="{{url('memorandum')}}">
                                 <i class="fa fa-sticky-note"></i>
-                                Memorandum
+                                <span class="nav-label">Memorandum </span>
                             </a>
                         </li>
                         <!-- End old memorandum link -->
@@ -242,11 +242,40 @@
                         <li class="@if(Request::is('supporting_document')) active @endif" data-toggle="tooltip" data-placement="right" title="Supporting Documents">
                             <a href="{{url('supporting_document')}}">
                                 <i class="fa fa-file"></i>
-                                Supporting Documents
+                                <span class="nav-label">Supporting Documents </span>
                             </a>
                         </li>
                     @endif
                     <!--End supporting -->
+
+                    @if ((auth()->user()->role == 'Administrator') || auth()->user()->role == 'Business Process Manager')
+                        <li class="{{Route::current()->getName() == 'account_request' ? 'active' : ''}}" data-toggle="tooltip" data-placement="right" title="Account Request">
+                            <a href="#"><i class="fa fa-file"></i>
+                                <span class="nav-label">Account Request</span><span class="fa arrow"></span>
+                            </a>
+                            <ul class="nav nav-second-level collapse">
+                                <li> 
+                                    <a href="{{url('account_request')}}">
+                                        <i class="fa fa-sticky-note"></i>
+                                        For Request
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{url('for-approval-accounts')}}">
+                                    <i class="fa fa-check-square-o"></i>
+                                        For Approval
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @else
+                        <li class="@if(Request::is('account_request')) active @endif" data-toggle="tooltip" data-placement="right" title="Account Request">
+                            <a href="{{url('account_request')}}">
+                                <i class="fa fa-file"></i>
+                                <span class="nav-label">Account Request</span>
+                            </a>
+                        </li>
+                    @endif
 
                     
                 </ul>

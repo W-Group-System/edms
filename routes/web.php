@@ -79,6 +79,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('deactivate-user', 'UserController@deactivate_user')->name('settings');
         Route::post('activate-user', 'UserController@activate_user')->name('settings');
     
+        Route::get('account_request', 'UserController@request_aacount');
+        Route::post('store_request_account', 'UserController@store_request_account');
+        Route::post('destroy_account_request', 'UserController@cancel');
+        Route::get('for-approval-accounts', 'UserController@forApproval');
+        Route::post('approve_request_account/{id}', 'UserController@approve_request_account');
+        Route::post('/edit-new-account/{id}', 'UserController@edit_new_account');
+
+
     
         //DCO
         Route::get('dco','DcoController@index')->name('settings');
