@@ -166,6 +166,10 @@ class UserController extends Controller
 
     public function store_request_account(Request $request)
     {
+        if (User::where('email', $request->email)->exists()) {
+            Alert::error('Email Already Exists', 'This email is already registered.');
+            return back()->withInput();
+        }
         $new_account = new AccountRequest;
         $new_account->name = $request->name;
         $new_account->email = $request->email;
@@ -228,6 +232,7 @@ class UserController extends Controller
 
         $this->validate($request, [
             'password' => 'required|confirmed|min:6',
+            'email' => 'required|email|unique:users,email,' . $id,
         ]);
 
         $account = User::where('id', $id)->first();
