@@ -20,7 +20,7 @@ class DepartmentController extends Controller
     public function index()
     {
         $departments = Department::with('dep_head','approvers')->get();
-        $employees = User::where('status', null)->get();
+        $employees = User::where('status', null)->orWhere('status', '')->get();
         $companies = Company::take(3)->get();
 
         return view('departments', array(
