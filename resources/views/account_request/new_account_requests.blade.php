@@ -21,17 +21,44 @@
                             Position :
                             <input type="text"  class="form-control-sm form-control" name="position" value="">
                         </div>
-                        <div class='col-md-12'>
+                        <div class="col-md-12">
                             Company :
-                            <input type="hidden" name="company" value="{{ auth()->user()->company_id }}">
 
-                            <input type="text" class="form-control-sm form-control" value="{{ auth()->user()->company->name }}" readonly>
+                            @if ((auth()->user()->role === 'Administrator') || (auth()->user()->department->code == "WGI-HRD"))
+                                <select name="company" class="form-control-sm form-control cat">
+                                    @foreach ($companies as $company)
+                                        <option value="{{ $company->id }}"
+                                            {{ auth()->user()->company_id == $company->id ? 'selected' : '' }}>
+                                            {{ $company->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @else
+                                <input type="hidden" name="company" value="{{ auth()->user()->company_id }}">
+
+                                <input type="text"
+                                    class="form-control-sm form-control"
+                                    value="{{ auth()->user()->company->name }}"
+                                    readonly>
+                            @endif
                         </div>
-                        <div class='col-md-12'>
-                            Department :
-                            <input type="hidden" name="department" value="{{ auth()->user()->department_id }}">
+                        <div class="col-md-12">
+                            @if ((auth()->user()->role === 'Administrator') || (auth()->user()->department->code == "WGI-HRD"))
+                                Department :
+                                <select name="department" class="form-control-sm form-control cat">
+                                    @foreach ($departments as $department)
+                                        <option value="{{ $department->id }}"
+                                            {{ auth()->user()->department_id == $department->id ? 'selected' : '' }}>
+                                            {{ $department->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @else
+                                Department :
+                                <input type="hidden" name="department" value="{{ auth()->user()->department_id }}">
 
-                            <input type="text" class="form-control-sm form-control" value="{{ auth()->user()->department->name }}" readonly>
+                                <input type="text" class="form-control-sm form-control" value="{{ auth()->user()->department->name }}" readonly>
+                            @endif
                         </div>
                         <div class='col-md-12'>
                             Reason :
