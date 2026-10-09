@@ -150,17 +150,21 @@ class UserController extends Controller
 
     public function request_aacount() {
 
-        // if((auth()->user()->role == "User") || (auth()->user()->role == "Department Head"))
-        // {
+        if((auth()->user()->role == "User") || (auth()->user()->role == "Department Head"))
+        {
             $account_requests = AccountRequest::where('department_id', auth()->user()->department_id)
                 ->where('request_by', auth()->user()->id)->get();
-        // } 
-        // elseif ((auth()->user()->role == "Business Process Manager") || auth()->user()->role == "Administrator") {
-        //     $account_requests = AccountRequest::where('status',"!=", "Cancelled")->get();
-        // }
+        } 
+        elseif ((auth()->user()->role == "Administrator") || (auth()->user()->department->code == "WGI-HRD")) {
+            $account_requests = AccountRequest::where('request_by', auth()->user()->id)->get();
+        }
+        $companies = Company::get();
+        $departments = Department::get();
         $roles = $this->roles();
         return view('account_request.account_requests', array(
             'account_requests' => $account_requests,
+            'companies' => $companies,
+            'departments' => $departments,
         ));
     }
 
