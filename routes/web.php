@@ -162,6 +162,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/deactivate-major-process', 'PolicyController@deactivate');
         Route::post('/activate-major-process', 'PolicyController@activate');
 
+
+        //CRF#36: Quality Process Review Request (PRR) Module
+        Route::get('/process-review', 'ProcessReviewController@index')->name('process-review');
+        Route::post('/process-review/create-prr', 'ProcessReviewController@store')->name('process-review.store');
+        Route::put('/process-review/edit-details/{id}', 'ProcessReviewController@update')->name('process-review.update');
+        Route::put('/process-review/accept-prr/{id}', 'ProcessReviewController@accept')->name('process-review.accept');
+        Route::put('/process-review/attech-report-prr/{id}', 'ProcessReviewController@attachReport')->name('process-review.attach');
+        Route::put('/process-review/complete-prr/{id}', 'ProcessReviewController@completed')->name('process-review.completed');
+
     });
 
 });

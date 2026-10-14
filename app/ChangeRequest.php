@@ -37,5 +37,10 @@ class ChangeRequest extends Model  implements Auditable
     {
         return $this->belongsTo(PreAssessment::class);
     }
+
+    public function prrChangeRequest()
+    {
+        return $this->belongsTo(ProcessReviewRequest::class, 'control_code', 'control_code');
+    }
   
 }

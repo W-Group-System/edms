@@ -104,6 +104,13 @@
                                 class="nav-label">Pre-assessment </span></a>
                     </li>
                     @endif
+
+                    {{-- CRF#36: Quality Process Review Request (PRR) Module --}}
+                    <li class="{{ Route::current()->getName() == 'process-review' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Process Review">
+                        <a href="{{ url('/process-review') }}"><i class="fa fa-list-alt"></i> <span class="nav-label">Process Review</span></a>
+                    </li>
+                    {{-- End --}}
+
                     {{-- @if((auth()->user()->role != "User")) --}}
                     <li class="{{ Route::current()->getName() == 'change-requests' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Change Requests">
                         <a href="{{url('/change-requests')}}"><i class="fa fa-edit"></i> <span

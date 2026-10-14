@@ -5,107 +5,107 @@
 @section('content')
 
 <div class="wrapper wrapper-content">
-    @include('error')
+        @include('error')
 
     <div class="row">
-    <div class="col-lg-2">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>Pending</h5>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Pending</h5>
+                </div>
+                <div class="ibox-content">
+                    <form method="GET">
+                        <h1 class="no-margins">
+                            <input type="hidden" name="status" value="NotDelayed">
+                            <input type="submit" class="text-success" value="{{$notDelayedCount}}" style="background: none; border: none;">
+                        </h1>
+                    </form>
+                </div>
             </div>
-            <div class="ibox-content">
-                <form method="GET">
-                    <h1 class="no-margins">
-                        <input type="hidden" name="status" value="NotDelayed">
-                        <input type="submit" class="text-success" value="{{$notDelayedCount}}" style="background: none; border: none;">
-                    </h1>
-                </form>
+        </div>
+        {{-- <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Cancelled</h5>
+                </div>
+                <div class="ibox-content">
+                    <form action="" method="get">
+                        <h1 class="no-margins">
+                            <input type="hidden" name="status" value="Cancelled">
+                            <input type="submit" class="text-success" value="{{count($requests->where('status','Cancelled'))}}" style="background: none; border: none;">
+                        </h1>
+                    </form>
+                </div>
+            </div>
+        </div> --}}
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Declined</h5>
+                </div>
+                <div class="ibox-content">
+                    <form method="get" action="">
+                        <h1 class="no-margins">
+                            <input type="hidden" name="status" value="Declined">
+                            <input type="submit" class="text-success" value="{{$declinedCount}}" style="background: none; border: none;">
+                        </h1>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Approved</h5>
+                </div>
+                <div class="ibox-content">
+                    <form action="" method="get">
+                        <input type="hidden" name="status" value="Approved">
+                        <h1 class="no-margins">
+                            <input type="submit" class="text-success" value="{{$approvedCount}}"  style="background: none; border: none;">
+                        </h1>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Delayed</h5>
+                </div>
+                <div class="ibox-content">
+                    {{-- <form action="" method="get">
+                        <input type="hidden" name="status" value="Pending">
+                        <h1 class="no-margins">
+                            <a href="{{url('delayed_request')}}">{{ $delayedCount }}</a>
+                            <a href="{{url('delayed_request')}}" id="delayed">0</a>
+                        </h1>
+                    </form> --}}
+                    <form action="" method="get">
+                        <input type="hidden" name="status" value="Delayed">
+                        <h1 class="no-margins">
+                            <input type="submit" class="text-success" value="{{ $delayedCount }}"  style="background: none; border: none;">
+                        </h1>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Pre-Assessment Returned</h5>
+                </div>
+                <div class="ibox-content">
+                    <form action="" method="get">
+                        <input type="hidden" name="status" value="Pre-Assessment Returned">
+                        <h1 class="no-margins">
+                            <input type="submit" class="text-success" value="{{ $returnedCount }}"  style="background: none; border: none;">
+                        </h1>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-    {{-- <div class="col-lg-2">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>Cancelled</h5>
-            </div>
-            <div class="ibox-content">
-                <form action="" method="get">
-                    <h1 class="no-margins">
-                        <input type="hidden" name="status" value="Cancelled">
-                        <input type="submit" class="text-success" value="{{count($requests->where('status','Cancelled'))}}" style="background: none; border: none;">
-                    </h1>
-                </form>
-            </div>
-        </div>
-    </div> --}}
-    <div class="col-lg-2">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>Declined</h5>
-            </div>
-            <div class="ibox-content">
-                <form method="get" action="">
-                    <h1 class="no-margins">
-                        <input type="hidden" name="status" value="Declined">
-                        <input type="submit" class="text-success" value="{{$declinedCount}}" style="background: none; border: none;">
-                    </h1>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>Approved</h5>
-            </div>
-            <div class="ibox-content">
-                <form action="" method="get">
-                    <input type="hidden" name="status" value="Approved">
-                    <h1 class="no-margins">
-                        <input type="submit" class="text-success" value="{{$approvedCount}}"  style="background: none; border: none;">
-                    </h1>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>Delayed</h5>
-            </div>
-            <div class="ibox-content">
-                {{-- <form action="" method="get">
-                    <input type="hidden" name="status" value="Pending">
-                    <h1 class="no-margins">
-                        <a href="{{url('delayed_request')}}">{{ $delayedCount }}</a>
-                        <a href="{{url('delayed_request')}}" id="delayed">0</a>
-                    </h1>
-                </form> --}}
-                <form action="" method="get">
-                    <input type="hidden" name="status" value="Delayed">
-                    <h1 class="no-margins">
-                        <input type="submit" class="text-success" value="{{ $delayedCount }}"  style="background: none; border: none;">
-                    </h1>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-2">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>Pre-Assessment Returned</h5>
-            </div>
-            <div class="ibox-content">
-                <form action="" method="get">
-                    <input type="hidden" name="status" value="Pre-Assessment Returned">
-                    <h1 class="no-margins">
-                        <input type="submit" class="text-success" value="{{ $returnedCount }}"  style="background: none; border: none;">
-                    </h1>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
     <div class='row'>
         <div class="col-lg-12">
             <div class="ibox float-e-margins">

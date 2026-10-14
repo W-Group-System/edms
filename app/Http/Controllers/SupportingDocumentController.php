@@ -53,7 +53,7 @@ class SupportingDocumentController extends Controller
         if (in_array(auth()->user()->role, ['User', 'Department Head']) && is_null(auth()->user()->audit_role)) {
             $query->whereHas('supporting_document_dept', function($q) {
                 $q->where('department_id', auth()->user()->department_id);
-            });
+            });  
         }
 
         $supporting_documents = $query->get();

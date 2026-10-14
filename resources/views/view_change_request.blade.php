@@ -1,4 +1,3 @@
-
 <div class="modal" id="view_request{{$request->id}}" tabindex="-1" role="dialog"  >
     <div class="modal-dialog modal-lg " role="document">
         <div class="modal-content">
@@ -34,7 +33,7 @@
                        
                         <div class='col-md-6'>
                             @if($request->request_type != "Obsolete")
-                           Draft Link : <a href='{{$request->link_draft}}' target="_blank">Draft Link</a> <br>
+                            Draft Link : <a href='{{$request->link_draft}}' target="_blank">Draft Link</a> <br>
                            
                             @endif
                            @if($request->original_attachment_pdf != null)
