@@ -4,12 +4,16 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">
-                    {{ $department->name }} Policies
-                </h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    &times;
-                </button>
+                <div class="col-md-10">
+                    <h5 class="modal-title">
+                        {{ $department->name }} Policies - Total: {{ $department->total_policies + $department->total_annexes }}
+                    </h5>
+                </div>
+                 <div class="col-md-2">
+                    <button type="button" class="close" data-dismiss="modal">
+                        &times;
+                    </button>
+                 </div>
             </div>
 
             <div class="modal-body">
@@ -18,8 +22,8 @@
                         <thead>
                             <tr>
                                 <th>Process</th>
-                                <th>Policy</th>
-                                <th>Annex</th>
+                                <th>Policy - {{ $department->total_policies }}</th>
+                                <th>Annex - {{ $department->total_annexes }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,7 +43,7 @@
                                 @foreach($policies as $policy)
 
                                     @php
-                                        $subPolicies     = $policy->annexes;
+                                        $subPolicies = $policy->annexes;
                                         $subPolicyCount = max($subPolicies->count(), 1);
                                         $policyRendered = false;
                                     @endphp

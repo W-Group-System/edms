@@ -113,6 +113,31 @@ class HomeController extends Controller
 
         }
 
+        $departments->load('process_rel.policies.document', 'process_rel.policies.annexes.document');
+        foreach ($departments as $department) {
+            $totalPolicies = 0;
+            $totalAnnexes = 0;
+
+            foreach ($department->process_rel as $process) {
+                $policies = $process->policies->filter(function ($policy) {
+                    return $policy->document && $policy->document->status !== 'Obsolete';
+                });
+                $totalPolicies += $policies->count();
+                $process->setRelation('policies', $policies);
+
+                foreach ($policies as $policy) {
+                    $annexes = $policy->annexes->filter(function ($annex) {
+                        return $annex->document && $annex->document->status !== 'Obsolete';
+                    });
+                    $totalAnnexes += $annexes->count();
+                    $policy->setRelation('annexes', $annexes);
+                }
+            }
+
+            $department->setAttribute('total_policies', $totalPolicies);
+            $department->setAttribute('total_annexes', $totalAnnexes);
+        }
+
         $categories = DocumentType::get();
         return view('home',
         array(

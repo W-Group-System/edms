@@ -24,6 +24,7 @@ use App\Notifications\ReturnRequest;
 use App\Notifications\PendingRequest;
 use App\PreAssessment;
 use App\PreAssessmentApprover;
+use App\ProcessReviewRequest;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
@@ -606,23 +607,48 @@ class RequestController extends Controller
     }
     public function forApproval()
     {
-        //
+        $user = auth()->user();
         $document_types = DocumentType::get();
-        $copy_for_approvals = CopyApprover::orderBy('id','desc')->where('user_id',auth()->user()->id)->get();
-        $change_for_approvals = RequestApprover::orderBy('id','desc')->where('user_id',auth()->user()->id)->get();
-        if(auth()->user()->role == "Administrator")
-        {
-            $copy_for_approvals = CopyApprover::orderBy('id','desc')->get();
-            $change_for_approvals = RequestApprover::orderBy('id','desc')->get();
-        }
-       
+        $prr = ProcessReviewRequest::with('user', 'transactionHistories.user', 'changeRequest')
+            ->where('user_id', $user->id)
+            ->whereIn('status', ['Completed', 'Returned'])
+            ->get();
 
-        return view('for_approval',
-        array(
+        if ($user->role === 'Document Control Officer') {
+            $departmentIds = DepartmentDco::where('user_id', $user->id)->pluck('department_id');
+        } elseif ($user->role === 'Department Head') {
+            $departmentIds = DepartmentApprover::where('user_id', $user->id)->pluck('department_id');
+        } else {
+            $departmentIds = collect();
+        }
+
+        if ($departmentIds->isNotEmpty()) {
+            $assignedPrr = ProcessReviewRequest::with('user', 'transactionHistories.user', 'changeRequest')
+                ->whereIn('department_id', $departmentIds)
+                ->whereIn('status', ['Pending', 'Completed', 'Returned'])
+                ->get();
+
+            $prr = $prr->merge($assignedPrr)->unique('id');
+        }
+        $prr = $prr->sortByDesc('created_at')->values();
+
+        $copy_for_approvals = CopyApprover::orderBy('id', 'desc')
+            ->where('user_id', $user->id)
+            ->get();
+        $change_for_approvals = RequestApprover::orderBy('id', 'desc')
+            ->where('user_id', $user->id)
+            ->get();
+        if ($user->role === 'Administrator') {
+            $copy_for_approvals = CopyApprover::orderBy('id', 'desc')->get();
+            $change_for_approvals = RequestApprover::orderBy('id', 'desc')->get();
+        }
+
+        return view('for_approval', [
            'copy_for_approvals' => $copy_for_approvals,
            'change_for_approvals' => $change_for_approvals,
            'document_types' => $document_types,
-        ));
+           'prr' => $prr,
+        ]);
     }
 
     /**
@@ -1497,7 +1523,8 @@ class RequestController extends Controller
             'document_types' =>  $document_types,
         ));
     }
+
+    // Process Review Request
+
+
 }
-
-
-

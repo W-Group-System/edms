@@ -23,8 +23,16 @@
                     </div>
                     <div class="col-md-6">
                         Draft Link:
-                        @if(!empty($request->link_draft))
-                            <a href="{{ url($request->link_draft) }}" target="_blank">Draft Link</a>
+                        @if(!empty($request->report_draft_link))
+                            <a href="{{ url($request->report_draft_link) }}" target="_blank">Draft Link</a>
+                        @else
+                            N/A
+                        @endif
+                    </div>
+                    <div class="col-md-6">
+                        Other Attachment:
+                        @if (!empty($request->report_attachment))
+                            <a href="{{ url($request->report_attachment) }}" target="_blank">Link</a>
                         @else
                             N/A
                         @endif
@@ -37,6 +45,7 @@
                             N/A
                         @endif
                     </div>
+                    
                 </div>
                 
                 <hr>
@@ -75,7 +84,7 @@
                         <div class="panel panel-primary">
                             <div class="panel-heading">
                                 @if($request->type_of_request != "Revision")
-                                    Descriptions/Remarks
+                                    Descriptions
                                 @else
                                     Reason/s for Change
                                 @endif
@@ -86,13 +95,25 @@
                         </div>
                     </div>
                 </div>
-
+                <hr>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel {{ $request->status === 'Returned' ? 'panel-danger' : 'panel-primary' }}">
+                            <div class="panel-heading">
+                              Request Status
+                            </div>
+                            <div class="panel-body">
+                                {!!nl2br(e($request->remarks))!!}
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <hr>
                 <div class="row m-t-md">
                     <div class="col-md-12">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
-                                Request History
+                                Transaction History
                             </div>
                             <div class="panel-body">
                                 <ul class="nav nav-tabs" role="tablist">

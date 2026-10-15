@@ -195,14 +195,14 @@
                             <input type="file" class="form-control-sm form-control " accept="application/pdf" name="supporting_document"/>
                         </div>
                     </div>
-                     <div class='row '>
+                    <div class='row '>
                         <div class='col-md-12 border'>
                             <hr>
                         </div>
                     </div>
 
                     {{-- Description --}}
-                    <div class="row m-t-md">
+                    <div class="row">
                         <div class="col-md-12" >
                             Description:
                             <textarea name='description' rows="5" cols="100" class="form-control-sm form-control" required>{{old('description')}}</textarea>

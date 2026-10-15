@@ -12,7 +12,7 @@
                     <h5>For Approval</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($copy_for_approvals->where('status','Pending'))+count($change_for_approvals->where('status','Pending'))}}</h1>
+                    <h1 class="no-margins">{{ $copy_for_approvals->where('status', 'Pending')->count() + $change_for_approvals->where('status', 'Pending')->count() + $prr->where('status', 'Pending')->count() }}</h1>
                 </div>
             </div>
         </div>
@@ -22,7 +22,7 @@
                     <h5>Approved</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($copy_for_approvals->where('status','Approved'))+count($change_for_approvals->where('status','Approved'))}}</h1>
+                    <h1 class="no-margins">{{count($copy_for_approvals->where('status','Approved'))+count($change_for_approvals->where('status','Approved')) + $prr->where('status', 'Completed')->count() }}</h1>
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
                     <h5>Declined</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($copy_for_approvals->where('status','Declined'))+count($change_for_approvals->where('status','Declined'))}}</h1>
+                    <h1 class="no-margins">{{count($copy_for_approvals->where('status','Declined'))+count($change_for_approvals->where('status','Declined')) + $prr->where('status', 'Returned')->count()}}</h1>
                 </div>
             </div>
         </div>
@@ -55,6 +55,7 @@
                                     <th>Date Requested</th>
                                     <th>Document</th>
                                     <th>Requested By</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -73,6 +74,7 @@
                                         {{$copy_approval->copy_request->type_of_document}}
                                     </small></td>
                                     <td>{{$copy_approval->copy_request->user->name}}</td>
+                                    
                                 </tr>
                                
                                 @endforeach
@@ -104,7 +106,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                            @foreach($change_for_approvals->where('status','Pending') as $change_approval)
+                            @foreach($change_for_approvals->where('status', 'Pending') as $change_approval)
                             @php
                                 $request = $change_approval->change_request;
                             @endphp
@@ -134,9 +136,86 @@
                 </div>
             </div>
         </div>
-
+    </div>
+    <div class="row">
+        @php
+            $visiblePrr = $prr->filter(function ($request) {
+                return in_array($request->status, ['Pending', 'Returned'])
+                    || ($request->status === 'Completed' && $request->user_id == auth()->id());
+            });
+        @endphp
+        <div class="col-lg-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5 class="title">Process Review Request</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover tables">
+                            <thead>
+                                <tr>
+                                    <th>Actions</th>
+                                    <th>Reference Number</th>
+                                    <th>Date Requested</th>
+                                    <th>Document</th>
+                                    <th>Request Type</th>
+                                    <th>Requested by</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              @foreach ($visiblePrr as $request)
+                                <tr>
+                                    <td>
+                                        <button type="button btn-sm" data-target="#viewRequest{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-info">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                        @if (auth()->user()->role === 'Document Control Officer' && $request->status === 'Pending')
+                                            <a href="#" data-target="#acceptPRR{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-warning">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                        @endif
+                                    </td>
+                                    <td>{{ $request->reference_num ?? 'N/A' }}</td>
+                                    <td>{{ $request->created_at ? $request->created_at->format('M d, Y') : 'N/A' }}</td>
+                                    <td>
+                                        {{ $request->control_code ?? 'N/A' }}<br>
+                                        {{ $request->document_title ?? 'N/A' }}<br>
+                                        {{ $request->type_of_document ?? 'N/A' }}
+                                    </td>
+                                    <td>{{ $request->type_of_request }}</td>
+                                    <td>{{ optional($request->user)->name ?? 'N/A' }}</td>
+                                    <td data-search="{{ $request->status }}">
+                                        @if ($request->status == "Pending")
+                                            <span class="label label-success">Pending</span>
+                                        @elseif ($request->status == "Accepted")
+                                            <span class="label label-info">Accepted</span>
+                                        @elseif ($request->status == "Draft")
+                                            <span class="label label-default">Draft</span>
+                                        @elseif ($request->status == "Completed")
+                                            <span class="label label-primary">Completed</span>
+                                        @elseif ($request->status == "Returned")
+                                            <span class="label label-danger">Returned</span>
+                                        @elseif($request->status == "Declined")
+                                            <span class="label label-danger">Declined</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                              @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+@foreach ($visiblePrr as $request)
+    @include('process-review.view-details')
+    @if (auth()->user()->role === 'Document Control Officer' && $request->status === 'Pending')
+        @include('process-review.accept-prr')
+    @endif
+@endforeach
 @foreach($change_for_approvals->where('status','Pending') as $change_approval)
 @php
 $request = $change_approval->change_request;

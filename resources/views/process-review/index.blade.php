@@ -14,6 +14,19 @@
     .tables td.dataTables_empty {
         text-align: center;
     }
+    .tables th.prr-wrap-column,
+    .tables td.prr-wrap-column {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+    .tables th.prr-title-column,
+    .tables td.prr-title-column {
+        min-width: 240px;
+    }
+    .tables th.prr-status-column,
+    .tables td.prr-status-column {
+        min-width: 280px;
+    }
 
     /* History */
     .history-table-footer {
@@ -75,7 +88,7 @@
 @section('content')
 <div class="wrapper wrappter-content">
     <div class="row m-t-md">
-        @foreach (['Pending', 'Returned', 'Completed'] as $status)
+        @foreach (['Pending', 'Returned', 'Accepted' ,'Completed',] as $status)
             <div class="col-lg-2 col-md-4 col-sm-6">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
@@ -123,11 +136,11 @@
                                     <th>Reference No.</th>
                                     <th>Control Code</th>
                                     <th>Date requested</th>
-                                    <th>Title</th>
+                                    <th class="prr-title-column prr-wrap-column">Title</th>
                                     <th>Document type</th>
                                     <th>Request type</th>
                                     <th>Requested by</th>
-                                    <th>Status</th>
+                                    <th class="prr-status-column prr-wrap-column">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -141,37 +154,29 @@
 
                                             @if (auth()->user()->role == "Document Control Officer")
                                             
-                                                @if($request->status == "Accepted")
-                                                    {{-- Attachment --}}
-                                                    <a href="#" data-target="#attachReport{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-info"><i class="fa fa-paperclip"></i></a>
-                                                @elseif($request->status == "Pending")
+                                                @if($request->status == "Pending")
                                                     {{-- Accept --}}
                                                     <a href="#" data-target="#acceptPRR{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></a>
-                                                @elseif(!empty($request->report_draft_link))
-                                                    {{-- Complete --}}
-                                                    <a href="#" data-target="#completePRR{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-primary"><i class="fa fa-check"></i></a>
+                                                @elseif($request->status == "Accepted")
+                                                    @if(empty($request->report_draft_link))
+                                                        {{-- Attachment --}}
+                                                        <a href="#" data-target="#attachReport{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-warning"><i class="fa fa-paperclip"></i></a>
+                                                    @else
+                                                        {{-- Complete --}}
+                                                        <a href="#" data-target="#completePRR{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-warning"><i class="fa fa-check"></i></a>
+                                                    @endif
                                                 @endif
                                             @endif
                                         </td>
                                         <td>{{ $request->reference_num }}</td>
                                         <td>{{ $request->control_code ?? 'N/A' }}</td>
                                         <td>{{ date('M d, Y', strtotime($request->created_at )) ?? 'N/A' }}</td>
-                                        <td>{{ $request->document_title }}</td>
+                                        <td class="prr-title-column prr-wrap-column">{{ $request->document_title }}</td>
                                         <td>{{ $request->type_of_document }}</td>
                                         <td>{{ $request->type_of_request }}</td>
                                         <td>{{ $request->user->name ?? 'Unknown user' }}</td>
-                                        <td data-search="{{ $request->status }}">
-                                            @if ($request->status == "Pending")
-                                                <span class="label label-success">Pending</span>
-                                            @elseif ($request->status == "Draft")
-                                                <span class="label label-default">Draft</span>
-                                            @elseif ($request->status == "Completed")
-                                                <span class="label label-primary">Completed</span>
-                                            @elseif ($request->status == "Returned")
-                                                <span class="label label-danger">Returned</span>
-                                            @elseif($request->status == "Declined")
-                                                <span class="label label-danger">Declined</span>
-                                            @endif
+                                        <td class="prr-status-column prr-wrap-column" data-search="{{ $request->status }}">
+                                            {{ $request->remarks ?? 'N/A' }}
                                         </td>
                                     </tr>
                                 @endforeach

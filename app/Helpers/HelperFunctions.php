@@ -1,13 +1,32 @@
 <?php
 use App\CopyApprover;
+use App\DepartmentApprover;
+use App\DepartmentDco;
 use App\PreAssessmentApprover;
+use App\ProcessReviewRequest;
 use App\RequestApprover;
 
 
 function copy_approver_count(){
-    $copy_for_approvals = CopyApprover::orderBy('id','desc')->where('user_id',auth()->user()->id)->where('status','Pending')->count();
-    $change_for_approvals = RequestApprover::orderBy('id','desc')->where('user_id',auth()->user()->id)->where('status','Pending')->count();
-    $count = $copy_for_approvals+$change_for_approvals;
+    $user = auth()->user();
+    $count = CopyApprover::where('user_id', $user->id)->where('status', 'Pending')->count()
+        + RequestApprover::where('user_id', $user->id)->where('status', 'Pending')->count()
+        + ProcessReviewRequest::where('user_id', $user->id)
+            ->whereIn('status', ['Returned', 'Completed'])
+            ->count();
+
+    if ($user->role === 'Document Control Officer') {
+        $departmentIds = DepartmentDco::where('user_id', $user->id)->pluck('department_id');
+    } elseif ($user->role === 'Department Head') {
+        $departmentIds = DepartmentApprover::where('user_id', $user->id)->pluck('department_id');
+    }
+
+    if (isset($departmentIds)) {
+        $count += ProcessReviewRequest::where('status', 'Pending')
+            ->whereIn('department_id', $departmentIds)
+            ->count();
+    }
+
     return $count;
 }
 

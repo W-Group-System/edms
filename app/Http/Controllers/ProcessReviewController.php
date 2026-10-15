@@ -23,26 +23,43 @@ class ProcessReviewController extends Controller
     
     public function index()
     {
-        $prr = ProcessReviewRequest::with('transactionHistories.user', 'changeRequest') 
-            ->where(function ($q) {
-                $q->where(function($sub) {
-                    $sub->where('status', 'Completed')
-                        ->orWhere('status', 'Pending')
-                        ->orWhere('status', 'Draft');
-                })->orWhere(function($sub) {
-                    $sub->whereIn('status', ['Declined', 'Returned'])
-                        ->where('user_id', auth()->id());
-                });
-            });
+        $prr = ProcessReviewRequest::with('transactionHistories.user', 'changeRequest');
+        $user = auth()->user();
+        $role = $user->role;
+        $hasRequestAccess = $role === 'Administrator'
+            || $role === 'Document Control Officer'
+            || $role === 'Department Head'
+            || ($role === 'User' && is_null($user->audit_role));
 
-        if (in_array(auth()->user()->role, ['User', 'Department Head']) && is_null(auth()->user()->audit_role)) {
-            $prr->whereHas('prr_document_dept', function($q) {
-                $q->where('department_id', auth()->user()->department_id);
-            });  
+        if ($role === 'Document Control Officer') {
+            $prr->whereIn('status', ['Pending', 'Accepted', 'Completed']);
+            $prr->whereIn('department_id', function ($query) {
+                $query->select('department_id')
+                    ->from('department_dcos')
+                    ->where('user_id', auth()->id());
+            });
+        } elseif ($role === 'Department Head') {
+            $prr->whereIn('status', ['Completed', 'Pending', 'Accepted', 'Returned']);
+            $prr->whereIn('department_id', function ($query) {
+                $query->select('department_id')
+                    ->from('department_approvers')
+                    ->where('user_id', auth()->id());
+            });
+        } elseif ($role === 'User' && is_null($user->audit_role)) {
+            $prr->where('department_id', $user->department_id)
+                ->where(function ($query) use ($user) {
+                    $query->whereIn('status', ['Completed', 'Pending', 'Accepted', 'Draft'])
+                        ->orWhere(function ($query) use ($user) {
+                            $query->whereIn('status', ['Declined', 'Returned'])
+                                ->where('user_id', $user->id);
+                        });
+                });
+        } elseif ($role !== 'Administrator') {
+            $hasRequestAccess = false;
         }
 
         // Fetch the results using ->get()
-        $prr = $prr->get();
+        $prr = $hasRequestAccess ? $prr->get() : collect();
 
         $departments = Department::where('id', auth()->user()->department_id)->where('status', null)->get();
         $companies = Company::where('status', null)->get();
@@ -157,12 +174,14 @@ class ProcessReviewController extends Controller
                 $prr_documents_company->prr_document_id = $prr->id;
                 $prr_documents_company->save();
 
-                $history = new TransactionHistory;
-                $history->transaction_no = $prr->reference_num;
-                $history->action = $request->submission_action === 'draft' ? 'Draft' : 'Submitted';
-                $history->action_by = auth()->user()->id;
-                $history->remarks = 'N/A';
-                $history->save();
+                if ($request->submission_action === 'submit') {
+                    $history = new TransactionHistory;
+                    $history->transaction_no = $prr->reference_num;
+                    $history->action = 'Submitted';
+                    $history->action_by = auth()->user()->id;
+                    $history->remarks = 'N/A';
+                    $history->save();
+                }
             });
 
             $message = $prr->status === 'Draft'
@@ -246,14 +265,13 @@ class ProcessReviewController extends Controller
 
             // $prr->save();
 
-            if($prr->save()) {
+            if ($prr->save() && $request->submission_action === 'submit') {
                 $history = new TransactionHistory;
                 $history->transaction_no = $prr->reference_num;
-                $history->action = $request->submission_action === 'draft' ? 'Draft' : 'Submitted';
+                $history->action = 'Submitted';
                 $history->action_by = auth()->user()->id;
                 $history->remarks = 'N/A';
                 $history->save();
-
             }
 
             Alert::success($message)->persistent('Dismiss');
