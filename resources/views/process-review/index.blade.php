@@ -393,7 +393,7 @@
                 ? '^' + $.fn.dataTable.util.escapeRegex(status) + '$'
                 : '';
 
-            prrTable.column(8).search(exactStatusPattern, true, false).draw();
+            prrTable.column(9).search(exactStatusPattern, true, false).draw();
             $('.prr-status-filter').attr('aria-pressed', 'false');
             $(this).attr('aria-pressed', 'true');
         });
