@@ -23,7 +23,7 @@
                             <tr>
                                 <th>Process</th>
                                 <th>Policy - {{ $department->total_policies }}</th>
-                                <th>Annex - {{ $department->total_annexes }}</th>
+                                <th>Annex / Policy - {{ $department->total_annexes }}</th>
                             </tr>
                         </thead>
                         <tbody>

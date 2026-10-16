@@ -164,7 +164,7 @@ class ProcessReviewController extends Controller
                 $prr->save();
                 
                 // Generate reference number using the newly created ID
-                $prr->reference_num = 'QPPR-' . str_pad($prr->id, 5, '0', STR_PAD_LEFT);
+                $prr->reference_num = 'QPPR-' . date('y') . '-' . str_pad($prr->id, 5, '0', STR_PAD_LEFT);
                 $prr->save();
 
                 // // save department
