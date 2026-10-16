@@ -53,6 +53,11 @@ class ProcessReviewRequest extends Model
         return $this->hasMany(TransactionHistory::class, 'transaction_no', 'reference_num');
     }
 
+    public function departmentDcos()
+    {
+        return $this->hasMany(DepartmentDco::class, 'department_id', 'department_id');
+    }
+
     public function changeRequest()
     {
         return $this->hasMany(ChangeRequest::class, 'control_code', 'control_code');

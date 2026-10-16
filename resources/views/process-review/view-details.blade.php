@@ -146,7 +146,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($department_dco as $key => $dco)
+                                                @foreach ($request->departmentDcos as $key => $dco)
                                                     <tr>
                                                         <td>{{ $key + 1 }}</td>
                                                         <td>{{ $dco->user->name }}</td>

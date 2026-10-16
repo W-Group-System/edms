@@ -23,7 +23,11 @@ class ProcessReviewController extends Controller
     
     public function index()
     {
-        $prr = ProcessReviewRequest::with('transactionHistories.user', 'changeRequest');
+        $prr = ProcessReviewRequest::with([
+            'transactionHistories.user',
+            'changeRequest',
+            'departmentDcos.user',
+        ]);
         $user = auth()->user();
         $role = $user->role;
         $hasRequestAccess = $role === 'Administrator'
