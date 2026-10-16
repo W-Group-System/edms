@@ -165,8 +165,15 @@ class ProcessReviewController extends Controller
             DB::transaction(function () use ($prr, $request) {
                 $prr->save();
                 
-                // Generate reference number using the newly created ID
-                $prr->reference_num = 'QPPR-' . date('y') . '-' . str_pad($prr->id, 3, '0', STR_PAD_LEFT);
+                $referencePrefix = 'QPPR-' . date('y') . '-';
+                $lastReferenceNumber = ProcessReviewRequest::where('reference_num', 'like', $referencePrefix . '%')
+                    ->orderByDesc('id')
+                    ->value('reference_num');
+                $sequence = $lastReferenceNumber
+                    ? (int) substr($lastReferenceNumber, strlen($referencePrefix)) + 1
+                    : 1;
+
+                $prr->reference_num = $referencePrefix . str_pad($sequence, 3, '0', STR_PAD_LEFT);
                 $prr->save();
 
                 // // save department
