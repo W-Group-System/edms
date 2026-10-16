@@ -36,7 +36,7 @@ class ProcessReviewController extends Controller
             || ($role === 'User' && is_null($user->audit_role));
 
         if ($role === 'Document Control Officer') {
-            $prr->whereIn('status', ['Pending', 'Accepted', 'Completed']);
+            $prr->whereIn('status', ['Pending', 'Accepted', 'Completed', 'Returned']);
             $prr->whereIn('department_id', function ($query) {
                 $query->select('department_id')
                     ->from('department_dcos')
