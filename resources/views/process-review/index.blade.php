@@ -121,7 +121,7 @@
             @include('error')
             <div class="ibox float-e-margins">
                 <div class="ibox-title d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Process Review Request (PRR)</h5>
+                    <h5 class="mb-0">Quality Process Review Request (QPRR)</h5>
                     @if(auth()->user()->role == "User" || auth()->user()->role == "Department Head")
                         <button class="btn btn-sm btn-success" data-target="#createPRRModal" data-toggle="modal" type="button"><i class="fa fa-plus"></i> New</button>
                     @endif
@@ -140,7 +140,8 @@
                                     <th>Document type</th>
                                     <th>Request type</th>
                                     <th>Requested by</th>
-                                    <th class="prr-status-column prr-wrap-column">Status</th>
+                                    <th class="prr-status-column prr-wrap-column">Remarks</th>
+                                    <th> Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -175,8 +176,21 @@
                                         <td>{{ $request->type_of_document }}</td>
                                         <td>{{ $request->type_of_request }}</td>
                                         <td>{{ $request->user->name ?? 'Unknown user' }}</td>
-                                        <td class="prr-status-column prr-wrap-column" data-search="{{ $request->status }}">
+                                        <td class="prr-status-column prr-wrap-column">
                                             {{ $request->remarks ?? 'N/A' }}
+                                        </td>
+                                        <td data-search="{{ $request->status }}">
+                                             @if($request->status == "Pending")
+                                                <span class='label label-warning'>
+                                            @elseif($request->status ==  "Accepted")
+                                                <span class='label label-success'>    
+                                            @elseif($request->status ==  "Returned")
+                                                    <span class='label label-danger'>
+                                            @elseif($request->status == "Draft")
+                                                    <span class="label label-secondary">
+                                            @else<span class='label label-primary'>
+                                                @endif
+                                            {{$request->status}}</span>  </td>
                                         </td>
                                     </tr>
                                 @endforeach

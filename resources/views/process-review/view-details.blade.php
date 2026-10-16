@@ -1,4 +1,4 @@
-<div class="modal" id="viewRequest{{ $request->id }}">
+<div class="modal prr-scrollable-modal" id="viewRequest{{ $request->id }}">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -113,11 +113,16 @@
                     <div class="col-md-12">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
-                                Transaction History
+                                Approvers and History
                             </div>
                             <div class="panel-body">
                                 <ul class="nav nav-tabs" role="tablist">
                                     <li class="active" role="presentation">
+                                        <a href="#edit-prr-dco-{{ $request->id }}" aria-controls="edit-prr-dco-{{ $request->id }}" role="tab" data-toggle="tab">
+                                            Approvers
+                                        </a>
+                                    </li>
+                                    <li role="presentation">
                                         <a href="#prr-transaction-history-{{ $request->id }}" aria-controls="prr-transaction-history-{{ $request->id }}" role="tab" data-toggle="tab">
                                             Transaction History
                                         </a>
@@ -131,7 +136,27 @@
                                     @endif
                                 </ul>
                                 <div class="tab-content m-t-md">
-                                    <div class="tab-pane active" id="prr-transaction-history-{{ $request->id }}" role="tabpanel">
+                                    <div class="tab-pane active" id="edit-prr-dco-{{ $request->id }}" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Quality Process Review</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($department_dco as $key => $dco)
+                                                    <tr>
+                                                        <td>{{ $key + 1 }}</td>
+                                                        <td>{{ $dco->user->name }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                    <div class="tab-pane" id="prr-transaction-history-{{ $request->id }}" role="tabpanel">
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-striped historyTables">
                                                 <thead>
@@ -194,7 +219,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

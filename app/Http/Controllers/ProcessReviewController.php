@@ -139,6 +139,7 @@ class ProcessReviewController extends Controller
             $prr->document_description = $request->description;
             $prr->reason_of_request = $request->reason_for_new_request;
             // $prr->link_draft = $request->link_draft;
+            $prr->remarks = $request->submission_action === 'draft' ? 'Draft' : 'Submitted';
             $prr->status = $request->submission_action === 'draft' ? 'Draft' : 'Pending';
 
             if ($request->hasFile('supporting_document')) {
@@ -244,6 +245,7 @@ class ProcessReviewController extends Controller
             $prr->document_description = $request->description;
             $prr->reason_of_request = $request->reason_for_new_request;
             // $prr->link_draft = $request->link_draft;
+            $prr->remarks = $request->submission_action === 'draft' ? 'Draft' : 'Pending';
             $prr->status = $request->submission_action === 'draft' ? 'Draft' : 'Pending';
 
             if ($request->hasFile('supporting_document')) {

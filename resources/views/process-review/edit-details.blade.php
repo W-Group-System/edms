@@ -203,12 +203,12 @@
                             <ul class="nav nav-tabs" role="tablist">
                                 <li class="active" role="presentation">
                                     <a href="#edit-prr-dco-{{ $request->id }}" aria-controls="edit-prr-dco-{{ $request->id }}" role="tab" data-toggle="tab">
-                                        DCO
+                                        Approvers
                                     </a>
                                 </li>
                                 <li role="presentation">
                                     <a href="#edit-prr-revision-list-{{ $request->id }}" aria-controls="edit-prr-revision-list-{{ $request->id }}" role="tab" data-toggle="tab">
-                                        Revision List
+                                        Revisions
                                     </a>
                                 </li>
                             </ul>
@@ -219,7 +219,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>DCO</th>
+                                                    <th>Quality Process Review</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

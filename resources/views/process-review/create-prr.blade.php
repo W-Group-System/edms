@@ -222,17 +222,17 @@
                         </div>
                     </div>
                     <div class="panel panel-primary m-t-md">
-                        <div class="panel-heading">Revision and DCO Information</div>
+                        <div class="panel-heading">Revision and Approvers Details</div>
                         <div class="panel-body">
                             <ul class="nav nav-tabs" role="tablist">
                                 <li class="active" role="presentation">
                                     <a href="#create-prr-dco" aria-controls="create-prr-dco" role="tab" data-toggle="tab">
-                                        DCO
+                                        Approvers
                                     </a>
                                 </li>
                                 <li role="presentation">
                                     <a href="#create-prr-revision-list" aria-controls="create-prr-revision-list" role="tab" data-toggle="tab">
-                                        Revision List
+                                        Revisions
                                     </a>
                                 </li>
                             </ul>
@@ -243,7 +243,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>DCO</th>
+                                                    <th>Quality Process Review</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
