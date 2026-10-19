@@ -67,13 +67,8 @@ class ProcessReviewController extends Controller
 
         // Fetch the results using ->get()
         $prr = $hasRequestAccess ? $prr->get() : collect();
-        $countablePrr = $role === 'Document Control Officer'
-            ? $prr->where('status', '!=', 'Declined')
-            : $prr;
-        $statusCards = ['Pending', 'Returned', 'Accepted', 'Completed'];
-        if ($role !== 'Document Control Officer') {
-            $statusCards[] = 'Declined';
-        }
+        $countablePrr = $prr;
+        $statusCards = ['Pending', 'Returned', 'Accepted', 'Completed', 'Declined'];
 
         $departments = Department::where('id', auth()->user()->department_id)->where('status', null)->get();
         $companies = Company::where('status', null)->get();
