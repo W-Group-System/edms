@@ -23,16 +23,25 @@
                 @method('PUT')
                 <div class="modal-body">
                    <div class="row">
+                        {{-- <div class="col-md-12" >
+                            Draft Link <i>(Google Link) </i> : <span class="text-danger">*</span>
+                            <input type="text" class="form-control-sm form-control" min='{{date('Y-m-d')}}' value="{{old('report_draft_link')}}" name="report_draft_link" required/>
+                        </div>
+                        <div class="col-md-12" >
+                            Accomplished Report <small><i>(Signed QPRC or ES)</i></small> :
+                            <input type="file" class="form-control-sm form-control " accept="application/pdf" name="report_attachment"/>
+                        </div> --}}
                         <div class="col-md-12">
-                            Status Remarks :
-                            <input type="text" class="form-control-sm form-control"  
-                            value="{{ old('remarks') }}" name="remarks" required/>
+                            Remarks : <span class="text-danger">*</span>
+                            {{-- <input type="text" class="form-control-sm form-control"  
+                            value="{{ old('remarks') }}" name="remarks" required/> --}}
+                            <textarea class="form-control" name="remarks" rows="3" maxlength="255" placeholder="Remarks..." required></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" value="submit" class="btn btn-primary">Accept</button>
+                    <button type="submit" name="submission_action" value="declined" class="btn btn-danger">Declined</button>
+                    <button type="submit" name="submission_action" value="completed" class="btn btn-primary">Completed</button>
                 </div>
             </form>
         </div>

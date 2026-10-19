@@ -88,7 +88,7 @@
 @section('content')
 <div class="wrapper wrappter-content">
     <div class="row m-t-md">
-        @foreach (['Pending', 'Returned', 'Accepted' ,'Completed',] as $status)
+        @foreach ($statusCards as $status)
             <div class="col-lg-2 col-md-4 col-sm-6">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
@@ -96,7 +96,7 @@
                     </div>
                     <div class="ibox-content">
                         <button type="button" class="prr-status-filter" data-status="{{ $status }}" aria-pressed="false">
-                            <span class="h1 no-margins text-success">{{ $prr->where('status', $status)->count() }}</span>
+                            <span class="h1 no-margins text-success">{{ $countablePrr->where('status', $status)->count() }}</span>
                         </button>
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                 </div>
                 <div class="ibox-content">
                     <button type="button" class="prr-status-filter" data-status="" aria-pressed="true">
-                        <span class="h1 no-margins">{{ $prr->count() }}</span>
+                        <span class="h1 no-margins">{{ $countablePrr->count() }}</span>
                     </button>
                 </div>
             </div>
@@ -148,24 +148,29 @@
                                 @foreach ($prr as $request)
                                     <tr>
                                         <td>
+
                                             <a href="#"  data-target="#viewRequest{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-info'><i class="fa fa-eye"></i></a>
                                             @if (in_array($request->status, ["Draft", "Returned"]) && auth()->user()->id == $request->user_id)
                                                 <a href="#"  data-target="#editRequest{{$request->id}}" data-toggle="modal" class='btn btn-sm btn-warning'><i class="fa fa-pencil"></i></a>
                                             @endif
 
                                             @if (auth()->user()->role == "Document Control Officer")
-                                            
+                                                
                                                 @if($request->status == "Pending")
                                                     {{-- Accept --}}
                                                     <a href="#" data-target="#acceptPRR{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></a>
                                                 @elseif($request->status == "Accepted")
-                                                    @if(empty($request->report_draft_link))
+                                                    @if(empty($request->report_attachment))
                                                         {{-- Attachment --}}
                                                         <a href="#" data-target="#attachReport{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-warning"><i class="fa fa-paperclip"></i></a>
                                                     @else
                                                         {{-- Complete --}}
                                                         <a href="#" data-target="#completePRR{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-warning"><i class="fa fa-check"></i></a>
                                                     @endif
+                                                @endif
+                                                {{-- Remarks --}}
+                                                @if($request->status != "Completed" && $request->status != "Declined")
+                                                    <a href="#" data-target="#remarks{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-secondary" aria-label="View remarks" title="View remarks"><i class="fa fa-comment fa-lg"></i></a>
                                                 @endif
                                             @endif
                                         </td>
@@ -188,6 +193,8 @@
                                                     <span class='label label-danger'>
                                             @elseif($request->status == "Draft")
                                                     <span class="label label-secondary">
+                                            @elseif($request->status == "Declined")
+                                                    <span class="label label-danger">
                                             @else<span class='label label-primary'>
                                                 @endif
                                             {{$request->status}}</span>  </td>
@@ -203,6 +210,7 @@
                         @include('process-review.accept-prr')
                         @include('process-review.attach-report-prr')
                         @include('process-review.complete-prr')
+                        @include('process-review.remarks-prr')
                     @endforeach
                 </div>
             </div>

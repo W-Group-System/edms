@@ -12,7 +12,12 @@ function copy_approver_count(){
     $count = CopyApprover::where('user_id', $user->id)->where('status', 'Pending')->count()
         + RequestApprover::where('user_id', $user->id)->where('status', 'Pending')->count()
         + ProcessReviewRequest::where('user_id', $user->id)
-            ->whereIn('status', ['Returned', 'Completed'])
+            ->whereIn(
+                'status',
+                $user->role === 'Document Control Officer'
+                    ? ['Returned', 'Completed']
+                    : ['Returned', 'Completed', 'Declined']
+            )
             ->count();
 
     if ($user->role === 'Document Control Officer') {
@@ -22,7 +27,11 @@ function copy_approver_count(){
     }
 
     if (isset($departmentIds)) {
-        $count += ProcessReviewRequest::where('status', 'Pending')
+        $statuses = $user->role === 'Document Control Officer'
+            ? ['Pending', 'Returned']
+            : ['Pending', 'Returned', 'Declined'];
+
+        $count += ProcessReviewRequest::whereIn('status', $statuses)
             ->whereIn('department_id', $departmentIds)
             ->count();
     }

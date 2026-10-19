@@ -30,7 +30,7 @@
                         @endif
                     </div>
                     <div class="col-md-6">
-                        Other Attachment:
+                        Accomplished Report:
                         @if (!empty($request->report_attachment))
                             <a href="{{ url($request->report_attachment) }}" target="_blank">Link</a>
                         @else
@@ -169,9 +169,9 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach ($request->transactionHistories as $index => $history)
+                                                    @foreach ($request->transactionHistories->sortByDesc('id') as $history)
                                                         <tr>
-                                                            <td>{{ $index + 1 }}</td>
+                                                            <td>{{ $loop->iteration }}</td>
                                                             <td>{{ $history->action ?? 'N/A' }}</td>
                                                             <td>{{ $history->user->name ?? 'N/A' }}</td>
                                                             <td>{{ $history->remarks ?? 'N/A' }}</td>

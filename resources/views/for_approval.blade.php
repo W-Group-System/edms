@@ -32,7 +32,7 @@
                     <h5>Declined</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($copy_for_approvals->where('status','Declined'))+count($change_for_approvals->where('status','Declined')) + $prr->where('status', 'Returned')->count()}}</h1>
+                    <h1 class="no-margins">{{count($copy_for_approvals->where('status','Declined'))+count($change_for_approvals->where('status','Declined')) + $prr->where('status', 'Returned')->count() + $prr->where('status', 'Declined')->count() }}</h1>
                 </div>
             </div>
         </div>
@@ -140,7 +140,7 @@
     <div class="row">
         @php
             $visiblePrr = $prr->filter(function ($request) {
-                return in_array($request->status, ['Pending', 'Returned'])
+                return in_array($request->status, ['Pending', 'Returned', 'Declined'])
                     || ($request->status === 'Completed' && $request->user_id == auth()->id());
             });
         @endphp

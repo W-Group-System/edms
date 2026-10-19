@@ -18,14 +18,13 @@
                 onsubmit="show();"
                 class="form-horizontal"
                 enctype="multipart/form-data">
-
                 @csrf
                 <div class="modal-body">
                     
                     <div class="row">
                         {{-- Request type --}}
                         <div class="col-md-6">
-                            Request Type :
+                            Request Type <span class="text-danger">*</span>:
                             <select name="type_of_request" id="type-of-request" class="form-control-sm form-control" required>
                                 <option value="" {{ old('type_of_request') == '' ? 'selected' : '' }}>
                                     Select Options
@@ -41,7 +40,7 @@
 
                         {{-- Reason for New Request --}}
                         <div class="col-md-6">
-                            Reason for Request :
+                            Reason for Request <span class="text-danger">*</span>:
                             <select name="reason_for_new_request"
                                     class="form-control"
                                     id="reason-for-new-request"
@@ -130,7 +129,7 @@
                     {{-- Title --}}
                     <div class="row">
                         <div class="col-md-12 m-t-md">
-                            Title :
+                            Title <span class="text-danger">*</span> :
                             <input type="text" id="prr-title" class="form-control-sm form-control"
                             value="{{ old('title') }}" name="title" required/>
                         </div>
@@ -145,7 +144,7 @@
                     <div class="row">
                         {{-- Company --}}
                         <div class="col-md-4 m-t-md">
-                            Company : 
+                            Company <span class="text-danger">*</span> : 
                             <select name='company' class='form-control-sm form-control cat' required>
                                 @foreach($companies as $company)
                                     @if(auth()->user()->company_id == $company->id)
@@ -158,7 +157,7 @@
                         </div>
                         {{-- Department --}}
                         <div class='col-md-4 m-t-md'>
-                            Department :
+                            Department <span class="text-danger">*</span> :
                             <select name='department' class='form-control-sm form-control cat' required>
                                 @foreach($departments as $dep)
                                     @if(auth()->user()->department_id == $dep->id)
@@ -171,7 +170,7 @@
                         </div>
                         {{-- Document Type --}}
                         <div class='col-md-4 m-t-md'>
-                            Document Type :
+                            Document Type <span class="text-danger">*</span> :
                             <select name='category' id='prr-category' class='form-control-sm form-control' required>
                                 <option value="">Select an option</option>
                                 @foreach($document_types as $type)
@@ -204,12 +203,10 @@
                     {{-- Description --}}
                     <div class="row">
                         <div class="col-md-12" >
-                            Description:
+                            Description <span class="text-danger">*</span> :
                             <textarea name='description' rows="5" cols="100" class="form-control-sm form-control" required>{{old('description')}}</textarea>
                         </div>
                     </div>
-
-
                     {{-- gap --}}
                     <div class='row '>
                         <div class='col-md-12 border'>

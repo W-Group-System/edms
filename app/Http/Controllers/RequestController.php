@@ -611,7 +611,7 @@ class RequestController extends Controller
         $document_types = DocumentType::get();
         $prr = ProcessReviewRequest::with('user', 'transactionHistories.user', 'changeRequest')
             ->where('user_id', $user->id)
-            ->whereIn('status', ['Completed', 'Returned'])
+            ->whereIn('status', ['Completed', 'Returned', 'Declined'])
             ->get();
 
         if ($user->role === 'Document Control Officer') {
@@ -625,7 +625,7 @@ class RequestController extends Controller
         if ($departmentIds->isNotEmpty()) {
             $assignedPrr = ProcessReviewRequest::with('user', 'transactionHistories.user', 'changeRequest')
                 ->whereIn('department_id', $departmentIds)
-                ->whereIn('status', ['Pending', 'Completed', 'Returned'])
+                ->whereIn('status', ['Pending', 'Completed', 'Returned', 'Declined'])
                 ->get();
 
             $prr = $prr->merge($assignedPrr)->unique('id');

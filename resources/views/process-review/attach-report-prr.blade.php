@@ -22,26 +22,27 @@
                 @method('PUT')
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-12" >
+                        {{-- <div class="col-md-12" >
                             Draft Link <i>(Google Link)</i> :
                             <input type="text" class="form-control-sm form-control" min='{{date('Y-m-d')}}' value="{{old('report_draft_link')}}" name="report_draft_link" required/>
-                        </div>
-                        {{-- Supporting document --}}
-                        <div class="col-md-12 m-t-md" >
-                            Supporting Document <small><i>(PSF,Executive Summary,Etc.)</i></small> :
-                            <input type="file" class="form-control-sm form-control " accept="application/pdf" name="report_attachment"/>
+                        </div> --}}
+                        {{-- Accomplished Report document --}}
+                        <div class="col-md-12" >
+                            Accomplished Report <span class="text-danger">*</span> : 
+                            <input type="file" class="form-control-sm form-control " accept="application/pdf" name="report_attachment" required/>
                         </div>
                         
                         <div class="col-md-12 m-t-md">
-                            Status Remarks :
-                            <input type="text" class="form-control-sm form-control"  
-                            value="{{ old('remarks') }}" name="remarks" required/>
+                            Remarks  <span class="text-danger">*</span>  :
+                            {{-- <input type="text" class="form-control-sm form-control"  
+                            value="{{ old('remarks', $request->remarks) }}" name="remarks" required/> --}}
+                            <textarea class="form-control" name="remarks" rows="3" maxlength="255" placeholder="Remarks..." required>{{ old('remarks') }}</textarea>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </form>
         </div>

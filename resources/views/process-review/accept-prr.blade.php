@@ -24,9 +24,10 @@
                 <div class="modal-body">
                    <div class="row">
                         <div class="col-md-12">
-                            Status Remarks :
-                            <input type="text" class="form-control-sm form-control"  
-                            value="{{ old('remarks') }}" name="remarks" required/>
+                            Remarks <span class="text-danger">*</span>:
+                            {{-- <input type="text" class="form-control-sm form-control"  
+                            value="{{ old('remarks') }}" name="remarks" required/> --}}
+                             <textarea class="form-control" name="remarks" rows="3" maxlength="255" placeholder="Remarks..." required>{{ old('remarks') }}</textarea>
                         </div>
                     </div>
                 </div>

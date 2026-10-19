@@ -36,28 +36,29 @@ class ProcessReviewController extends Controller
             || ($role === 'User' && is_null($user->audit_role));
 
         if ($role === 'Document Control Officer') {
-            $prr->whereIn('status', ['Pending', 'Accepted', 'Completed', 'Returned']);
+            $prr->whereIn('status', ['Pending', 'Accepted', 'Completed', 'Returned', 'Declined']);
             $prr->whereIn('department_id', function ($query) {
                 $query->select('department_id')
                     ->from('department_dcos')
                     ->where('user_id', auth()->id());
             });
         } elseif ($role === 'Department Head') {
-            $prr->whereIn('status', ['Completed', 'Pending', 'Accepted', 'Returned']);
+            $prr->whereIn('status', ['Completed', 'Pending', 'Accepted', 'Returned', 'Declined']);
             $prr->whereIn('department_id', function ($query) {
                 $query->select('department_id')
                     ->from('department_approvers')
                     ->where('user_id', auth()->id());
             });
         } elseif ($role === 'User' && is_null($user->audit_role)) {
-            $prr->where('department_id', $user->department_id)
-                ->where(function ($query) use ($user) {
-                    $query->whereIn('status', ['Completed', 'Pending', 'Accepted', 'Draft'])
-                        ->orWhere(function ($query) use ($user) {
-                            $query->whereIn('status', ['Declined', 'Returned'])
-                                ->where('user_id', $user->id);
-                        });
+            $prr->where(function ($query) use ($user) {
+                $query->where(function ($query) use ($user) {
+                    $query->where('department_id', $user->department_id)
+                        ->whereIn('status', ['Completed', 'Pending', 'Accepted', 'Draft']);
+                })->orWhere(function ($query) use ($user) {
+                    $query->whereIn('status', ['Declined', 'Returned'])
+                        ->where('user_id', $user->id);
                 });
+            });
         } elseif ($role !== 'Administrator') {
             $hasRequestAccess = false;
         }
@@ -66,6 +67,13 @@ class ProcessReviewController extends Controller
 
         // Fetch the results using ->get()
         $prr = $hasRequestAccess ? $prr->get() : collect();
+        $countablePrr = $role === 'Document Control Officer'
+            ? $prr->where('status', '!=', 'Declined')
+            : $prr;
+        $statusCards = ['Pending', 'Returned', 'Accepted', 'Completed'];
+        if ($role !== 'Document Control Officer') {
+            $statusCards[] = 'Declined';
+        }
 
         $departments = Department::where('id', auth()->user()->department_id)->where('status', null)->get();
         $companies = Company::where('status', null)->get();
@@ -91,6 +99,8 @@ class ProcessReviewController extends Controller
 
         return view('process-review.index', [
             'prr' => $prr,
+            'countablePrr' => $countablePrr,
+            'statusCards' => $statusCards,
             'departments' => $departments,
             'companies' => $companies,
             'document_types' => $document_types,
@@ -346,14 +356,14 @@ class ProcessReviewController extends Controller
     {
         // dd($request);
         $request->validate([
-            'report_draft_link'  => 'required|string',
+            // 'report_draft_link'  => 'required|string',
             'remarks'            => 'required|string|max:255',
         ]);
 
         try{
             $prr = ProcessReviewRequest::findOrFail($id);
             
-            $prr->report_draft_link = $request->report_draft_link;
+            // $prr->report_draft_link = $request->report_draft_link;
             $prr->remarks = $request->remarks;
             
             if($request->hasFile('report_attachment')) {
@@ -397,25 +407,28 @@ class ProcessReviewController extends Controller
     {
          // dd($request);
         $request->validate([
+            // 'report_draft_link'  => 'required|string',
             'remarks'       => 'required|string',
+            'submission_action' => 'required|in:declined,completed',
         ]);
 
         try{
             $prr = ProcessReviewRequest::findOrFail($id);
             $prr->remarks = $request->remarks;
-            $prr->status = "Completed";
+            // $prr->report_draft_link = $request->report_draft_link;
+            $prr->status = $request->submission_action === 'declined' ? 'Declined' : 'Completed';
             // $prr->save();
 
             if($prr->save()) {
                 $history = new TransactionHistory;
                 $history->transaction_no = $prr->reference_num;
-                $history->action = 'Tagged as completed';
+                $history->action = $request->submission_action === 'declined' ? 'Declined' : 'Tagged as completed';
                 $history->action_by = auth()->user()->id;
                 $history->remarks = $request->remarks;
                 $history->save();
             }
 
-            Alert::success("Successfully Tagged as Completed")->persistent("Dismiss");
+            Alert::success($prr->status === 'Declined' ? 'Successfully Declined' : 'Successfully Tagged as Completed')->persistent("Dismiss");
             return redirect('/process-review');
         }catch(\Throwable $exception) {
             Log::error('Failed to accept process review request.', [
@@ -426,5 +439,38 @@ class ProcessReviewController extends Controller
             return redirect()->back()->withInput();   
         }
        
+    }
+
+    public function remarks(Request $request, $id)
+    {
+        $request->validate([
+            'remarks' => 'required|string|max:255'
+        ]);
+
+        try {
+            $prr = ProcessReviewRequest::findOrFail($id);
+            $prr->remarks = $request->remarks;
+
+            if ($prr->save()) {
+                $history = new TransactionHistory;
+                $history->transaction_no = $prr->reference_num;
+                $history->action = 'Remarks';
+                $history->action_by = auth()->user()->id;
+                $history->remarks = $request->remarks;
+                $history->save();
+            }
+
+            Alert::success('Remarks successfully saved.')->persistent('Dismiss');
+            return redirect('/process-review');
+        } catch (\Throwable $exception) {
+            Log::error('Failed to save process review remarks.', [
+                'user_id' => auth()->id(),
+                'process_review_request_id' => $id,
+                'exception' => $exception,
+            ]);
+
+            Alert::error('Unable to save the remarks. Please try again.')->persistent('Dismiss');
+            return redirect()->back()->withInput();
+        }
     }
 }

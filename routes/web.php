@@ -170,7 +170,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/process-review/accept-prr/{id}', 'ProcessReviewController@accept')->name('process-review.accept');
         Route::put('/process-review/attech-report-prr/{id}', 'ProcessReviewController@attachReport')->name('process-review.attach');
         Route::put('/process-review/complete-prr/{id}', 'ProcessReviewController@completed')->name('process-review.completed');
-
+        Route::post('/process-review/remarks-prr/{id}', 'ProcessReviewController@remarks')->name('process-review.remarks');
     });
 
 });
