@@ -37,11 +37,16 @@
                             <!--Title-->
                             <div class="col-md-12 form-group">
                                 <label class="control-label text-muted" style="font-size: 11px; font-weight: bold;">Title</label>
-                                <input type="text"
+                                {{-- <input type="text"
                                     name="supporting_document_title"
                                     class="form-control input-sm"
                                     value="{{ $supporting_document->title }}"
-                                    readonly>
+                                    readonly> --}}
+                                <textarea
+                                    name="title"
+                                    class="form-control input-sm"
+                                    rows="3"
+                                    readonly>{{ $supporting_document->title }}</textarea>
                             </div>
                             <!-- Department -->
                             <div class="col-md-12 form-group">

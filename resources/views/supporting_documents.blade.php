@@ -3,6 +3,15 @@
 @section('css')
 <link href="{{ asset('login_css/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
 <link href="{{ asset('login_css/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
+<style>
+        .memorandum-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+</style>
 @endsection
 
 @section('content')
@@ -11,7 +20,7 @@
             <div class="col-lg-3">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Approved Supporting Documents</h5>
+                        <h5>Approved</h5>
                     </div>
                     <div class="ibox-content">
                         <h1 class="no-margins">
@@ -23,7 +32,19 @@
             <div class="col-lg-3">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Declined Supporting Documents</h5>
+                        <h5>Pending</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">
+                            {{ $supporting_documents->where('status', 'Pending')->count() }}
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Declined</h5>
                     </div>
                     <div class="ibox-content">
                         <h1 class="no-margins">
@@ -37,16 +58,16 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>Supporting Documents
-                            {{-- @if(auth()->user()->role == 'User' || auth()->user()->role == 'Document Control Officer' || auth()->user()->role == 'Administrator' || auth()->user()->role == 'Business Process Manager') --}}
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#new">
-                                <i class="fa fa-plus"></i>
-                                &nbsp;
-                                Upload
-                            </button>
-                            {{-- @endif --}}
-                        </h5>
+                    <div class="ibox-title memorandum-toolbar">
+                        
+                        {{-- @if(auth()->user()->role == 'User' || auth()->user()->role == 'Document Control Officer' || auth()->user()->role == 'Administrator' || auth()->user()->role == 'Business Process Manager') --}}
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#new">
+                            <i class="fa fa-plus"></i>
+                            &nbsp;
+                            Upload
+                        </button>
+                        {{-- @endif --}}
+                       
 
                         {{-- DROPDOWN FILTER START --}}
                         <div class="ibox-tools">
@@ -54,6 +75,7 @@
                                 <select name="status_filter" id="status_filter" class="form-control input-sm" onchange="this.form.submit()">
                                     <option value="">All Status</option>
                                     <option value="Approved" {{ request('status_filter') == 'Approved' ? 'selected' : '' }}>Approved</option>
+                                    <option value="Pending" {{ request('status_filter') == 'Pending' ? 'selected' : '' }}>Pending</option>
                                     <option value="Declined" {{ request('status_filter') == 'Declined' ? 'selected' : '' }}>Declined</option>
                                 </select>
                             </form>
@@ -88,6 +110,9 @@
                                                     continue;
                                                 }
                                                 if ($filter == 'Declined' && $supporting_document->status != 'Declined') {
+                                                    continue;
+                                                }
+                                                if ($filter == 'Pending' && $supporting_document->status != 'Pending') {
                                                     continue;
                                                 }
                                             @endphp
@@ -132,7 +157,9 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if($supporting_document->status == 'Declined')
+                                                @if($supporting_document->status == 'Pending')
+                                                    <span class="label label-warning">Pending</span>
+                                                @elseif($supporting_document->status == 'Declined')
                                                     <span class="label label-danger">
                                                         Declined
                                                     </span>

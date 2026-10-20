@@ -15,7 +15,11 @@
                         </div>
                         <div class="col-md-12">
                             Title :
-                            <input type="text" name="title" class="form-control input-sm" value="{{$memo->title}}" required>
+                            {{-- <input type="text" name="title" class="form-control input-sm" value="{{$memo->title}}" required> --}}
+                            <textarea
+                                name="title"
+                                class="form-control input-sm"
+                                rows="3">{{ $memo->title }}</textarea>
                         </div>
                         <div class="col-md-12">
                             Released Date :
@@ -39,6 +43,29 @@
                         <div class="col-md-12">
                             Upload Memo :
                             <input type="file" name="memo_file" class="form-control" >
+                        </div>
+                    </div>
+
+                    <div class="row m-t-md">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Document Control Officer</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($memo->departmentDcos as $key => $dco)
+                                            <tr>
+                                                <td>{{ $key + 1 }}</td>
+                                                <td>{{ $dco->user->name }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

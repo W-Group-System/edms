@@ -25,6 +25,28 @@
         }
         .shownext { display: none; }
         li:hover + .shownext { display: block; }
+        /* nav badge */
+        .sidebar-notification-badge {
+            display: inline-block;
+            float: none !important;
+            margin-left: 6px;
+            vertical-align: 1px;
+        }
+        /* Show notification in hidden label sidebar */
+        body.mini-navbar .navbar-default .nav > li > a {
+            position: relative;
+        }
+        body.mini-navbar .navbar-default .nav > li > a .sidebar-notification-badge {
+            display: block !important;
+            position: absolute;
+            top: 4px;
+            right: 7px;
+            margin: 0;
+            padding: 2px 4px;
+            font-size: 9px;
+            line-height: 1;
+        }
+        /*end */
         .loader {
             position: fixed;
             left: 0px;
@@ -192,9 +214,14 @@
                     
                     <!-- Memorandum link -->
                     @if ((auth()->user()->role == 'Administrator') || auth()->user()->role == 'Document Control Officer')
+                        @php($memorandumApprovalCount = memorandum_approval_count())
                         <li class="{{Route::current()->getName() == 'memorandum' ? 'active' : ''}}" data-toggle="tooltip" data-placement="right" title="Memorandum">
                             <a href="#"><i class="fa fa-sticky-note"></i> 
-                                <span class="nav-label">Memorandum</span><span class="fa arrow"></span>
+                                <span class="nav-label">Memorandum</span>
+                                @if ($memorandumApprovalCount > 0)
+                                    <span class="label label-danger sidebar-notification-badge">{{ $memorandumApprovalCount }}</span>
+                                @endif
+                                <span class="fa arrow"></span>
                             </a>
                             <ul class="nav nav-second-level collapse">
                                 <li> 
@@ -206,8 +233,11 @@
 
                                 <li>
                                     <a href="{{url('for-approval-memorandum')}}">
-                                    <i class="fa fa-check-square-o"></i>
-                                    For Approval
+                                        <i class="fa fa-check-square-o"></i>
+                                        For Approval
+                                        @if ($memorandumApprovalCount > 0)
+                                            <span class="label label-danger pull-right">{{ $memorandumApprovalCount }}</span>
+                                        @endif
                                     </a>
                                 </li>
                                 
@@ -226,9 +256,14 @@
 
                     <!-- Supporting document -->
                     @if ((auth()->user()->role == 'Administrator') || auth()->user()->role == 'Document Control Officer')
+                        @php($supportingDocumentApprovalCount = supporting_document_approval_count())
                         <li class="{{Route::current()->getName() == 'supporting_document' ? 'active' : ''}}" data-toggle="tooltip" data-placement="right" title="Supporint Documents">
                             <a href="#"><i class="fa fa-file"></i>
-                                <span class="nav-label">Supporting Files</span><span class="fa arrow"></span>
+                                <span class="nav-label">Supporting Files</span>
+                                @if ($supportingDocumentApprovalCount > 0)
+                                    <span class="label label-danger sidebar-notification-badge">{{ $supportingDocumentApprovalCount }}</span>
+                                @endif
+                                <span class="fa arrow"></span>
                             </a>
                             <ul class="nav nav-second-level collapse">
                                 <li> 
@@ -238,9 +273,12 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="for-approval-supporting-documents">
-                                    <i class="fa fa-check-square-o"></i>
-                                    For Approval
+                                    <a href="{{url('for-approval-supporting-documents')}}">
+                                        <i class="fa fa-check-square-o"></i>
+                                        For Approval
+                                        @if ($supportingDocumentApprovalCount > 0)
+                                            <span class="label label-danger pull-right">{{ $supportingDocumentApprovalCount }}</span>
+                                        @endif
                                     </a>
                                 </li>
                             </ul>

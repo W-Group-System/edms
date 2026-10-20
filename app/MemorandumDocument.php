@@ -14,4 +14,6 @@ class MemorandumDocument extends Model
     {
         return $this->belongsTo(Memorandum::class);
     }
+
+
 }

@@ -23,4 +23,9 @@ class Memorandum extends Model implements Auditable
     {
         return $this->hasMany(MemorandumDocument::class);
     }
+
+    public function departmentDcos()
+    {
+        return $this->hasMany(DepartmentDco::class, 'department_id', 'department_id');
+    }
 }

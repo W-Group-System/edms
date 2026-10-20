@@ -2,10 +2,51 @@
 use App\CopyApprover;
 use App\DepartmentApprover;
 use App\DepartmentDco;
+use App\Memorandum;
 use App\PreAssessmentApprover;
 use App\ProcessReviewRequest;
 use App\RequestApprover;
+use App\SupportingDocument;
 
+function memorandum_approval_count()
+{
+    $user = auth()->user();
+
+    if (!$user || !in_array($user->role, ['Administrator', 'Document Control Officer'])) {
+        return 0;
+    }
+
+    $query = Memorandum::where('final_status', 'Pending');
+
+    if ($user->role === 'Document Control Officer') {
+        $query->whereHas('departmentDcos', function ($departmentDcoQuery) use ($user) {
+            $departmentDcoQuery->where('user_id', $user->id);
+        });
+    }
+
+    return $query->count();
+}
+
+function supporting_document_approval_count()
+{
+    $user = auth()->user();
+
+    if (!$user || !in_array($user->role, ['Administrator', 'Document Control Officer'])) {
+        return 0;
+    }
+
+    $query = SupportingDocument::where('status', 'Pending');
+
+    if ($user->role === 'Document Control Officer') {
+        $query->whereHas('supporting_document_dept', function ($supportingDocumentDepartmentQuery) use ($user) {
+            $supportingDocumentDepartmentQuery->whereHas('department.dco', function ($departmentDcoQuery) use ($user) {
+                $departmentDcoQuery->where('user_id', $user->id);
+            });
+        });
+    }
+
+    return $query->count();
+}
 
 function copy_approver_count(){
     $user = auth()->user();

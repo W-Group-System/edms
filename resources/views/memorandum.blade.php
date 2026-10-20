@@ -3,15 +3,37 @@
 @section('css')
 <link href="{{ asset('login_css/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
 <link href="{{ asset('login_css/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
+<style>
+    .memorandum-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .memorandum-toolbar form {
+        margin: 0;
+    }
+</style>
 @endsection
 
 @section('content')
     <div class="wrapper wrapper-content">
         <div class="row">
+             <div class="col-lg-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Pending</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">{{ $memos->filter(fn($doc) => $doc->final_status == 'Pending')->count() }}</h1>
+                    </div>
+                </div>
+            </div>
             <div class="col-lg-3">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Approved Memorandum</h5>
+                        <h5>Approved</h5>
                     </div>
                     <div class="ibox-content">
                         <h1 class="no-margins">{{ $memos->filter(fn($doc) => $doc->final_status == 'Approved' || is_null($doc->final_status))->count() }}</h1>
@@ -21,7 +43,7 @@
             <div class="col-lg-3"> 
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Declined Memorandum</h5>
+                        <h5>Declined</h5>
                     </div>
                     <div class="ibox-content">
                         <h1 class="no-margins">{{ $memos->filter(fn($doc) => $doc->final_status == 'Declined' && $doc->uploaded_by == auth()->id())->count() }}</h1>
@@ -34,29 +56,27 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>Memorandum
-                            {{-- @if(auth()->user()->role == 'User' || auth()->user()->role == 'Document Control Officer' || auth()->user()->role == 'Administrator' || auth()->user()->role == 'Business Process Manager') --}}
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#new">
-                                <i class="fa fa-plus"></i>
-                                &nbsp;
-                                Upload
-                            </button>
-                            {{-- @endif --}}
-                        </h5>
-
-                         
-                    {{-- DROPDOWN FILTER START --}}
-                    <div class="ibox-tools">
-                        <form method="GET" action="" id="filterForm" style="display: inline-block; width: 150px;">
+                    <div class="ibox-title memorandum-toolbar">
+                       
+                        {{-- @if(auth()->user()->role == 'User' || auth()->user()->role == 'Document Control Officer' || auth()->user()->role == 'Administrator' || auth()->user()->role == 'Business Process Manager') --}}
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#new">
+                            <i class="fa fa-plus"></i>
+                            &nbsp;
+                            Upload
+                        </button>
+                        {{-- @endif --}}
+                        {{-- DROPDOWN FILTER START --}}
+                            
+                        {{-- DROPDOWN FILTER START --}}
+                        <form method="GET" action="" id="filterForm" style="width: 150px;">
                             <select name="status_filter" id="status_filter" class="form-control input-sm" onchange="this.form.submit()">
                                 <option value="">All Status</option>
+                                <option value="Pending" {{ request('status_filter') == 'Pending' ? 'selected' : '' }}>Pending</option>
                                 <option value="Approved" {{ request('status_filter') == 'Approved' ? 'selected' : '' }}>Approved</option>
                                 <option value="Declined" {{ request('status_filter') == 'Declined' ? 'selected' : '' }}>Declined</option>
                             </select>
                         </form>
-                    </div>
-                    {{-- DROPDOWN FILTER END --}}
+                        {{-- DROPDOWN FILTER END --}}
                     </div>
                     
                     <div class="ibox-content">
@@ -93,17 +113,26 @@
                                                 if ($filter == 'Declined' && $memo->final_status != 'Declined') {
                                                     continue;
                                                 }
+                                                if ($filter == 'Pending' && $memo->final_status != 'Pending') {
+                                                    continue;
+                                                }
                                             @endphp
                                         @endif
 
                                         <tr>
                                             <td>
+                                                
+                                                <button type="button"
+                                                    class="btn btn-sm btn-primary"
+                                                    title="View"
+                                                    data-toggle="modal"
+                                                    data-target="#view{{ $memo->id }}">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                                
+
                                                 @if($memo->final_status != 'Declined')
-                                                    {{-- <button type="button" class="btn btn-sm btn-info" title="View" data-toggle="modal" data-target="#view{{$memo->id}}">
-                                                        <i class="fa fa-eye"></i>
-                                                    </button> --}}
-                                                    
-                                                    @if($memo->department_id == auth()->user()->department_id)
+                                                    @if($memo->final_status != 'Approved' && !is_null($memo->final_status) && $memo->department_id == auth()->user()->department_id)
                                                     <button type="button" class="btn btn-sm btn-warning" title="Edit" data-toggle="modal" data-target="#edit{{$memo->id}}">
                                                         <i class="fa fa-pencil-square-o"></i>
                                                     </button>
@@ -114,8 +143,6 @@
                                                         <i class="fa fa-trash"></i>
                                                     </button>
                                                     @endif
-                                                @else
-                                                    <span class="text-muted" style="font-size: 11px; font-style: italic;">-</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -164,6 +191,10 @@
                                                     <span class="label label-warning">
                                                         Declined
                                                     </span>
+                                                @elseif($memo->final_status == 'Pending')
+                                                    <span class="label label-warning">
+                                                        Pending
+                                                    </span>
                                                 @else
                                                     <span class="label label-primary">
                                                         {{ $memo->final_status ?? 'Approved' }}
@@ -173,9 +204,7 @@
                                            
                                         </tr>
 
-                                        @include('edit_memorandum')
-                                        @include('approved_memorandum')
-                                        {{-- @include('view_memorandum') --}}
+                                       
                                     @endforeach
                                 </tbody>
                             </table>
@@ -185,7 +214,11 @@
             </div>
         </div>
     </div>
-
+@foreach ($memos as $memo)
+    @include('edit_memorandum')
+    @include('approved_memorandum')
+    @include('view_memorandum')
+@endforeach
     @include('new_memorandum')
 @endsection
 

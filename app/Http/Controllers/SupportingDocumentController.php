@@ -41,10 +41,10 @@ class SupportingDocumentController extends Controller
     
         $query->where(function($q) {
             $q->where(function($sub) {
-                $sub->where('status', 'Approved')
+                $sub->whereIn('status', ['Approved', 'Pending'])
                     ->orWhereNull('status');
             })->orWhere(function($sub) {
-                $sub->where('status', 'Declined')
+                $sub->whereIn('status', ['Declined', 'Pending'])
                     ->where('uploaded_by', auth()->id());
             });
         });
@@ -179,18 +179,19 @@ class SupportingDocumentController extends Controller
 
     public function forApprovalSupporting()
     {
-        $query = SupportingDocument::query();
-
+        $query = SupportingDocument::with('supporting_document_dept.department', 'uploadedBy')->orderByDesc('id');
+        $user = auth()->user();
+        $role = $user->role;
 
         $query->where(function($q) {
-            $q->where('status', 'Pending')
-            ->orWhere('status', 'Declined');
+            $q->whereIn('status', ['Pending', 'Declined', 'Approved']);
         });
 
-
-        if (auth()->user()->role == "Document Control Officer") {
-            $query->whereHas('supporting_document_company', function($q) {
-                $q->where('company_id', auth()->user()->company_id);
+        if ($role === 'Document Control Officer') {
+            $query->whereHas('supporting_document_dept', function($supportingDocumentDepartmentQuery) use ($user) {
+                $supportingDocumentDepartmentQuery->whereHas('department.dco', function($departmentDcoQuery) use ($user) {
+                    $departmentDcoQuery->where('user_id', $user->id);
+                });
             });
         }
 

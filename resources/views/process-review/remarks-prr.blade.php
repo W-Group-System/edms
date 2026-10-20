@@ -21,6 +21,7 @@
                 <div class="modal-body">
                       <div class="row">
                             <div class="col-md-12">
+                                
                                 <textarea class="form-control" name="remarks" rows="3" maxlength="255" placeholder="Remarks..." required>{{ old('remarks') }}</textarea>
                                 {{-- @if ($errors->has('remarks'))
                                     <div class="text-danger">{{ $errors->first('remarks') }}</div>

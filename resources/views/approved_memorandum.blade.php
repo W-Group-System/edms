@@ -38,11 +38,16 @@
                             <!-- Title -->
                             <div class="col-md-12 form-group">
                                 <label class="control-label text-muted" style="font-size: 11px; font-weight: bold;">TITLE</label>
-                                <input type="text"
+                                {{-- <input type="text"
                                     name="title"
                                     class="form-control input-sm"
                                     value="{{ $memo->title }}"
-                                    readonly>
+                                    readonly> --}}
+                                <textarea
+                                name="title"
+                                class="form-control input-sm"
+                                rows="3"
+                                readonly>{{ $memo->title }}</textarea>
                             </div>
 
                             <!-- Attached File -->

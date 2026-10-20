@@ -159,17 +159,16 @@
                                                 @if($request->status == "Pending")
                                                     {{-- Accept --}}
                                                     <a href="#" data-target="#acceptPRR{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></a>
-                                                @elseif($request->status == "Accepted")
-                                                    @if(empty($request->report_attachment))
+                                                @elseif($request->status == "Ongoing")
+                                                    {{-- @if(empty($request->report_attachment)) --}}
                                                         {{-- Attachment --}}
-                                                        <a href="#" data-target="#attachReport{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-warning"><i class="fa fa-paperclip"></i></a>
-                                                    @else
-                                                        {{-- Complete --}}
-                                                        <a href="#" data-target="#completePRR{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-warning"><i class="fa fa-check"></i></a>
-                                                    @endif
+                                                        {{-- <a href="#" data-target="#attachReport{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-warning"><i class="fa fa-paperclip"></i></a> --}}
+                                                    {{-- @endif --}}
+                                                     {{-- Complete --}}
+                                                          <a href="#" data-target="#completePRR{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-warning"><i class="fa fa-check"></i></a>
                                                 @endif
                                                 {{-- Remarks --}}
-                                                @if($request->status != "Completed" && $request->status != "Declined")
+                                                @if($request->status != "Completed" && $request->status != "Cancelled")
                                                     <a href="#" data-target="#remarks{{ $request->id }}" data-toggle="modal" class="btn btn-sm btn-secondary" aria-label="View remarks" title="View remarks"><i class="fa fa-comment fa-lg"></i></a>
                                                 @endif
                                             @endif
@@ -187,13 +186,13 @@
                                         <td data-search="{{ $request->status }}">
                                              @if($request->status == "Pending")
                                                 <span class='label label-warning'>
-                                            @elseif($request->status ==  "Accepted")
+                                            @elseif($request->status ==  "Ongoing")
                                                 <span class='label label-success'>    
                                             @elseif($request->status ==  "Returned")
                                                     <span class='label label-danger'>
                                             @elseif($request->status == "Draft")
                                                     <span class="label label-secondary">
-                                            @elseif($request->status == "Declined")
+                                            @elseif($request->status == "Cancelled")
                                                     <span class="label label-danger">
                                             @else<span class='label label-primary'>
                                                 @endif

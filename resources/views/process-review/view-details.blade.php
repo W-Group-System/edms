@@ -21,10 +21,18 @@
                     <div class="col-md-6">
                         Type of Document : {{ $request->type_of_document ?? 'N/A' }}
                     </div>
-                    <div class="col-md-6">
+                    {{-- <div class="col-md-6">
                         Draft Link:
                         @if(!empty($request->report_draft_link))
                             <a href="{{ url($request->report_draft_link) }}" target="_blank">Draft Link</a>
+                        @else
+                            N/A
+                        @endif
+                    </div> --}}
+                    <div class="col-md-6">
+                        Supporting Documents:
+                        @if (!empty($request->supporting_documents))
+                            <a href="{{ url($request->supporting_documents) }}" target="_blank">Link</a>
                         @else
                             N/A
                         @endif
@@ -33,14 +41,6 @@
                         Accomplished Report:
                         @if (!empty($request->report_attachment))
                             <a href="{{ url($request->report_attachment) }}" target="_blank">Link</a>
-                        @else
-                            N/A
-                        @endif
-                    </div>
-                    <div class="col-md-6">
-                        Supporting Documents:
-                        @if (!empty($request->supporting_documents))
-                            <a href="{{ url($request->supporting_documents) }}" target="_blank">Link</a>
                         @else
                             N/A
                         @endif
@@ -98,7 +98,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="panel {{ $request->status === 'Returned' ? 'panel-danger' : 'panel-primary' }}">
+                        <div class="panel {{ in_array($request->status, ['Returned', 'Cancelled']) ? 'panel-danger' : 'panel-primary' }}">
                             <div class="panel-heading">
                               Request Status
                             </div>

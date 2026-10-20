@@ -27,21 +27,22 @@
                             Draft Link <i>(Google Link) </i> : <span class="text-danger">*</span>
                             <input type="text" class="form-control-sm form-control" min='{{date('Y-m-d')}}' value="{{old('report_draft_link')}}" name="report_draft_link" required/>
                         </div>
+                        --}}
                         <div class="col-md-12" >
-                            Accomplished Report <small><i>(Signed QPRC or ES)</i></small> :
-                            <input type="file" class="form-control-sm form-control " accept="application/pdf" name="report_attachment"/>
-                        </div> --}}
-                        <div class="col-md-12">
+                            Accomplished Report <small><i>(Signed QPRC or ES; required to complete, not needed to cancel)</i></small> :
+                            <input type="file" class="form-control-sm form-control " accept="application/pdf" name="report_attachment" />
+                        </div>
+                        <div class="col-md-12 m-t-md">
                             Remarks : <span class="text-danger">*</span>
                             {{-- <input type="text" class="form-control-sm form-control"  
                             value="{{ old('remarks') }}" name="remarks" required/> --}}
-                            <textarea class="form-control" name="remarks" rows="3" maxlength="255" placeholder="Remarks..." required></textarea>
+                            <textarea class="form-control" name="remarks" rows="3" maxlength="255" placeholder="Remarks..."></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" name="submission_action" value="declined" class="btn btn-danger">Declined</button>
-                    <button type="submit" name="submission_action" value="completed" class="btn btn-primary">Completed</button>
+                    <button type="submit" name="submission_action" value="cancel" class="btn btn-danger" onclick="this.form.querySelector('[name=report_attachment]').required = false;">Cancel</button>
+                    <button type="submit" name="submission_action" value="completed" class="btn btn-primary" onclick="this.form.querySelector('[name=report_attachment]').required = true;">Complete</button>
                 </div>
             </form>
         </div>

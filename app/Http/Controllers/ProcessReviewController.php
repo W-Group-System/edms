@@ -36,14 +36,14 @@ class ProcessReviewController extends Controller
             || ($role === 'User' && is_null($user->audit_role));
 
         if ($role === 'Document Control Officer') {
-            $prr->whereIn('status', ['Pending', 'Accepted', 'Completed', 'Returned', 'Declined']);
+            $prr->whereIn('status', ['Pending', 'Ongoing', 'Completed', 'Returned', 'Cancelled']);
             $prr->whereIn('department_id', function ($query) {
                 $query->select('department_id')
                     ->from('department_dcos')
                     ->where('user_id', auth()->id());
             });
         } elseif ($role === 'Department Head') {
-            $prr->whereIn('status', ['Completed', 'Pending', 'Accepted', 'Returned', 'Declined']);
+            $prr->whereIn('status', ['Completed', 'Pending', 'Ongoing', 'Returned', 'Cancelled']);
             $prr->whereIn('department_id', function ($query) {
                 $query->select('department_id')
                     ->from('department_approvers')
@@ -53,9 +53,9 @@ class ProcessReviewController extends Controller
             $prr->where(function ($query) use ($user) {
                 $query->where(function ($query) use ($user) {
                     $query->where('department_id', $user->department_id)
-                        ->whereIn('status', ['Completed', 'Pending', 'Accepted', 'Draft']);
+                        ->whereIn('status', ['Completed', 'Pending', 'Ongoing', 'Draft']);
                 })->orWhere(function ($query) use ($user) {
-                    $query->whereIn('status', ['Declined', 'Returned'])
+                    $query->whereIn('status', ['Cancelled', 'Returned'])
                         ->where('user_id', $user->id);
                 });
             });
@@ -68,7 +68,7 @@ class ProcessReviewController extends Controller
         // Fetch the results using ->get()
         $prr = $hasRequestAccess ? $prr->get() : collect();
         $countablePrr = $prr;
-        $statusCards = ['Pending', 'Returned', 'Accepted', 'Completed', 'Declined'];
+        $statusCards = ['Pending', 'Returned', 'Ongoing', 'Completed', 'Cancelled'];
 
         $departments = Department::where('id', auth()->user()->department_id)->where('status', null)->get();
         $companies = Company::where('status', null)->get();
@@ -80,7 +80,7 @@ class ProcessReviewController extends Controller
             ->whereNull('status')
             ->orderBy('control_code')
             ->get();
-
+        
         $changeRequests = ChangeRequest::with(['user', 'department', 'company'])
             ->whereIn('control_code', $documents->pluck('control_code')->filter()->unique())
             ->where('status', 'Approved')
@@ -318,7 +318,7 @@ class ProcessReviewController extends Controller
         try {
             $prr = ProcessReviewRequest::findOrFail($id);
             $prr->remarks = $request->remarks;
-            $prr->status = $request->submission_action === 'return' ? 'Returned' : 'Accepted';
+            $prr->status = $request->submission_action === 'return' ? 'Returned' : 'Ongoing';
     
             $message = $prr->status === 'Returned' 
                 ? 'Returned Successfully to the Requestor'
@@ -328,7 +328,7 @@ class ProcessReviewController extends Controller
             if($prr->save()) {
                 $history = new TransactionHistory;
                 $history->transaction_no = $prr->reference_num;
-                $history->action = $request->submission_action === 'return' ? 'Returned' : 'Accepted';
+                $history->action = $request->submission_action === 'return' ? 'Returned' : 'Ongoing';
                 $history->action_by = auth()->user()->id;
                 $history->remarks = $request->remarks;
                 $history->save();
@@ -404,26 +404,41 @@ class ProcessReviewController extends Controller
         $request->validate([
             // 'report_draft_link'  => 'required|string',
             'remarks'       => 'required|string',
-            'submission_action' => 'required|in:declined,completed',
+            'submission_action' => 'required|in:cancel,completed',
+            // 'report_attachment' => 'required_if:submission_action,completed|file|mimes:pdf',
         ]);
 
         try{
             $prr = ProcessReviewRequest::findOrFail($id);
             $prr->remarks = $request->remarks;
             // $prr->report_draft_link = $request->report_draft_link;
-            $prr->status = $request->submission_action === 'declined' ? 'Declined' : 'Completed';
+            $prr->status = $request->submission_action === 'cancel' ? 'Cancelled' : 'Completed';
             // $prr->save();
+
+             if($request->hasFile('report_attachment')) {
+                $file = $request->file('report_attachment');
+                $uploadPath = public_path('prr_attachments');
+
+                if(!file_exists($uploadPath)) {
+                    mkdir($uploadPath,0755, true);
+                }
+
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->move($uploadPath, $fileName);
+                $prr->report_attachment = '/prr_attachments/' . $fileName;
+
+            }
 
             if($prr->save()) {
                 $history = new TransactionHistory;
                 $history->transaction_no = $prr->reference_num;
-                $history->action = $request->submission_action === 'declined' ? 'Declined' : 'Tagged as completed';
+                $history->action = $request->submission_action === 'cancel' ? 'Cancelled' : 'Tagged as completed';
                 $history->action_by = auth()->user()->id;
                 $history->remarks = $request->remarks;
                 $history->save();
             }
 
-            Alert::success($prr->status === 'Declined' ? 'Successfully Declined' : 'Successfully Tagged as Completed')->persistent("Dismiss");
+            Alert::success($prr->status === 'Cancelled' ? 'Successfully Cancelled' : 'Successfully Tagged as Completed')->persistent("Dismiss");
             return redirect('/process-review');
         }catch(\Throwable $exception) {
             Log::error('Failed to accept process review request.', [

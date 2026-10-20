@@ -29,7 +29,7 @@ class ProcessReviewRequest extends Migration
             $table->text('document_description')->nullable();
             $table->string('reason_of_request')->nullable();
             $table->string('supporting_documents')->nullable();
-            $table->string('reference_num')->nullable()->unique();
+            // $table->string('reference_num')->nullable()->unique();
             $table->text('link_draft')->nullable();
             $table->string('report_draft_link')->nullable();
             $table->string('report_attachment')->nullable();

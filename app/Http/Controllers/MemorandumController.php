@@ -38,14 +38,13 @@ class MemorandumController extends Controller
     public function index()
     {
         $documents = Document::whereIn('category', ['POLICY', 'PROCEDURE'])->get();
-        $query = Memorandum::query();
-
+        $query = Memorandum::with('departmentDcos.user')->orderByDesc('id');
         
         $query->where(function($q) {
             $q->whereIn('final_status', ['Approved'])
               ->orWhereNull('final_status')
               ->orWhere(function($sub) {
-                  $sub->where('final_status', 'Declined')
+                  $sub->whereIn('final_status', ['Declined', 'Pending'] )
                         ->where('uploaded_by', auth()->id());
               });
         });
@@ -230,20 +229,26 @@ class MemorandumController extends Controller
     {
         $documents = Document::whereIn('category', ['POLICY', 'PROCEDURE'])->get();
 
-        $query = Memorandum::query();
+        $query = Memorandum::with('departmentDcos.user')->orderByDesc('id');
+        $user = auth()->user();
+        $role = $user->role;
 
         $query->where(function($q) {
             $q->where('final_status', 'Pending')
-            ->orWhere('final_status', 'Declined');
+            ->orWhere('final_status', 'Declined')
+            ->orWhere('final_status', 'Approved');
            
         });
 
-        if (auth()->user()->role == 'Document Control Officer') {
-            $query->where('company_id', auth()->user()->company_id);
+        if($role === 'Document Control Officer'){
+            $query->whereHas('departmentDcos', function($departmentDcoQuery){
+                $departmentDcoQuery->where('user_id', auth()->id());
+            });
         }
 
         $memos = $query->get();
 
         return view('for-approval-memorandum', compact('memos', 'documents'));
+        // dd($query);
     }
 }

@@ -12,11 +12,24 @@
     {{-- Card status --}}
     <div class="row">
 
+        {{-- Approved Counter --}}
+         <div class="col-lg-3">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Approved</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">
+                        {{ $memos->where('final_status', 'Approved')->count() }}
+                    </h1>
+                </div>
+            </div>
+        </div>
         {{-- For Approval Counter --}}
         <div class="col-lg-3">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h5>For Approval</h5>
+                    <h5>Pending</h5>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">
@@ -57,7 +70,9 @@
                         <form method="GET" action="" id="filterForm" style="display: inline-block; width: 150px;">
                             <select name="status_filter" id="status_filter" class="form-control input-sm" onchange="this.form.submit()">
                                 <option value="">All Status</option>
+                                
                                 <option value="Pending" {{ request('status_filter') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="Approved" {{ request('status_filter') == 'Approved' ? 'selected' : '' }}>Approved</option>
                                 <option value="Declined" {{ request('status_filter') == 'Declined' ? 'selected' : '' }}>Declined</option>
                             </select>
                         </form>
@@ -108,7 +123,14 @@
                                                 <i class="fa fa-check"></i>
                                             </button>
                                         @else
-                                            <span class="text-muted" style="font-size: 11px; font-style: italic;">Processed</span>
+                                            {{-- <span class="text-muted" style="font-size: 11px; font-style: italic;">Processed</span> --}}
+                                            <button type="button" 
+                                                class="btn btn-sm btn-primary" 
+                                                title="approved" 
+                                                data-toggle="modal" 
+                                                data-target="#view{{ $memo->id }}">
+                                                <div class="fa fa-eye"></div>
+                                            </button>
                                         @endif
                                     </td>
 
@@ -159,8 +181,12 @@
                                             <span class="label label-danger">
                                                 Declined
                                             </span>
-                                        @else
+                                        @elseif($memo->final_status == 'Approved') 
                                             <span class="label label-primary">
+                                                Approved
+                                            </span>
+                                        @else
+                                            <span class="label label-secondary">
                                                 {{ $memo->final_status ?? 'Pending' }}
                                             </span>
                                         @endif
@@ -168,9 +194,6 @@
                                     
 
                                 </tr>
-                                
-                                {{-- Modal --}}
-                                @include('approved_memorandum')
                                 
                             @endforeach
 
@@ -190,6 +213,11 @@
 
 </div>
 
+@foreach ($memos as $memo)
+    {{-- Modal --}}
+    @include('approved_memorandum')
+    @include('view_memorandum')
+@endforeach
 @endsection
 
 @section('js')

@@ -9,11 +9,12 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     {{-- Card status --}}
     <div class="row">
-        {{-- For approval counter --}}
+      
+        {{-- Pending counter --}}
         <div class="col-lg-3">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h5>For Approval</h5>
+                    <h5>Pending</h5>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">
@@ -37,6 +38,19 @@
             </div>
         </div>
 
+        {{-- Approved counter --}}
+        <div class="col-lg-3">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Approved</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">
+                        {{ $supporting_documents->where('status', 'Approved')->count() }}
+                    </h1>
+                </div>
+            </div>
+        </div>
 
     </div>
     {{-- End card status --}}
@@ -54,6 +68,7 @@
                             <select name="status_filter" id="status_filter" class="form-control input-sm" onchange="this.form.submit()">
                                 <option value="">All Status</option>
                                 <option value="Pending" {{ request('status_filter') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="Approved" {{ request('status_filter') == 'Approved' ? 'selected' : '' }}>Approved</option>
                                 <option value="Declined" {{ request('status_filter') == 'Declined' ? 'selected' : '' }}>Declined</option>
                             </select>
                         </form>

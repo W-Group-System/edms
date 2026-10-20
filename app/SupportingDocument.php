@@ -29,5 +29,9 @@ class SupportingDocument extends Model implements Auditable
             'supporting_document_id'
         );
     }
+    public function departmentDcos()
+    {
+        return $this->hasMany(DepartmentDco::class, 'department_id', 'department_id');
+    }
 
 }
