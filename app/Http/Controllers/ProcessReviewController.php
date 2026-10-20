@@ -6,6 +6,7 @@ use App\PrrDocumentsCompany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 use App\Company;
 use App\Department;
@@ -170,7 +171,7 @@ class ProcessReviewController extends Controller
             DB::transaction(function () use ($prr, $request) {
                 $prr->save();
                 
-                $referencePrefix = 'QPPR-' . date('y') . '-';
+                $referencePrefix = 'QPRR-' . date('y') . '-';
                 $lastReferenceNumber = ProcessReviewRequest::where('reference_num', 'like', $referencePrefix . '%')
                     ->orderByDesc('id')
                     ->value('reference_num');
@@ -436,6 +437,30 @@ class ProcessReviewController extends Controller
                 $history->action_by = auth()->user()->id;
                 $history->remarks = $request->remarks;
                 $history->save();
+
+                if ($request->submission_action === 'completed') {
+                    $requestor = $prr->user;
+
+                    try {
+                        if (!$requestor || !$requestor->email) {
+                            throw new \RuntimeException('Process review requestor email address is unavailable.');
+                        }
+
+                        Mail::send('email.process-review-completed', ['prr' => $prr], function ($message) use ($requestor) {
+                            $message->to($requestor->email, $requestor->name)
+                                ->subject('Process Review Request Completed');
+                        });
+                    } catch (\Throwable $exception) {
+                        Log::error('Failed to send process review completion email.', [
+                            'process_review_request_id' => $prr->id,
+                            'user_id' => $requestor ? $requestor->id : null,
+                            'exception' => $exception,
+                        ]);
+
+                        Alert::warning('The request was completed, but the notification email could not be sent.')->persistent('Dismiss');
+                        return redirect('/process-review');
+                    }
+                }
             }
 
             Alert::success($prr->status === 'Cancelled' ? 'Successfully Cancelled' : 'Successfully Tagged as Completed')->persistent("Dismiss");

@@ -6,6 +6,7 @@ use App\Document;
 use App\Memorandum;
 use App\MemorandumDocument;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class MemorandumController extends Controller
@@ -218,9 +219,15 @@ class MemorandumController extends Controller
         $memo->approved_by = auth()->user()->name;
         $memo->remarks = $request->memo_comment;
 
-        $memo->save();
+        if ($memo->save() && $memo->final_status === 'Approved') {
+            $requestor = $memo->user;
 
-        // FIXED: Space added between 'Successfully ' and $request->status
+            Mail::send('email.memorandum-approved', ['memo' => $memo], function ($message) use ($requestor) {
+                $message->to($requestor->email, $requestor->name)
+                    ->subject('Memorandum Request Approved');
+            });
+        }
+
         Alert::success('Successfully ' . $request->status)->persistent('Dismiss');
         return back();
     }

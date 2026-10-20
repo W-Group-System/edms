@@ -7,6 +7,7 @@ use App\SupportingDocument;
 use App\SupportingDocumentsDepartment;
 use App\SupportingDocumentsCompany;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class SupportingDocumentController extends Controller
@@ -211,7 +212,14 @@ class SupportingDocumentController extends Controller
             $supportingDocuments->visibility = $request->visibility;
         }
 
-        $supportingDocuments->save();
+        if ($supportingDocuments->save() && $supportingDocuments->status === 'Approved') {
+            $requestor = $supportingDocuments->uploadedBy;
+
+            Mail::send('email.supporting-document-approved', ['supportingDocument' => $supportingDocuments], function ($message) use ($requestor) {
+                $message->to($requestor->email, $requestor->name)
+                    ->subject('Supporting Document Request Approved');
+            });
+        }
 
         Alert::success('Successfully ' . $request->status)->persistent('Dismiss');
         return back();
