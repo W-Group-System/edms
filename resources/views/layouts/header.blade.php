@@ -120,18 +120,19 @@
                         <a href="{{url('/request')}}"><i class="fa fa-paper-plane"></i> <span
                                 class="nav-label">Copy Requests </span></a>
                     </li>
+                    
+                    {{-- CRF#36: Quality Process Review Request (PRR) Module --}}
+                    <li class="{{ Route::current()->getName() == 'process-review' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Process Review">
+                        <a href="{{ url('/process-review') }}"><i class="fa fa-list-alt"></i> <span class="nav-label">Quality Process Review</span></a>
+                    </li>
+                    {{-- End --}}
+
                     @if((auth()->user()->role == "Administrator") || (auth()->user()->role == "Document Control Officer") || (auth()->user()->id == "286"))
                     <li class="{{ Route::current()->getName() == 'pre_assessment' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Pre-Assessment">
                         <a href="{{url('/pre_assessment')}}"><i class="fa fa-file"></i> <span
                                 class="nav-label">Pre-assessment </span></a>
                     </li>
                     @endif
-
-                    {{-- CRF#36: Quality Process Review Request (PRR) Module --}}
-                    <li class="{{ Route::current()->getName() == 'process-review' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Process Review">
-                        <a href="{{ url('/process-review') }}"><i class="fa fa-list-alt"></i> <span class="nav-label">Quality Process Review</span></a>
-                    </li>
-                    {{-- End --}}
 
                     {{-- @if((auth()->user()->role != "User")) --}}
                     <li class="{{ Route::current()->getName() == 'change-requests' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Change Requests">
