@@ -159,8 +159,21 @@
                         {{-- Document Type --}}
                         <div class="col-md-4 m-t-md">
                             Document Type :
-                            <select name="category" class="form-control-sm form-control" required>
-                                <option value="">Select an option</option>
+                            <input type="text"
+                                   class="form-control-sm form-control edit-new-category"
+                                   name="category"
+                                   value="Executive Summary"
+                                   style="{{ old('type_of_request', $request->type_of_request) === 'New' ? '' : 'display: none;' }}"
+                                   {{ old('type_of_request', $request->type_of_request) === 'New' ? '' : 'disabled' }}
+                                   {{ old('type_of_request', $request->type_of_request) === 'New' ? 'required' : '' }}
+                                   readonly
+                            >
+                            <select name="category"
+                                    class="form-control-sm form-control edit-revision-category"
+                                    style="{{ old('type_of_request', $request->type_of_request) === 'New' ? 'display: none;' : '' }}"
+                                    {{ old('type_of_request', $request->type_of_request) === 'New' ? 'disabled' : '' }}
+                                    {{ old('type_of_request', $request->type_of_request) === 'New' ? '' : 'required' }}>
+                                <option value="" {{ old('type_of_request', $request->type_of_request) === '' || old('category', $request->type_of_document) == '' ? 'selected' : '' }}>Select an option</option>
                                 @foreach($document_types as $type)
                                     <option value="{{ $type->name }}" {{ old('category', $request->type_of_document) == $type->name ? 'selected' : '' }}>
                                         {{$type->code}} {{$type->name}}

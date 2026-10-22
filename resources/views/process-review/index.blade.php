@@ -229,14 +229,34 @@
         var $revisionControlCode = $('#revision-control-code');
         var $prrTitle = $('#prr-title');
         var $prrCategory = $('#prr-category');
+        var $prrNewCategory = $('#prr-new-category');
         var $changeRequestHistory = $('#selected-document-change-requests');
         var $documentChangeRequests = $changeRequestHistory.find('.selected-document-change-requests');
+
+        function toggleDocumentType() {
+            var requestType = $('#type-of-request').val();
+            var isNew = requestType === 'New';
+            var isRevision = requestType === 'Revision';
+
+            $prrNewCategory
+                .toggle(isNew)
+                .prop('disabled', !isNew)
+                .prop('required', isNew)
+                .val(isNew ? 'Executive Summary' : '');
+            $prrCategory
+                .toggle(!isNew)
+                .prop('disabled', isNew)
+                .prop('required', !isNew)
+                .val(isRevision ? $prrCategory.val() : '');
+        }
         
         function toggleRevisionDocuments() {
-            var isRevision = $('#type-of-request').val() === 'Revision';
+            var requestType = $('#type-of-request').val();
+            var isRevision = requestType === 'Revision';
             $revisionDocumentList.toggle(isRevision);
             $revisionDocumentChoices.prop('required', isRevision);
             $revisionControlCode.prop('required', isRevision);
+            toggleDocumentType();
             updateSelectedRevision();
         }
         function updateSelectedRevision() {
@@ -275,6 +295,9 @@
                 $prrCategory.val($selectedDocument.data('category')).trigger('change');
             } else {
                 $revisionControlCode.val('');
+                if (isRevision) {
+                    $prrCategory.val('');
+                }
             }
         }
         $('#type-of-request').on('change', function(){
@@ -298,18 +321,29 @@
             var $controlCodeRow = $modal.find('.edit-revision-control-code-row');
             var $controlCode = $modal.find('.edit-revision-control-code');
             var $title = $modal.find('input[name="title"]');
-            var $category = $modal.find('select[name="category"]');
+            var $newCategory = $modal.find('.edit-new-category');
+            var $revisionCategory = $modal.find('.edit-revision-category');
             var $changeRequestTables = $modal.find('.edit-selected-document-change-request');
             var $noDocumentSelected = $modal.find('.edit-no-document-selected');
 
             function updateEditRevision() {
-                var isRevision = $typeOfRequest.val() === 'Revision';
+                var requestType = $typeOfRequest.val();
+                var isRevision = requestType === 'Revision';
                 var $selectedDocument = $documentChoices.filter(':checked');
 
                 $documentList.toggle(isRevision);
                 $controlCodeRow.toggle(isRevision);
                 $documentChoices.prop('required', isRevision);
                 $controlCode.prop('required', isRevision);
+                $newCategory
+                    .toggle(requestType === 'New')
+                    .prop('disabled', requestType !== 'New')
+                    .prop('required', requestType === 'New')
+                    .val(requestType === 'New' ? 'Executive Summary' : '');
+                $revisionCategory
+                    .toggle(isRevision)
+                    .prop('disabled', !isRevision)
+                    .prop('required', isRevision);
                 $changeRequestTables.hide();
 
                 if (isRevision && $selectedDocument.length) {
@@ -321,6 +355,7 @@
                     $documentChoices.prop('checked', false);
                     $controlCode.val('');
                 }
+                $revisionCategory.val(isRevision && $selectedDocument.length ? $selectedDocument.data('category') : '');
                 $noDocumentSelected.toggle(!isRevision || !$selectedDocument.length);
             }
 
@@ -329,7 +364,7 @@
                 var $selectedDocument = $(this);
                 $title.val($selectedDocument.data('title'));
                 $controlCode.val($selectedDocument.data('control-code'));
-                $category.val($selectedDocument.data('category')).trigger('change');
+                $revisionCategory.val($selectedDocument.data('category')).trigger('change');
                 updateEditRevision();
             });
 

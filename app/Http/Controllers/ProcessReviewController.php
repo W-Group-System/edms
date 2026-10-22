@@ -146,7 +146,9 @@ class ProcessReviewController extends Controller
             $prr->document_id = $selectedDocument ? $selectedDocument->id : null;
             $prr->control_code = $selectedDocument ? $selectedDocument->control_code : null;
             $prr->type_of_request = $request->type_of_request;
-            $prr->type_of_document = $request->category;
+            $prr->type_of_document = $request->type_of_request === 'New'
+                ? 'Executive Summary'
+                : $request->category;
             $prr->document_title = $request->title;
             $prr->document_description = $request->description;
             $prr->reason_of_request = $request->reason_for_new_request;
@@ -259,7 +261,9 @@ class ProcessReviewController extends Controller
             $prr->document_id = $selectedDocument ? $selectedDocument->id : null;
             $prr->control_code = $selectedDocument ? $selectedDocument->control_code : null;
             $prr->type_of_request = $request->type_of_request;
-            $prr->type_of_document = $request->category;
+            $prr->type_of_document = $request->type_of_request === 'New'
+                ? 'Executive Summary'
+                : $request->category;
             $prr->document_title = $request->title;
             $prr->document_description = $request->description;
             $prr->reason_of_request = $request->reason_for_new_request;

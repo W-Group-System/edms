@@ -125,7 +125,6 @@
                         </div>
                     </div>
 
-
                     {{-- Title --}}
                     <div class="row">
                         <div class="col-md-12 m-t-md">
@@ -171,8 +170,22 @@
                         {{-- Document Type --}}
                         <div class='col-md-4 m-t-md'>
                             Document Type <span class="text-danger">*</span> :
-                            <select name='category' id='prr-category' class='form-control-sm form-control' required>
-                                <option value="">Select an option</option>
+                            <input type="text"
+                                   name="category"
+                                   id="prr-new-category"
+                                   class="form-control-sm form-control"
+                                   value="{{ old('type_of_request') === 'New' ? 'Executive Summary' : '' }}"
+                                   style="{{ old('type_of_request') === 'New' ? '' : 'display: none;' }}"
+                                   {{ old('type_of_request') === 'New' ? '' : 'disabled' }}
+                                   {{ old('type_of_request') === 'New' ? 'required' : '' }}
+                                   readonly>
+                            <select name='category'
+                                    id='prr-category'
+                                    class='form-control-sm form-control'
+                                    style="{{ old('type_of_request') === 'New' ? 'display: none;' : '' }}"
+                                    {{ old('type_of_request') === 'New' ? 'disabled' : '' }}
+                                    {{ old('type_of_request') === 'New' ? '' : 'required' }}>
+                                <option value="" {{ old('category') == '' ? 'selected' : '' }}>Select an option</option>
                                 @foreach($document_types as $type)
                                     <option value='{{$type->name}}' {{ old('category') == $type->name ? 'selected' : '' }}>
                                         {{$type->code}} {{$type->name}}
